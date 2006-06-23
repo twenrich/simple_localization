@@ -1,0 +1,11 @@
+<div class="errors">
+
+	<p><%=h object.class.localized_model_name %> konnte wegen <%= object.errors.count == 1 ? 'einem Fehler' : "#{object.errors.count} Fehlern" %> nicht gespeichert werden.</p>
+	<ul>
+<% object.errors.each do |attr, msg| -%>
+<% attribute_name = object.class.localized_name_for(attr) ? object.class.localized_name_for(attr) : object.class.human_attribute_name(attr) -%>
+		<li><%= attribute_name %> <%= msg %></li>
+<% end -%>
+	</ul>
+
+</div>

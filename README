@@ -1,0 +1,77 @@
+= SimpleLocalization
+
+This plugin supports a very simple one language (currently german) localization
+for Ruby on Rails. It overwrites the default ActiveRecord error messages and
+month names in language.rb.
+
+It also defines a kind of domain specific language to make it possible to write
+the localized names of the model attributes directly to the model class:
+
+ localized_model_name 'Der Kommentar'
+ localized_attribute_names :name => 'Dein Name',
+                           :mail => 'Die eMail-Adresse',
+                           :website => 'Die Website',
+                           :title => 'Der Titel',
+                           :content => 'Der Inhalt'
+
+To get greater controll over the error_messages_for helper and to make it use
+the localized names, I redefined it to use the partial template 'shared/errors'
+to generate the error message box.
+
+As a last step this plugin changes the wrapper code for invalid input fields
+from a div element
+
+ <div class="fieldWithErrors">...</div>
+
+to a span element
+
+ <span class="fieldWithErrors">...</span>
+
+This makes formes more valid if you use block level elements to encapslate your
+input elements (like I do).
+
+== Installation
+
+Well, since this plugin is more or less a quick'n diry development to just make
+Rails run with german language there is currently no installation code. To
+install this plugin you'll just have to copy the partial template from
+'app/views/shared/_errors.rhtml' into your applications view directory. This is
+all.
+
+I'll create a installation script as soon as needed.
+
+== Changing this plugin to use another language
+
+There are only two files which contain language specific information:
+
+[language.rb]
+  This files overwrites the ActiveRecord default error messages and the month
+  names. You can change this easily.
+
+[app/views/shared/_errors.rhtml]
+  The partial template used to create the error message box. You can change this
+  to what ever your application fits best.
+
+== License
+
+Copyright (c) 2006 Stephan Soller <stephan.soller@addcom.de>
+
+The MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
