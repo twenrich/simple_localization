@@ -1,0 +1,24 @@
+active_record_messages:
+  inclusion: ist nicht in Liste gültiger Optionen enthalten.
+  exclusion: ist reserviert.
+  inavlid: ist ungültig.
+  confirmation: simmt mit der Bestätigung nicht überein.
+  accepted: muss akzeptiert werden.
+  empty: darf nicht leer sein.
+  blank: darf nicht leer sein.
+  too_long: ist zu lang (maximal %d Zeichen).
+  too_short: ist zu kurz (mindestens %d Zeichen).
+  wrong_length: hat die falsche Länge (es sollten %d Zeichen sein).
+  taken: ist bereits vergeben.
+  not_a_number: ist keine Zahl.
+
+dates:
+  monthnames: [Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+  daynames: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+  abbr_monthnames: [Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Oct, Nov, Dez]
+  abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
+
+helpers:
+  error_messages_for:
+    singular: "#{h(localized_object_name)} konnte wegen einem Fehler nicht gespeichert werden."
+    plural: "#{h(localized_object_name)} konnte wegen #{error_count} Fehlern nicht gespeichert werden."
