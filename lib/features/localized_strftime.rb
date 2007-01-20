@@ -1,4 +1,5 @@
 # Quick'n dirty localization of the Time#strftime method.
+# 
 # Thanks to Patrick Lenz:
 # http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime
 

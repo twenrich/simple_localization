@@ -1,3 +1,10 @@
+meta:
+  language: Deutsch
+  author: Stephan Soller
+  website: http://www.arkanis-development.de/
+  email: stephan.soller@addcom.de
+  date: 2007-01-20
+
 active_record_messages:
   inclusion: ist nicht in Liste gültiger Optionen enthalten.
   exclusion: ist reserviert.
@@ -20,5 +27,5 @@ dates:
 
 helpers:
   error_messages_for:
-    singular: "#{h(localized_object_name)} konnte wegen einem Fehler nicht gespeichert werden."
-    plural: "#{h(localized_object_name)} konnte wegen #{error_count} Fehlern nicht gespeichert werden."
+    singular: %s konnte wegen einem Fehler nicht gespeichert werden.
+    plural: %s konnte wegen %d Fehlern nicht gespeichert werden.
