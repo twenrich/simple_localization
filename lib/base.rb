@@ -1,75 +1,77 @@
-module ArkanisDevelopment::SimpleLocalization #:nodoc
-  
-  # This class loads, caches and manages the language file.
-  class Language
-    @@cached_language_data = nil
-    @@current_language = nil
+module ArkanisDevelopment
+  module SimpleLocalization #:nodoc
     
-    # Searches the localization file for the specified entry. It's possible to
-    # specify neasted entries by using more than one parameter.
-    # 
-    #   Language[:active_record_messages, :not_a_number] # => "ist keine Zahl."
-    # 
-    # This will return the not_a_number entry within the active_record_messages
-    # entry. The YAML in the language file looks like this:
-    # 
-    #   active_record_messages:
-    #     not_a_number: ist keine Zahl.
-    # 
-    def self.[](*sections)
-      sections.inject(@@cached_language_data) do |memo, section|
-        memo[section.to_s]
-      end
-    end
-    
-    # Loads a language file and caches it.
-    # 
-    # The language files can be found in the languages directory of the plugin.
-    # 
-    #   Language.load :de
-    # 
-    # This will load the file languages/de.yaml and caches it in the class.
-    def self.load(language)
-      @@cached_language_data = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{language}.yml")
-      @@current_language = language
-    end
-    
-    # Reader method to get the currently loaded language.
-    def self.current_language
-      @@current_language
-    end
-    
-    # Just a little helper for the date localization (used in the
-    # localized_dates feature). Converts arrays into hashes with the array
-    # values as keys and their indexes as values. Takes and optional start
-    # index.
-    # 
-    # The source array will be read from the specified section of the language
-    # file.
-    # 
-    # The YAML in the language file:
-    # 
-    #   dates:
-    #     abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
-    # 
-    # The method call:
-    # 
-    #   Language.convert_to_name_indexed_hash :section => [:dates, abbr_daynames]
-    #                                         :start_index => 1
-    #   # => {"Son" => 1, "Mon" => 2, "Din" => 3, "Mit" => 4, "Don" => 5, "Fri" => 6, "Sam" => 7}
-    # 
-    def self.convert_to_name_indexed_hash(options)
-      options.assert_valid_keys :section, :start_index
+    # This class loads, caches and manages the language file.
+    class Language
+      @@cached_language_data = nil
+      @@current_language = nil
       
-      array = self[*options[:section]]
-      array.inject({}) do |memo, day_name|
-        memo[day_name] = array.index(day_name) + (options[:start_index] || 0)
-        memo
+      # Searches the localization file for the specified entry. It's possible to
+      # specify neasted entries by using more than one parameter.
+      # 
+      #   Language[:active_record_messages, :not_a_number] # => "ist keine Zahl."
+      # 
+      # This will return the not_a_number entry within the active_record_messages
+      # entry. The YAML in the language file looks like this:
+      # 
+      #   active_record_messages:
+      #     not_a_number: ist keine Zahl.
+      # 
+      def self.[](*sections)
+        sections.inject(@@cached_language_data) do |memo, section|
+          memo[section.to_s]
+        end
       end
+      
+      # Loads a language file and caches it.
+      # 
+      # The language files can be found in the languages directory of the plugin.
+      # 
+      #   Language.load :de
+      # 
+      # This will load the file languages/de.yaml and caches it in the class.
+      def self.load(language)
+        @@cached_language_data = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{language}.yml")
+        @@current_language = language
+      end
+      
+      # Reader method to get the currently loaded language.
+      def self.current_language
+        @@current_language
+      end
+      
+      # Just a little helper for the date localization (used in the
+      # localized_dates feature). Converts arrays into hashes with the array
+      # values as keys and their indexes as values. Takes and optional start
+      # index.
+      # 
+      # The source array will be read from the specified section of the language
+      # file.
+      # 
+      # The YAML in the language file:
+      # 
+      #   dates:
+      #     abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
+      # 
+      # The method call:
+      # 
+      #   Language.convert_to_name_indexed_hash :section => [:dates, abbr_daynames]
+      #                                         :start_index => 1
+      #   # => {"Son" => 1, "Mon" => 2, "Din" => 3, "Mit" => 4, "Don" => 5, "Fri" => 6, "Sam" => 7}
+      # 
+      def self.convert_to_name_indexed_hash(options)
+        options.assert_valid_keys :section, :start_index
+        
+        array = self[*options[:section]]
+        array.inject({}) do |memo, day_name|
+          memo[day_name] = array.index(day_name) + (options[:start_index] || 0)
+          memo
+        end
+      end
+      
     end
     
   end
-  
 end
 
 # The main method of the SimpleLocalization plugin used to initialize and

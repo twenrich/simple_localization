@@ -1,5 +1,5 @@
 module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module ActiveRecordHelper #:nodoc
+  module ActionViewHelper #:nodoc
     
     # Provides a localized version of the +error_messages_for+ helper. This
     # helper just localizes the first paragraph of the error box. The error
@@ -52,4 +52,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   end
 end
 
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::ActiveRecordHelper
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::ActionViewHelper

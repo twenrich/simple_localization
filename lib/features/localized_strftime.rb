@@ -2,6 +2,9 @@
 # 
 # Thanks to Patrick Lenz:
 # http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime
+# 
+# This localization depends on the localized Date constants to work correctly.
+# So you have to load the +localized_dates+ feature to get an effect.
 
 class Time
   
