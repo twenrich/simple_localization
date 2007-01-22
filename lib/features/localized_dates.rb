@@ -1,11 +1,11 @@
 # Localizes the Date class by overwriting its constants with the proper names
 # from the language file.
 # 
-# Uses silence_warnings to prevent const reassignment warnings. We know we're
+# Uses +silence_warnings+ to prevent const reassignment warnings. We know we're
 # doing something bad...
 
-silence_warnings do
-  class Date
+class Date
+  silence_warnings do
     MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
     DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
     ABBR_MONTHNAMES = [nil] +  ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]

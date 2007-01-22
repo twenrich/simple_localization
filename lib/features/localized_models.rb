@@ -1,5 +1,28 @@
-# Extends Active Recrod model with the ability to store localization
-# informations.
+# Extends ActiveRecord models to provide a way to specify localized names for models and thier
+# attributes. Asume the following model Computer has the attributes name, description, ip_address
+# and user.
+# 
+#   class Computer < ActiveRecord::Base
+#   	belongs_to :user
+#   	validates_presence_of :name, :ip_address, :user
+#   	
+#   	localized_names 'Der Computer',
+#   	  :name => 'Der Name',
+#   	  :description => 'Die Beschreibung',
+#   	  :ip_address => 'Die IP-Adresse',
+#   	  :user => 'Der Besitzer'
+#   end
+# 
+# This stores the localized (in this case german) name of the model and it's attributes in the model
+# class. The first parameter is the name of the model followed by a hash defining the localized names
+# for the attributes.
+# 
+# The feature also overwrites ActiveRecords +human_attribute_name+ method to return the localized
+# names if available. The model name can be accessed by the class method +localized_model_name+.
+# 
+#   Computer.localized_model_name               # => 'Der Computer'
+#   Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'
+# 
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActiveRecordExtensions #:nodoc

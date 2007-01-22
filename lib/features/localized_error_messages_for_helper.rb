@@ -1,3 +1,5 @@
+# Overwrites the default +error_messages_for+ helper with an localized version.
+
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActionViewHelper #:nodoc
     

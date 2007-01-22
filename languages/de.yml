@@ -8,7 +8,7 @@ meta:
 active_record_messages:
   inclusion: ist nicht in Liste gültiger Optionen enthalten.
   exclusion: ist reserviert.
-  inavlid: ist ungültig.
+  invalid: ist ungültig.
   confirmation: simmt mit der Bestätigung nicht überein.
   accepted: muss akzeptiert werden.
   empty: darf nicht leer sein.

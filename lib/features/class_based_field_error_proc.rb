@@ -1,5 +1,5 @@
 # Defines a new ActionView field_error_proc. The old field_error_proc would
-# wrap the form field into a +span+ element of the class +fieldWithErrors+.
+# wrap the form field into a +div+ element of the class +fieldWithErrors+.
 # 
 # This sometimes makes the design of these invalid form fields a bit difficult
 # and may also produce invalid markup. To avoid all this the new
@@ -9,7 +9,7 @@
 # 
 # Old field_error_proc:
 # 
-#   <span class="fieldWithErrors"><input type="text" class="txt" ... /></span>
+#   <div class="fieldWithErrors"><input type="text" class="txt" ... /></div>
 # 
 # New field_error_proc:
 # 
