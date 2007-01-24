@@ -53,12 +53,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
       #     
       #   end
       # 
-      # These names will be used by the extended error_messages_for helper to
-      # construct the corresponding error messages.
-      # 
       # To access the localized model name use the class method
       # +localized_model_name+. The +human_attribute_name+ method will also be
-      # overwritten so you'll get the localized names from it if available.
+      # extended so you'll get the localized names from it if available.
     
       def localized_names(model_name, attribute_names = {})
         class<<self

@@ -1,6 +1,7 @@
 meta:
   language: Deutsch
   author: Stephan Soller
+  comment:  Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.
   website: http://www.arkanis-development.de/
   email: stephan.soller@addcom.de
   date: 2007-01-20
@@ -24,8 +25,34 @@ dates:
   daynames: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
   abbr_monthnames: [Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Oct, Nov, Dez]
   abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
+  date_formats:
+    default: '%A, %d %B %Y %H:%M %Z'
+    short: '%d %b. %H:%M'
+    long: '%d %B %Y, %H:%M'
+  time_formats:
+    short: '%d %b %H:%M'
+    long: '%B %d, %Y %H:%M'
+
+numbers:
+  separator: ,
+  delimiter: .
+
+arrays:
+  to_sentence:
+    connector: und
+    skip_last_comma: true
 
 helpers:
   error_messages_for:
     singular: %s konnte wegen einem Fehler nicht gespeichert werden.
     plural: %s konnte wegen %d Fehlern nicht gespeichert werden.
+  number_to_currency:
+    precision: 2
+    unit: €
+  number_to_phone:
+    area_code: false
+    delimiter: ' '
+    extension: 
+    country_code: 
+  date_select:
+    order: [:year, :month, :day]

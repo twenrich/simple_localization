@@ -38,7 +38,9 @@ module ArkanisDevelopment #:nodoc
       # 
       # This will load the file +languages/de.yaml+ and caches it in the class.
       def self.load(language)
-        @@cached_language_data = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{language}.yml")
+        lang_file_without_ext = File.dirname(__FILE__) + "/../languages/#{language}"
+        @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
+        require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
         @@current_language = language
       end
       

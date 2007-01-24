@@ -3,7 +3,7 @@ require 'active_record'
 
 # Init SimpleLocalization with just the localized_error_messages feature
 # activated.
-simple_localization :language => 'de', :only => :localized_error_messages
+simple_localization :language => LANG, :only => :localized_error_messages
 
 class LocalizedErrorMessagesTest < Test::Unit::TestCase
   

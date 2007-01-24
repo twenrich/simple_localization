@@ -4,7 +4,7 @@ require 'active_record'
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :language => 'de', :only => [:localized_models, :localized_error_messages]
+simple_localization :language => LANG, :only => [:localized_models, :localized_error_messages]
 
 # Localized names for the model and it's attributes.
 # The city and state attribute are commented out to test attributes with no
