@@ -34,13 +34,16 @@ dates:
     long: '%B %d, %Y %H:%M'
 
 numbers:
-  separator: ,
-  delimiter: .
+  separator: ','
+  delimiter: '.'
 
 arrays:
   to_sentence:
     connector: und
     skip_last_comma: true
+
+countries:
+  Germany: Deutschland
 
 helpers:
   error_messages_for:
@@ -56,3 +59,19 @@ helpers:
     country_code: 
   date_select:
     order: [:year, :month, :day]
+  distance_of_time_in_words:
+    less than 5 seconds: weniger als 5 Sekunden
+    less than 10 seconds: weniger als 10 Sekunden
+    less than 20 seconds: weniger als 20 Sekunden
+    less than a minute: weniger als eine Minute
+    1 minute: 1 Minute
+    half a minute: eine halbe Minute
+    x minutes: %i Minuten
+    about 1 hour: ungefähr 1 Stunde
+    about x hours: ungefähr %i Stunden
+    1 day: ein Tag
+    x days: %i Tage
+    about 1 month: ungefähr ein Monat
+    x months: %i Monate
+    about 1 year: ungefähr 1 Jahr
+    over x years: über %i Jahre

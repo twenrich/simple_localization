@@ -1,10 +1,11 @@
+# Localizes the +to_sentence+ method of the Array class by loading the default
+# options from the language file.
+
 class Array
   
-  alias :to_sentence_without_localization :to_sentence
-  
   def to_sentence(options = {})
-    options = Language[:arrays, :to_sentence].symbolize_keys.update(options)
-    super number, options
+    options = ArkanisDevelopment::SimpleLocalization::Language[:arrays, :to_sentence].symbolize_keys.update(options)
+    super options
   end
   
 end
