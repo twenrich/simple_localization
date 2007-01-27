@@ -36,6 +36,7 @@ dates:
 numbers:
   separator: ','
   delimiter: '.'
+  precision: 2
 
 arrays:
   to_sentence:
@@ -51,7 +52,7 @@ helpers:
     plural: %s konnte wegen %d Fehlern nicht gespeichert werden.
   number_to_currency:
     precision: 2
-    unit: €
+    unit: '€ '
   number_to_phone:
     area_code: false
     delimiter: ' '

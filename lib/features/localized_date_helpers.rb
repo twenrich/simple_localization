@@ -1,11 +1,25 @@
+# Localizes the +date_select+ helper by loading the default options from the
+# language file.
+# 
+# The +distance_of_time_in_words+ however can only be localized by
+# reimplementing it here. Every result is based on a string from the language
+# file.
+# 
+# Many other helpers are based on these two so the localization of these
+# helpers should localizes many other.
+
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module DateHelper #:nodoc
     
+    # Localizes the +date_select+ helper by loading the default options from
+    # the language file.
     def date_select(object_name, method, options = {})
       options = Language[:helpers, :date_select].symbolize_keys.update(options)
       super object_name, method, options
     end
     
+    # Localizes the +distance_of_time_in_words+ helper by reimplementing it and
+    # loading the strings from the language file.
     def distance_of_time_in_words(from_time, to_time = 0, include_seconds = false)
       from_time = from_time.to_time if from_time.respond_to?(:to_time)
       to_time = to_time.to_time if to_time.respond_to?(:to_time)

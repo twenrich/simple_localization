@@ -1,10 +1,9 @@
 require File.dirname(__FILE__) + '/test_helper'
-require 'active_record'
 
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :language => LANG, :only => [:localized_models, :localized_error_messages]
+simple_localization :language => LANG, :only => [:localized_models, :localized_error_messages, :localized_active_record_helpers]
 
 # Localized names for the model and it's attributes.
 # The city and state attribute are commented out to test attributes with no
@@ -41,19 +40,33 @@ end
 
 class LocalizedModelsTest < Test::Unit::TestCase
   
+  include ActionView::Helpers::TagHelper
+  include ArkanisDevelopment::SimpleLocalization::ActiveRecordHelper
+  
+  def setup
+    @contact = Contact.new :name => 'Stephan Soller',
+                           :city => 'HomeSweetHome',
+                           :phone => '12345'
+  end
+  
   def test_model_and_attribute_names
     assert_equal Contact.localized_model_name, CONTACT_MODEL_NAME
     assert_equal Contact.human_attribute_name(:name), CONTACT_ATTRIBUTE_NAMES[:name]
   end
   
-  def test_error_messages
-    @contact = Contact.new :name => 'Stephan Soller',
-                           :city => 'HomeSweetHome',
-                           :phone => '12345'
-    
+  def test_localized_error_messages
     assert_equal @contact.valid?, false
     assert_equal @contact.errors.full_messages.size, 1
     assert_equal @contact.errors.full_messages.first, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :empty]
+  end
+  
+  def test_localized_active_record_helpers
+    assert_equal @contact.valid?, false
+    html_output = error_messages_for :contact
+    localized_title = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :singular]
+    
+    assert_contains html_output, format(localized_title, CONTACT_MODEL_NAME)
+    assert_contains html_output, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :empty]
   end
   
 end

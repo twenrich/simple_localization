@@ -1,10 +1,28 @@
 require File.dirname(__FILE__) + '/test_helper'
 
+# Load the specified language file and all features
+simple_localization :language => LANG
+
 class SimpleLocalizationTest < Test::Unit::TestCase
-  # Replace this with your real tests.
-  def test_this_plugin
-    # Commended out to prevent a overall text to fail just because this plugin
-    # does not yet has a test.
-    #flunk
+  
+  def setup
+    @lang_file = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{LANG}.yml")
+    @lang = ArkanisDevelopment::SimpleLocalization::Language
   end
+  
+  def test_if_language_file_is_loaded
+    assert_equal LANG, @lang.current_language
+  end
+  
+  def test_meta_information
+    meta_info_to_test = @lang.meta_info
+    @lang_file['meta'].each do |key, value|
+      assert_equal value, meta_info_to_test[key.to_sym]
+    end
+  end
+  
+  def test_lang_file_access
+    assert_equal @lang_file['dates']['monthnames'], @lang[:dates, :monthnames]
+  end
+  
 end

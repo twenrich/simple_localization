@@ -1,8 +1,9 @@
 # Localizes the Date and the Time classes.
 # 
-# In detail it will overwrite the month and day name constants with the proper
-# names from the language file. Here +silence_warnings+ gets used to prevent
-# const reassignment warnings. We know we're doing something bad...
+# In detail it will overwrite the month and day name constants of the Date
+# class with the proper names from the language file. Here +silence_warnings+
+# gets used to prevent const reassignment warnings. We know we're doing
+# something bad...
 # 
 # Also updated the date formates of the Date class with the ones of the
 # language file.

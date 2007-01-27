@@ -1,4 +1,4 @@
-# This is the base file of the SimpleLocalization plugin. It is loaded at
+# This is the base file of the Simple Localization plugin. It is loaded at
 # application startup and defines the +simple_localization+ method which should
 # be used in the environment.rb file to configure and initialize the
 # localization.
@@ -25,6 +25,12 @@ module ArkanisDevelopment #:nodoc
       #     not_a_number: ist keine Zahl.
       # 
       def self.[](*sections)
+        unless @@cached_language_data
+          raise 'Can not access language data. It seems there is no language ' +
+            'file loaded. Please call the simple_localization method at the ' +
+            'end of your environment.rb file to initialize Simple Localization.'
+        end
+        
         sections.inject(@@cached_language_data) do |memo, section|
           memo[section.to_s]
         end
@@ -49,10 +55,36 @@ module ArkanisDevelopment #:nodoc
         @@current_language
       end
       
+      # Returns a hash with the meta information of the language file. Entries
+      # not present in the language file will default to +nil+.
+      # 
+      #   Language.meta_info
+      #   # => {
+      #          :language => 'Deutsch',
+      #          :author => 'Stephan Soller',
+      #          :comment => 'Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.',
+      #          :website => 'http://www.arkanis-development.de/',
+      #          :email => nil, # happens if no email is specified in the language file.
+      #          :date => '2007-01-20'
+      #        }
+      # 
+      def self.meta_info
+        defaults = {
+          :language => nil,
+          :author => nil,
+          :comment => nil,
+          :website => nil,
+          :email => nil,
+          :date => nil
+        }
+        
+        defaults.update self[:meta].symbolize_keys
+      end
+      
       # Just a little helper for the date localization (used in the
-      # +localized_dates+ feature). Converts arrays into hashes with the array
-      # values as keys and their indexes as values. Takes and optional start
-      # index.
+      # +localized_date_and_time+ feature). Converts arrays into hashes with
+      # the array values as keys and their indexes as values. Takes and
+      # optional start index which defaults to 0.
       # 
       # The source array will be read from the specified section of the language
       # file.

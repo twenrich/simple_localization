@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/test_helper'
-require 'active_record'
 
 # Init SimpleLocalization with just the localized_error_messages feature
 # activated.
