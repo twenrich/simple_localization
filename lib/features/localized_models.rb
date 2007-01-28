@@ -18,7 +18,7 @@
 # for the attributes.
 # 
 # The feature also overwrites ActiveRecords +human_attribute_name+ method to return the localized
-# names if available. The model name can be accessed by the class method +localized_model_name+.
+# attribute name if available. The model name can be accessed by the class method +localized_model_name+.
 # 
 #   Computer.localized_model_name               # => 'Der Computer'
 #   Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'

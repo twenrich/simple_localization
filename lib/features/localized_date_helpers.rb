@@ -6,7 +6,7 @@
 # file.
 # 
 # Many other helpers are based on these two so the localization of these
-# helpers should localizes many other.
+# helpers should localize many other.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module DateHelper #:nodoc

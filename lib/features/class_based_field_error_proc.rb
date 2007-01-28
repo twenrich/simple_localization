@@ -15,7 +15,7 @@
 # 
 #   <input type="text" class="txt invalid" ... />
 # 
-# This snippet is based on the snippet of Duane Johnson which adds an style
+# This feature is based on the snippet of Duane Johnson which adds an style
 # attribute to the form field element. He did the real work.
 # http://wiki.rubyonrails.com/rails/pages/HowtoChangeValidationErrorDisplay
 

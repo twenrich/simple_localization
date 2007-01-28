@@ -55,10 +55,10 @@ module ArkanisDevelopment #:nodoc
         @@current_language
       end
       
-      # Returns a hash with the meta information of the language file. Entries
-      # not present in the language file will default to +nil+.
+      # Returns a hash with the meta data of the language file. Entries not
+      # present in the language file will default to +nil+.
       # 
-      #   Language.meta_info
+      #   Language.about
       #   # => {
       #          :language => 'Deutsch',
       #          :author => 'Stephan Soller',
@@ -68,7 +68,7 @@ module ArkanisDevelopment #:nodoc
       #          :date => '2007-01-20'
       #        }
       # 
-      def self.meta_info
+      def self.about
         defaults = {
           :language => nil,
           :author => nil,
@@ -78,7 +78,7 @@ module ArkanisDevelopment #:nodoc
           :date => nil
         }
         
-        defaults.update self[:meta].symbolize_keys
+        defaults.update self[:about].symbolize_keys
       end
       
       # Just a little helper for the date localization (used in the
@@ -120,29 +120,31 @@ end
 # 
 #   simple_localization :language => :de, :class_based_field_error_proc => fase
 # 
-# The +:language+ option specifies the name of the language file you want to
-# use. You can also use the options to specify if a specific feature (the files
-# inside the feature directory) should be loaded or not. By default all
-# features will be loaded. To prevent a feature from beeing loaded you can
-# specify an option with the name of the feature and a value of +false+.
+# With the <code>:language</code> option you can specifies the name of the
+# language file (without extension) you want to use. You can also use the
+# options to specify if a specific feature (the files inside the +features+
+# directory) should be loaded or not. By default all features will be loaded.
+# To prevent a feature from beeing loaded you can specify an option with the
+# name of the feature and a value of +false+.
 # 
-# In the example above this prevents the <code>class_based_field_error_proc</code> feature
-# (the +class_based_field_error_proc.rb+ file in the +features+ directory) from
-# beeing loaded.
+# In the example above this prevents the <code>class_based_field_error_proc</code>
+# feature (the <code>class_based_field_error_proc.rb</code> file in the
+# <code>features</code> directory) from beeing loaded.
 # 
-# Alternativly you can specify the <code>:exept</code> option with a list of features which
-# should not be loaded:
+# Alternativly you can specify the <code>:exept</code> option with a list of
+# features which should not be loaded:
 # 
-#   simple_localization :language => :de, :except => [:localized_models, :localized_strftime]
+#   simple_localization :language => :de, :except => [:localized_models, :localized_date_and_time]
 # 
 # This will load all features except the +localized_models+ and
-# +localized_strftime+ features. The opposite way (only specify features which
-# sould be loaded) is also possible. Use the <code>:only</code> option for this.
+# +localized_date_and_time+ features. The opposite way (only specify features
+# which sould be loaded) is also possible by using the <code>:only</code>
+# option.
 # 
-#   simple_localization :language => :de, :only => [:localized_dates, :localized_models]
+#   simple_localization :language => :de, :only => [:localized_models, :localized_date_and_time]
 # 
-# This will only load the +localized_dates+ and +localized_models+ features,
-# ignoring all others.
+# This will only load the +localized_models+ and +localized_date_and_time+
+# features, ignoring all others.
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   default_options = available_features.inject({:language => 'de'}){|memo, feature| memo[feature.to_sym] = true; memo}

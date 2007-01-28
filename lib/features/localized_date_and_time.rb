@@ -5,7 +5,7 @@
 # gets used to prevent const reassignment warnings. We know we're doing
 # something bad...
 # 
-# Also updated the date formates of the Date class with the ones of the
+# Also updated the date formates of the Date class with the ones from the
 # language file.
 # 
 # Next on the Time class is localized. More specifically it's +strftime+

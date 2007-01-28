@@ -1,20 +1,25 @@
 = SimpleLocalization Plugin
 
-This plugin supports a simple one language localization for Ruby on Rails. To make the plugin
-more felxible and extendable the functionality is split into small "features". These features
-are source files located in the <code>lib/features</code> directory of the plugin and each one
-localizes a small part of Ruby on Rails.
+This plugin supports a simple one language localization for Ruby on Rails. It localizes the Date
+and Time classes, many helpers, some methods of ActiveSupport, the ActiveRecord error messages and
+provides a way to localize models and their attributes. You'll find an overview of all features
+later in this document.
 
-This way you can choose the parts you want to have localized. This also avoids conflicts in
-case you have already localized some parts of your application by other means. Currently this
-plugin can localize the Date and Time classes, the Active Record error messages and even Active
-Record model names and thier attributes. You'll find an overview of all features later in this
-document.
+To make the plugin more felxible and extendable the functionality is split into small "features".
+These features are source files located in the <code>lib/features</code> directory of the plugin
+and each one localizes a small part of Ruby on Rails. This way you can choose the parts you want
+to have localized. This also avoids conflicts in case you have already localized some parts of
+your application by other means.
 
 To support a range of languages all language specific strings are extracted into language files.
 These language files can be found in the +languages+ directory of the plugin and are written
-in the YAML format. They also contain a little bit of meta information about the language files
-author but this information is currently not used.
+in the YAML format. They also contain meta data about the language files and it's author which can
+be accessed by the ArkanisDevelopment::SimpleLocalization::Language#about method.
+
+Some languages my require you to write a bit Ruby stuff (eg. configuring the Rails Inflector)
+which can not be done with just a YAML file. In this case create a ruby file with the same name
+as the language file but with an +rb+ instead of an +yml+ extension. It will be loaded right after
+the YAML file.
 
 
 == Installation
@@ -32,26 +37,26 @@ symbol or string. Currently only a german language file (named <code>de.yml</cod
 == Features and configuration
 
 Like said before the functionality of this plugin is split into single features. By default all
-features are loaded but <ou can choose which should be loaded or should not. This is also done by
+features are loaded but you can choose which should be loaded or should not. This is also done by
 the +simple_localization+ method.
 
-  simple_localization :language => :de, :localized_strftime => false
+  simple_localization :language => :de, :localized_models => false
 
 Simply specify the name of the feature (like the file name but without the extension) as a
-parameter and set it's value to +false+. The above example load all features except the
-+localized_strftime+ feature. To make the feature selection easier the +simple_localization+
+parameter and set it's value to +false+. The above example loads all features except the
++localized_models+ feature. To make the feature selection easier the +simple_localization+
 method supports the <code>:only</code> and <code>:except</code> parameters which are pretty
 much self explaining.
 
   # Does the same as the first example
-  simple_localization :language => :de, :except => :localized_strftime
+  simple_localization :language => :de, :except => :localized_models
   
   # Only loads the localized_strftime feature
-  simple_localization :language => :de, :only => :localized_strftime
+  simple_localization :language => :de, :only => :localized_models
 
 <code>:except</code> and <code>:only</code> also accept an array of features.
 
-  simple_localization :language => :de, :except => [:localized_strftime, :localized_dates]
+  simple_localization :language => :de, :except => [:localized_models, :localized_dates]
 
 
 == Feature overview
@@ -61,13 +66,13 @@ look at the individual feature files. You can find these files in the <code>lib/
 directory of the plugin.
 
 
-=== localized_models
+=== Localized model and attribute names (localized_models)
 
-File: lib/features/localized_models.rb
+File: <code>lib/features/localized_models.rb</code>
 
 Extends ActiveRecord models to provide a way to specify localized names for models and thier
-attributes. Asume the following model Computer has the attributes name, description, ip_address
-and user.
+attributes. Asume the following model +Computer+ has the attributes +name+, +description+,
++ip_address+ and +user+.
 
   class Computer < ActiveRecord::Base
   	belongs_to :user
@@ -91,46 +96,65 @@ names if available. The model name can be accessed by the class method +localize
   Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'
 
 
-=== localized_error_messages
+=== Localized Active Record error messages (localized_error_messages)
 
-File: lib/features/localized_error_messages.rb
+File: <code>lib/features/localized_error_messages.rb</code>
 
 Overwrites the english Active Record error messages with localized ones from the language file. If the
-user submits an invalid form these error messages and the attribute names of the corresponding model
-are used to generate the shown error box detailing why the record is invalid.
+user submits an invalid form these error messages and the human attribute names of the corresponding
+model are used to generate the shown error box detailing why the record is invalid.
 
 
-=== localized_error_messages_for_helper
+=== Localized Active Record helpers (localized_active_record_helpers)
 
-File: lib/features/localized_error_messages_for_helper.rb
+File: <code>lib/features/localized_active_record_helpers.rb</code>
 
 Provides a more localized version of the +error_messages_for+ helper. Uses the language file to generate
-the explaination paragraph of the error box. Makes it also possible to redefine the generated output using
-an associated block.
+the explaination paragraph of the error box. Makes it also possible to redefine the generated HTML output
+using an associated block.
 
 
-=== localized_strftime
+=== Localized Date and Time classes (localized_date_and_time)
 
-File: lib/features/localized_strftime.rb
+File: <code>lib/features/localized_date_and_time.rb</code>
 
-Localizes the Time#strftime method by using the constants of the Date class. It's not perfect but
-works. However you'll need localized Date class constants for this feature to have an effect. The
-+localized_dates+ does this so you should use these two features together.
+Localizes the Time and Date classes. Updates the month and day name constants of the Date class with
+proper localized ones from the language file. Also makes the Time#strftime method using these month
+and day names (based on the work of work[http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime] of Patrick Lenz).
 
-This feature is based on the work of Patrick Lenz: http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime
+The date and time formats used by the +to_formatted_s+ method are updated, too.
 
+=== Localized array extensions (localized_array)
 
-=== localized_dates
+File: <code>lib/features/localized_array.rb</code>
 
-File: lib/features/localized_dates.rb
-
-Replaces the month and day name constants of the Date class with localized versions of the language
-file.
+Localizes the Array#to_sentence method.
 
 
-=== class_based_field_error_proc
+=== Localized date helpers (localized_date_helpers)
 
-File: lib/features/class_based_field_error_proc.rb
+File: <code>lib/features/localized_date_helpers.rb</code>
+
+Localizes the +date_select+ and +distance_of_time_in_words+ helpers.
+
+
+=== Localized country names (localized_form_options_helpers)
+
+File: <code>lib/features/localized_form_options_helpers.rb</code>
+
+Updates the country names used by the FormOptionsHelper module with localized names.
+
+
+=== Localized number helpers (localized_number_helpers)
+
+File: <code>lib/features/localized_number_helpers.rb</code>
+
+Modifies the number helpers of Rails to use a localized seperator, delimiter, percision and unit.
+
+
+=== Class based Action View field_error_proc (class_based_field_error_proc)
+
+File: <code>lib/features/class_based_field_error_proc.rb</code>
 
 This feature replaces the default ActionView field_error_proc which is responsible for
 formating form fields with invalid input. The original one wraps invalid form fields into
@@ -144,16 +168,23 @@ The new one just adds the class +invalid+ to the corresponding form field elemen
 
 This feature is based on a code snippet of Duane Johnson found in the Rails wiki[http://wiki.rubyonrails.com/rails/pages/HowtoChangeValidationErrorDisplay].
 
+It isn't really a localization feature. However while working with the Active Record error
+messages the new div-element around invalid fields was for me one of the most annoying things
+of Rails. So this feature can my be considered as "a goody". :) 
+
 
 == Extending the plugin with your language
 
 It's very easy to define new languages for this plugin. All language specific strings
-can be found in the language files. One file for each language. The language files are
-written in YAML.
+can be found in the language files. One YAML file (and optional Ruby file) for each
+language. You can use the german language files <code>languages/de.yml</code> and
+<code>languages/de.rb</code> as a reference to build files for your own language.
 
-You can use the german language file <code>languages/de.yml</code> as a reference to
-build your own. For example if you want to create a france language file you could just
-copy <code>de.yml</code> to <code>fr.yml</code> and relpace the necessary strings.
+For example if you want to create a france language file you could just copy
+<code>de.yml</code> to <code>fr.yml</code> and relpace the necessary strings. If you
+need to do some other Ruby stuff like configuring the Rails Inflector you can create
+a <code>fr.rb</code> file and write usual Ruby code. This file is loaded right after
+the language file.
 
 
 == License

@@ -1,11 +1,14 @@
 # Overwrites the default +error_messages_for+ helper with an localized version.
+# 
+# See the +error_messages_for+ method for a detailed description.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActiveRecordHelper #:nodoc
     
     # Provides a localized version of the +error_messages_for+ helper. This
     # helper just localizes the first paragraph of the error box. The error
-    # messages are localized by the +localize_models+ feature.
+    # messages itself are localized by the +localized_models+ and
+    # +localized_error_messages+ features.
     # 
     # This helper returns a slightly more universal HTML code than the original
     # did:
