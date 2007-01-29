@@ -6,51 +6,61 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActiveRecordHelper #:nodoc
     
     # Provides a localized version of the +error_messages_for+ helper. This
-    # helper just localizes the first paragraph of the error box. The error
-    # messages itself are localized by the +localized_models+ and
+    # helper just localizes the heading and first paragraph of the error box.
+    # The error messages itself are localized by the +localized_models+ and
     # +localized_error_messages+ features.
     # 
-    # This helper returns a slightly more universal HTML code than the original
-    # did:
+    # It also gives you the possibility to define your own way of generating
+    # the HTML output by specifying a block:
     # 
-    #   <div class="error_messages">
-    #     <p>Das Objekt konnte wegen einem Fehler nicht gespeichert werden.</p>
-    #     <ul>
-    #       <li>Der Name darf nicht leer sein.</li>
-    #     </ul>
-    #   </div>
-    # 
-    # If this doesn't fit your purpose you can specify a block which defines
-    # the output of the helper:
-    # 
-    #   error_messages_for :record do |object, error_title, error_messages, localized_object_name, error_count|
-    #     content_tag(:p, error_title) +
+    #   error_messages_for :record do |objects, header_message, description, error_messages, localized_object_name, count|
+    #     content_tag(:p, header_message) +
     #     content_tag(:ul, error_messages.collect{|msg| content_tag :li, msg}.join("\n"))
     #   end
     # 
-    def error_messages_for(object_name)
-      object = instance_variable_get("@#{object_name}")
+    def error_messages_for(*params)
+      options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
+      objects = params.collect {|object_name| instance_variable_get("@#{object_name}") }.compact
+      count   = objects.inject(0) {|sum, object| sum + object.errors.count }
       
-      return '' unless object and not object.errors.empty?
-      
-      localized_object_name = object.class.localized_model_name
-      error_count = object.errors.count
-      
-      localization_string = object.errors.count == 1 ? :singular : :plural
-      error_title = format(Language[:helpers, :error_messages_for, localization_string], h(localized_object_name), error_count)
-      
-      error_messages = []
-      object.errors.each do |attr, msg|
-        error_messages << object.class.human_attribute_name(attr) + ' ' + msg
-      end
-      
-      unless block_given?
-        content_tag :div,
-          content_tag(:p, error_title) +
-          content_tag(:ul, error_messages.collect{|msg| content_tag :li, msg}.join("\n")),
-          :class => 'error_messages'
+      unless count.zero?
+        html = {}
+        
+        [:id, :class].each do |key|
+          if options.include?(key)
+            value = options[key]
+            html[key] = value unless value.blank?
+          else
+            html[key] = 'errorExplanation'
+          end
+        end
+        
+        lang = Language[:helpers, :error_messages_for].symbolize_keys
+        localized_object_name = if options[:object_name]
+          options[:object_name]
+        elsif objects.first.class.respond_to?(:localized_model_name)
+          objects.first.class.localized_model_name
+        else
+          params.first.to_s.gsub('_', ' ')
+        end
+        
+        header_message_mask = lang[:heading][count] || lang[:heading]['n']
+        header_message = format header_message_mask, count, localized_object_name
+        description = lang[:description]
+        error_messages = objects.collect{|object| object.errors.full_messages}.flatten
+        
+        unless block_given?
+          content_tag(:div,
+            content_tag(options[:header_tag] || :h2, header_message) <<
+              content_tag(:p, description) <<
+              content_tag(:ul, error_messages.collect{|msg| content_tag(:li, msg)}.join("\n")),
+            html
+          )
+        else
+          yield objects, header_message, description, error_messages, localized_object_name, count
+        end
       else
-        yield object, error_title, error_messages, localized_object_name, error_count
+        ''
       end
     end
     

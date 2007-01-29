@@ -48,8 +48,10 @@ countries:
 
 helpers:
   error_messages_for:
-    singular: %s konnte wegen einem Fehler nicht gespeichert werden.
-    plural: %s konnte wegen %d Fehlern nicht gespeichert werden.
+    heading:
+      1: '%2$s konnte wegen einem Fehler nicht gespeichert werden.'
+      n: '%2$s konnte wegen %1$d Fehlern nicht gespeichert werden.'
+    description: 'Folgende Probleme sind aufgetreten:'
   number_to_currency:
     precision: 2
     unit: '€ '

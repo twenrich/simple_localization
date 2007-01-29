@@ -63,9 +63,10 @@ class LocalizedModelsTest < Test::Unit::TestCase
   def test_localized_active_record_helpers
     assert_equal @contact.valid?, false
     html_output = error_messages_for :contact
-    localized_title = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :singular]
+    localized_title = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :heading, 1]
     
-    assert_contains html_output, format(localized_title, CONTACT_MODEL_NAME)
+    assert_contains html_output, format(localized_title, 1, CONTACT_MODEL_NAME)
+    assert_contains html_output, ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :description]
     assert_contains html_output, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :empty]
   end
   
