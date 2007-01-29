@@ -1,6 +1,7 @@
 # Load all necessary libraries, gems and the init script.
 require 'rubygems'
 require 'test/unit'
+require_gem 'rails'
 require 'active_record'
 require 'action_view'
 require File.dirname(__FILE__) + '/../init'

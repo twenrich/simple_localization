@@ -14,10 +14,10 @@ class SimpleLocalizationTest < Test::Unit::TestCase
     assert_equal LANG, @lang.current_language
   end
   
-  def test_meta_information
-    meta_info_to_test = @lang.meta_info
-    @lang_file['meta'].each do |key, value|
-      assert_equal value, meta_info_to_test[key.to_sym]
+  def test_about_lang
+    info_from_class = @lang.about
+    @lang_file['about'].each do |key, value|
+      assert_equal value, info_from_class[key.to_sym]
     end
   end
   
