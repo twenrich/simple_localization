@@ -40,15 +40,15 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
             else             lang['1 minute']
           end
         
-        when 2..44           then format(lang['x minutes'], distance_in_minutes)
+        when 2..44           then format(lang['n minutes'], distance_in_minutes)
         when 45..89          then lang['about 1 hour']
-        when 90..1439        then format(lang['about x hours'], (distance_in_minutes.to_f / 60.0).round)
+        when 90..1439        then format(lang['about n hours'], (distance_in_minutes.to_f / 60.0).round)
         when 1440..2879      then lang['1 day']
-        when 2880..43199     then format(lang['x days'], (distance_in_minutes / 1440).round)
+        when 2880..43199     then format(lang['n days'], (distance_in_minutes / 1440).round)
         when 43200..86399    then lang['about 1 month']
-        when 86400..525959   then format(lang['x months'], (distance_in_minutes / 43200).round)
+        when 86400..525959   then format(lang['n months'], (distance_in_minutes / 43200).round)
         when 525960..1051919 then lang['about 1 year']
-        else                      format(lang['over x years'], (distance_in_minutes / 525960).round)
+        else                      format(lang['over n years'], (distance_in_minutes / 525960).round)
       end
     end
     

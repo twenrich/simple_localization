@@ -27,11 +27,11 @@ dates:
   abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
   date_formats:
     default: '%A, %d %B %Y %H:%M %Z'
-    short: '%d %b. %H:%M'
-    long: '%d %B %Y, %H:%M'
+    short: '%e %b'
+    long: '%e %B %Y'
   time_formats:
     short: '%d %b %H:%M'
-    long: '%B %d, %Y %H:%M'
+    long: '%d %B %Y %H:%M'
 
 numbers:
   separator: ','
@@ -69,12 +69,12 @@ helpers:
     less than a minute: weniger als eine Minute
     1 minute: 1 Minute
     half a minute: eine halbe Minute
-    x minutes: %i Minuten
+    n minutes: %i Minuten
     about 1 hour: ungefähr 1 Stunde
-    about x hours: ungefähr %i Stunden
+    about n hours: ungefähr %i Stunden
     1 day: ein Tag
-    x days: %i Tage
+    n days: %i Tage
     about 1 month: ungefähr ein Monat
-    x months: %i Monate
+    n months: %i Monate
     about 1 year: ungefähr 1 Jahr
-    over x years: über %i Jahre
+    over n years: über %i Jahre

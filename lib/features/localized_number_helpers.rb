@@ -31,8 +31,8 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
       super number, options
     end
     
-    def number_with_delimiter(number, delimiter = Language[:numbers, :delimiter])
-      super number, delimiter
+    def number_with_delimiter(number, delimiter = Language[:numbers, :delimiter], separator = Language[:numbers, :separator])
+      super number, delimiter, separator
     end
     
     def number_with_precision(number, precision = Language[:numbers, :precision])

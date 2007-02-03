@@ -29,7 +29,7 @@ class LocalizedDateHelpersTest < Test::Unit::TestCase
   
   def test_distance_of_time_in_words
     from, to = Time.now, 10.hours.from_now
-    output_mask = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :distance_of_time_in_words]['about x hours']
+    output_mask = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :distance_of_time_in_words]['about n hours']
     expected_output = format(output_mask, ((from - to).abs / 60 / 60).round)
     
     assert_equal expected_output, distance_of_time_in_words(from, to)

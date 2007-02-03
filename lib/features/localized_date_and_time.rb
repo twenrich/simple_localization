@@ -11,6 +11,7 @@
 # Next on the Time class is localized. More specifically it's +strftime+
 # method. This is based on the quick'n dirty localization from Patrick Lenz:
 # http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime
+# It's a bit modified to respect the '%%' escape sequence.
 # 
 # As done with the date formats of the Date class the time formats of the Time
 # class will be updated, too. Again with ones from the language file.
@@ -39,10 +40,10 @@ class Time
   
   def strftime(format)
     format = format.dup
-    format.gsub!(/%a/, Date::ABBR_DAYNAMES[self.wday])
-    format.gsub!(/%A/, Date::DAYNAMES[self.wday])
-    format.gsub!(/%b/, Date::ABBR_MONTHNAMES[self.mon])
-    format.gsub!(/%B/, Date::MONTHNAMES[self.mon])
+    format.gsub!(/(?!%)%a/, Date::ABBR_DAYNAMES[self.wday])
+    format.gsub!(/(?!%)%A/, Date::DAYNAMES[self.wday])
+    format.gsub!(/(?!%)%b/, Date::ABBR_MONTHNAMES[self.mon])
+    format.gsub!(/(?!%)%B/, Date::MONTHNAMES[self.mon])
     self.strftime_without_localization(format)
   end
   

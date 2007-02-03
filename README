@@ -31,7 +31,8 @@ Simply copy the plugin into your <code>vendor/plugins</code> directory and call 
 
 With this you're done. The <code>:language</code> parameter lets you define the language you want
 to use. Just specify the name of the language file without the <code>.yml</code> extension as a
-symbol or string. Currently only a german language file (named <code>de.yml</code>) exists though.
+symbol or string. Currently only a german language file (named <code>de.yml</code>) and an english
+language file (as reference and template for new languages) exists though.
 
 
 == Features and configuration
@@ -121,6 +122,7 @@ File: <code>lib/features/localized_date_and_time.rb</code>
 Localizes the Time and Date classes. Updates the month and day name constants of the Date class with
 proper localized ones from the language file. Also makes the Time#strftime method using these month
 and day names (based on the work of work[http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime] of Patrick Lenz).
+However it's a bit modified to respect the '%%' escape sequence.
 
 The date and time formats used by the +to_formatted_s+ method are updated, too.
 
@@ -176,15 +178,15 @@ of Rails. So this feature can my be considered as "a goody". :)
 == Extending the plugin with your language
 
 It's very easy to define new languages for this plugin. All language specific strings
-can be found in the language files. One YAML file (and optional Ruby file) for each
-language. You can use the german language files <code>languages/de.yml</code> and
-<code>languages/de.rb</code> as a reference to build files for your own language.
+can be found in the language files. One YAML file (and optional a Ruby file, too) for
+each language. You can use the english language files <code>languages/en.yml</code> and
+<code>languages/en.rb</code> as a reference to build files for your own language.
 
 For example if you want to create a france language file you could just copy
-<code>de.yml</code> to <code>fr.yml</code> and relpace the necessary strings. If you
+<code>en.yml</code> to <code>fr.yml</code> and replace the necessary strings. If you
 need to do some other Ruby stuff like configuring the Rails Inflector you can create
 a <code>fr.rb</code> file and write usual Ruby code. This file is loaded right after
-the language file.
+the YAML language file.
 
 
 == License
