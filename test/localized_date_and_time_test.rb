@@ -32,10 +32,11 @@ class LocalizedDatesTest < Test::Unit::TestCase
     #  %b - The abbreviated month name (``Jan'')
     #  %B - The  full  month  name (``January'')
     
-    assert_equal @test_date.strftime("%a"), @language[:dates, :abbr_daynames][1]
-    assert_equal @test_date.strftime("%A"), @language[:dates, :daynames][1]
-    assert_equal @test_date.strftime("%b"), @language[:dates, :abbr_monthnames][0]
-    assert_equal @test_date.strftime("%B"), @language[:dates, :monthnames][0]
+    assert_equal @language[:dates, :abbr_daynames][1], @test_date.strftime('%a')
+    assert_equal " #{@language[:dates, :daynames][1]} ", @test_date.strftime(' %A ')
+    assert_equal @language[:dates, :abbr_monthnames][0], @test_date.strftime('%b')
+    assert_equal @language[:dates, :monthnames][0], @test_date.strftime('%B')
+    assert_equal '%B', @test_date.strftime('%%B')
   end
   
   def test_date_conversions
@@ -52,10 +53,11 @@ class LocalizedDatesTest < Test::Unit::TestCase
     #  %b - The abbreviated month name (``Jan'')
     #  %B - The  full  month  name (``January'')
     
-    assert_equal @test_time.strftime("%a"), @language[:dates, :abbr_daynames][1]
-    assert_equal @test_time.strftime("%A"), @language[:dates, :daynames][1]
-    assert_equal @test_time.strftime("%b"), @language[:dates, :abbr_monthnames][0]
-    assert_equal @test_time.strftime("%B"), @language[:dates, :monthnames][0]
+    assert_equal @language[:dates, :abbr_daynames][1], @test_time.strftime('%a')
+    assert_equal " #{@language[:dates, :daynames][1]} ", @test_time.strftime(' %A ')
+    assert_equal @language[:dates, :abbr_monthnames][0], @test_time.strftime('%b')
+    assert_equal @language[:dates, :monthnames][0], @test_time.strftime('%B')
+    assert_equal '%B', @test_time.strftime('%%B')
   end
   
   def test_time_conversions

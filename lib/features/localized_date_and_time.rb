@@ -20,7 +20,7 @@ class Date
   silence_warnings do
     MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
     DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
-    ABBR_MONTHNAMES = [nil] +  ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
+    ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
     ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]
     
     MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
@@ -39,11 +39,12 @@ class Time
   alias :strftime_without_localization :strftime
   
   def strftime(format)
-    format = format.dup
-    format.gsub!(/(?!%)%a/, Date::ABBR_DAYNAMES[self.wday])
-    format.gsub!(/(?!%)%A/, Date::DAYNAMES[self.wday])
-    format.gsub!(/(?!%)%b/, Date::ABBR_MONTHNAMES[self.mon])
-    format.gsub!(/(?!%)%B/, Date::MONTHNAMES[self.mon])
+    format = ' ' + format.dup
+    format.gsub!(/([^%])%a/) {$1 + Date::ABBR_DAYNAMES[self.wday]}
+    format.gsub!(/([^%])%A/) {$1 + Date::DAYNAMES[self.wday]}
+    format.gsub!(/([^%])%b/) {$1 + Date::ABBR_MONTHNAMES[self.mon]}
+    format.gsub!(/([^%])%B/) {$1 + Date::MONTHNAMES[self.mon]}
+    format = format[1, format.length]
     self.strftime_without_localization(format)
   end
   

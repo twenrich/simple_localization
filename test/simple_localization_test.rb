@@ -23,6 +23,7 @@ class SimpleLocalizationTest < Test::Unit::TestCase
   
   def test_lang_file_access
     assert_equal @lang_file['dates']['monthnames'], @lang[:dates, :monthnames]
+    assert_nil @lang[:not_existant_key]
   end
   
 end

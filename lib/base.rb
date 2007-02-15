@@ -32,7 +32,7 @@ module ArkanisDevelopment #:nodoc
         end
         
         sections.inject(@@cached_language_data) do |memo, section|
-          memo[(section.kind_of?(Numeric) ? section : section.to_s)]
+          memo[(section.kind_of?(Numeric) ? section : section.to_s)] if memo
         end
       end
       
