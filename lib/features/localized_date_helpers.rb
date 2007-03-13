@@ -1,12 +1,42 @@
-# Localizes the +date_select+ helper by loading the default options from the
-# language file.
+# = Localized date helpers
 # 
-# The +distance_of_time_in_words+ however can only be localized by
-# reimplementing it here. Every result is based on a string from the language
-# file.
+# Localizes the +date_select+ helper by loading the default options from the
+# language file. The +distance_of_time_in_words+ however can only be localized
+# by reimplementing it here. Every result is based on a string from the
+# language file.
 # 
 # Many other helpers are based on these two so the localization of these
 # helpers should localize many other.
+# 
+# == Used sections of the language file
+# 
+# This feature uses the +date_select+ and +distance_of_time_in_words+ section
+# within the +helpers+ section:
+# 
+#   helpers:
+#     date_select:
+#       order: [:year, :month, :day]
+#     distance_of_time_in_words:
+#       less than 5 seconds: less than 5 seconds
+#       less than 10 seconds: less than 10 seconds
+#       less than 20 seconds: less than 20 seconds
+#       less than a minute: less than a minute
+#       1 minute: 1 minute
+#       half a minute: half a minute
+#       n minutes: %i minutes
+#       about 1 hour: about 1 hour
+#       about n hours: about %i hours
+#       1 day: 1 day
+#       n days: %i days
+#       about 1 month: about 1 month
+#       n months: %i months
+#       about 1 year: about 1 year
+#       over n years: over %i years
+# 
+# The +date_select+ section contains new default options for the +date_select+
+# helper so you can overwrite all options this helper accepts. The
+# +distance_of_time_in_words+ section contains a map of translated strings used
+# to build the output of this helper.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module DateHelper #:nodoc

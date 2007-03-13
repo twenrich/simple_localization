@@ -1,5 +1,18 @@
-# Localizes the +to_sentence+ method of the Array class by loading the default
-# options from the language file.
+# = Localized array extensions
+# 
+# Localizes the Array#to_sentence method by loading new default options from
+# the language file. Please note that this method is added by ActiveSupport and
+# not part of Rubys core.
+# 
+# == Used sections of the language file
+# 
+#   arrays:
+#     to_sentence:
+#       connector: and
+#       skip_last_comma: false
+# 
+# The entries of the +to_sentence+ section are used as new options for the
+# +to_sentence+ method.
 
 class Array
   

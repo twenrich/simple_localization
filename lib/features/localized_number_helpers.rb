@@ -1,9 +1,39 @@
+# = Localized number helpers
+# 
 # Localizes the number helpers of Rails by loading the default options from the
 # language file.
 # 
 # The only exception here is the +number_to_currency+ helper which is
 # reimplemented. This is neccessary in order to overwrite the required strings
 # with proper localized ones from the language file.
+# 
+# == Used sections of the language file
+# 
+#   numbers:
+#     separator: '.'
+#     delimiter: ','
+#     precision: 3
+# 
+# The +numbers+ section contains the default options common to most number
+# helpers (+number_to_currency+, +number_to_percentage+,
+# +number_with_delimiter+ and +number_with_precision+).
+# 
+#   helpers:
+#     number_to_currency:
+#       precision: 2
+#       unit: '$'
+#     number_to_phone:
+#       area_code: false
+#       delimiter: '-'
+#       extension: 
+#       country_code: 
+# 
+# The +number_to_currency+ section contains new default options for the
+# +number_to_currency+ helper. In case of a conflict the options you specify
+# here will overwrite the options specified in the +numbers+ section.
+# 
+# The +number_to_phone+ section contains the default options for the
+# +number_to_phone+ helper. You can use all options this helper accepts.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module NumberHelper #:nodoc

@@ -1,6 +1,34 @@
-# Overwrites the default +error_messages_for+ helper with an localized version.
+# = Localized ActiveRecord helpers
 # 
-# See the +error_messages_for+ method for a detailed description.
+# Overwrites the default +error_messages_for+ helper with an localized version
+# which reads the header and description paragraph from the language file. The
+# error messages itself are localized by the +localized_models+ and
+# +localized_error_messages+ features.
+# 
+# It also gives you the possibility to define your own way of generating
+# the HTML output by specifying a block:
+# 
+#   error_messages_for :record do |objects, header_message, description, error_messages, localized_object_name, count|
+#     content_tag(:p, header_message) +
+#     content_tag(:ul, error_messages.collect{|msg| content_tag :li, msg}.join("\n"))
+#   end
+# 
+# == Used sections of the language file
+# 
+# This feature uses the +error_messages_for+ section inside the +helpers+
+# section of the language file:
+# 
+#   helpers:
+#     error_messages_for:
+#       heading:
+#         1: '1 error prohibited this %s from being saved'
+#         n: '%d errors prohibited this %s from being saved'
+#       description: 'There were problems with the following fields:'
+# 
+# To make the pluralization of the heading easier you can specify an entry for
+# every number of errors. If there is no matching entry for the current error
+# count the +n+ entry will be used. The description paragraph is just a simple
+# sentence.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActiveRecordHelper #:nodoc

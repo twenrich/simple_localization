@@ -1,6 +1,8 @@
+# = Localized model and attribute names
+# 
 # Extends ActiveRecord models to provide a way to specify localized names for models and thier
-# attributes. Asume the following model Computer has the attributes name, description, ip_address
-# and user.
+# attributes. Asume the following model +Computer+ has the attributes +name+, +description+, +ip_address+
+# and +user+.
 # 
 #   class Computer < ActiveRecord::Base
 #   	belongs_to :user
@@ -23,6 +25,9 @@
 #   Computer.localized_model_name               # => 'Der Computer'
 #   Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'
 # 
+# == Used sections of the language file
+# 
+# This feature does not use sections from the lanuage file.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module ActiveRecordExtensions #:nodoc
