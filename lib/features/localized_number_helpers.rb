@@ -36,7 +36,7 @@
 # +number_to_phone+ helper. You can use all options this helper accepts.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module NumberHelper #:nodoc
+  module LocalizedNumberHelpers
     
     def number_to_currency(number, options = {})
       options = Language[:numbers].update(Language[:helpers, :number_to_currency]).update(options)
@@ -72,4 +72,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   end
 end
 
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::NumberHelper
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers

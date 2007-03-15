@@ -14,13 +14,17 @@
 # The entries of the +to_sentence+ section are used as new options for the
 # +to_sentence+ method.
 
-class Array
-  
-  # Localizes the Array#to_sentence method by using default options from the
-  # language file.
-  def to_sentence(options = {})
-    options = ArkanisDevelopment::SimpleLocalization::Language[:arrays, :to_sentence].symbolize_keys.update(options)
-    super options
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedArray
+    
+    # Localizes the Array#to_sentence method by using default options from the
+    # language file.
+    def to_sentence(options = {})
+      options = ArkanisDevelopment::SimpleLocalization::Language[:arrays, :to_sentence].symbolize_keys.update(options)
+      super options
+    end
+    
   end
-  
 end
+
+Array.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedArray

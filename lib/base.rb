@@ -5,13 +5,15 @@
 # 
 # It also defines the Language class which manages the used language file.
 
-module ArkanisDevelopment #:nodoc
-  module SimpleLocalization #:nodoc
+module ArkanisDevelopment #:nodoc:
+  module SimpleLocalization #:nodoc:
     
     # This class loads, caches and manages the used language file.
     class Language
+      
       @@cached_language_data = nil
-      @@current_language = nil
+      
+      cattr_accessor :lang_file_dir, :current_language
       
       # Searches the language file for the specified entry. It's possible to
       # specify neasted entries by using more than one parameter.
@@ -38,21 +40,23 @@ module ArkanisDevelopment #:nodoc
       
       # Loads a language file and caches it.
       # 
-      # The language files can be found in the +languages+ directory of the plugin.
+      # The path to the language files can be specified in the +lang_file_dir+
+      # attribute. Relative paths will be used as they are but absolute paths
+      # will be relative to the root directory of the plugin.
       # 
       #   Language.load :de
       # 
-      # This will load the file +languages/de.yaml+ and caches it in the class.
+      # This will load the file <code>de.yaml</code> in the language file
+      # directory and caches it in the class.
       def self.load(language)
-        lang_file_without_ext = File.dirname(__FILE__) + "/../languages/#{language}"
+        if self.lang_file_dir.starts_with? '/'
+          lang_file_without_ext = File.dirname(__FILE__) + "/..#{self.lang_file_dir}/#{language}"
+        else
+          lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
+        end
         @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
         require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
-        @@current_language = language
-      end
-      
-      # Reader method to get the currently loaded language.
-      def self.current_language
-        @@current_language
+        self.current_language = language
       end
       
       # Returns a hash with the meta data of the language file. Entries not
@@ -120,7 +124,7 @@ end
 # 
 #   simple_localization :language => :de, :class_based_field_error_proc => fase
 # 
-# With the <code>:language</code> option you can specifies the name of the
+# With the <code>:language</code> option you can specify the name of the
 # language file (without extension) you want to use. You can also use the
 # options to specify if a specific feature (the files inside the +features+
 # directory) should be loaded or not. By default all features will be loaded.
@@ -145,20 +149,36 @@ end
 # 
 # This will only load the +localized_models+ and +localized_date_and_time+
 # features, ignoring all others.
+# 
+# If you use this plugin to localize you application (with the
+# +localized_application+ feature) it may also come in handy to move the
+# directory containing the language files to a more important place. This can
+# be done with the <code>:lang_file_dir</code> option:
+# 
+#   simple_localization :language => :de, :lang_file_dir => "#{RAILS_ROOT}/app/languages", :only => [:localized_application]
+#   simple_localization :language => :de, :lang_file_dir => "#/languages", :only => [:localized_application]
+# 
+# Relative paths are used as they are, absolute paths will be relative to the
+# root directory of the Simple Localization plugin. The first example expects
+# the language files in the <code>app/languages</code> directory of your rails
+# application. The second example is the default value and expects the language
+# files in the +languages+ directory of the Simple Localization plugin.
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
-  default_options = available_features.inject({:language => 'de'}){|memo, feature| memo[feature.to_sym] = true; memo}
+  
+  default_options = {:language => 'de', :lang_file_dir => '/languages'}
+  default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
   
-  language = options.delete :language
-  ArkanisDevelopment::SimpleLocalization::Language.load language
+  ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
+  ArkanisDevelopment::SimpleLocalization::Language.load(options.delete(:language))
   
   if options[:only]
     enabled_features = available_features & Array(options[:only])
   elsif options[:except]
     enabled_features = available_features - Array(options[:except])
   else
-    enabled_features = options.collect{|feature, enabled| feature if enabled}.compact
+    enabled_features = available_features & options.collect{|feature, enabled| feature if enabled}.compact
   end
   
   enabled_features.each do |feature|

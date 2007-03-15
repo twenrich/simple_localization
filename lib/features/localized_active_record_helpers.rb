@@ -30,8 +30,8 @@
 # count the +n+ entry will be used. The description paragraph is just a simple
 # sentence.
 
-module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module ActiveRecordHelper #:nodoc
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedActiveRecordHelpers
     
     # Provides a localized version of the +error_messages_for+ helper. This
     # helper just localizes the heading and first paragraph of the error box.
@@ -95,4 +95,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   end
 end
 
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::ActiveRecordHelper
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedActiveRecordHelpers

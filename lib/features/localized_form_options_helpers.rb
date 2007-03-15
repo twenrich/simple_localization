@@ -13,8 +13,8 @@
 # This is a simple replace operation so you don't need to translate all
 # countries for this feature to work.
 
-module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module FormOptionsHelper #:nodoc
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedFormOptionsHelpers
     
     COUNTRIES = ActionView::Helpers::FormOptionsHelper::COUNTRIES
     Language[:countries].each do |original_name, localized_name|
@@ -26,4 +26,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   end
 end
 
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::FormOptionsHelper
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers

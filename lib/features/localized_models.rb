@@ -5,14 +5,14 @@
 # and +user+.
 # 
 #   class Computer < ActiveRecord::Base
-#   	belongs_to :user
-#   	validates_presence_of :name, :ip_address, :user
-#   	
-#   	localized_names 'Der Computer',
-#   	  :name => 'Der Name',
-#   	  :description => 'Die Beschreibung',
-#   	  :ip_address => 'Die IP-Adresse',
-#   	  :user => 'Der Besitzer'
+#     belongs_to :user
+#     validates_presence_of :name, :ip_address, :user
+#     
+#     localized_names 'Der Computer',
+#       :name => 'Der Name',
+#       :description => 'Die Beschreibung',
+#       :ip_address => 'Die IP-Adresse',
+#       :user => 'Der Besitzer'
 #   end
 # 
 # This stores the localized (in this case german) name of the model and it's attributes in the model
@@ -29,14 +29,14 @@
 # 
 # This feature does not use sections from the lanuage file.
 
-module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module ActiveRecordExtensions #:nodoc
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedModels
     
     def self.included(base)
       base.extend ClassMethods
     end
     
-		module ClassMethods #:nodoc
+    module ClassMethods
       
       # This method is used to add localization information to a model. As the
       # first parameter the localized model name is expected. The second
@@ -61,7 +61,6 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
       # To access the localized model name use the class method
       # +localized_model_name+. The +human_attribute_name+ method will also be
       # extended so you'll get the localized names from it if available.
-    
       def localized_names(model_name, attribute_names = {})
         class<<self
           attr_accessor :localized_model_name, :localized_attribute_names
@@ -75,9 +74,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
         self.localized_attribute_names = attribute_names
       end
       
-		end
-		
-	end
+    end
+    
+  end
 end
 
-ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::ActiveRecordExtensions
+ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedModels

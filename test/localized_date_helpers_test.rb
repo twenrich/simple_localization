@@ -17,7 +17,7 @@ simple_localization :language => LANG, :only => :localized_date_helpers
 class LocalizedDateHelpersTest < Test::Unit::TestCase
   
   include ActionView::Helpers::DateHelper
-  include ArkanisDevelopment::SimpleLocalization::DateHelper
+  include ArkanisDevelopment::SimpleLocalization::LocalizedDateHelpers
   
   def test_date_select
     @record = FakeModelWithDate.new

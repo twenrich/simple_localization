@@ -60,6 +60,9 @@ class Time
   
   alias :strftime_without_localization :strftime
   
+  # Quick'n dirty localization of the Time#strftime method based on the work of
+  # Patrick Lenz: http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime.
+  # It's a bit modified to respect the '%%' escape sequence.
   def strftime(format)
     format = ' ' + format.dup
     format.gsub!(/([^%])%a/) {$1 + Date::ABBR_DAYNAMES[self.wday]}

@@ -5,7 +5,7 @@ simple_localization :language => LANG, :only => :localized_number_helpers
 class LocalizedNumberHelpersTest < Test::Unit::TestCase
   
   include ActionView::Helpers::NumberHelper
-  include ArkanisDevelopment::SimpleLocalization::NumberHelper
+  include ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers
   
   def setup
     @lang = ArkanisDevelopment::SimpleLocalization::Language

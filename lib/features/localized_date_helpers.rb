@@ -38,8 +38,8 @@
 # +distance_of_time_in_words+ section contains a map of translated strings used
 # to build the output of this helper.
 
-module ArkanisDevelopment::SimpleLocalization #:nodoc
-  module DateHelper #:nodoc
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedDateHelpers
     
     # Localizes the +date_select+ helper by loading the default options from
     # the language file.
@@ -85,4 +85,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   end
 end
 
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::DateHelper
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedDateHelpers
