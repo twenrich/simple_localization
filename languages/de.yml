@@ -83,7 +83,9 @@ helpers:
 # localized_models_by_lang_file feature to the model section.
 # 
 # Example:
-# my_model:
+# 
+# models:
+#   my_model:
 #     name: Localized model name
 #     attributes:
 #       name: Localized name
