@@ -7,7 +7,7 @@ require 'action_view'
 require File.dirname(__FILE__) + '/../init'
 
 # Set the LANG constant to the LANG environment variable. This is the name of
-# the used language file. Defaults to 'de'.
+# the used language file the tests will use. Defaults to 'de'.
 LANG = ENV['LANG'] || 'de'
 
 # Define the +assert_contains+ helper used in some of the test cases.

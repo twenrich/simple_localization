@@ -41,19 +41,14 @@ module ArkanisDevelopment #:nodoc:
       # Loads a language file and caches it.
       # 
       # The path to the language files can be specified in the +lang_file_dir+
-      # attribute. Relative paths will be used as they are but absolute paths
-      # will be relative to the root directory of the plugin.
+      # attribute.
       # 
       #   Language.load :de
       # 
       # This will load the file <code>de.yaml</code> in the language file
       # directory and caches it in the class.
       def self.load(language)
-        if self.lang_file_dir.starts_with? '/'
-          lang_file_without_ext = File.dirname(__FILE__) + "/..#{self.lang_file_dir}/#{language}"
-        else
-          lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
-        end
+        lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
         @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
         require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
         self.current_language = language
@@ -156,17 +151,14 @@ end
 # be done with the <code>:lang_file_dir</code> option:
 # 
 #   simple_localization :language => :de, :lang_file_dir => "#{RAILS_ROOT}/app/languages", :only => [:localized_application]
-#   simple_localization :language => :de, :lang_file_dir => "#/languages", :only => [:localized_application]
 # 
-# Relative paths are used as they are, absolute paths will be relative to the
-# root directory of the Simple Localization plugin. The first example expects
-# the language files in the <code>app/languages</code> directory of your rails
-# application. The second example is the default value and expects the language
-# files in the +languages+ directory of the Simple Localization plugin.
+# This example expects the language files in the <code>app/languages</code>
+# directory of your rails application. By default the language files are
+# located in the +languages+ directory of the Simple Localization plugin.
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   
-  default_options = {:language => 'de', :lang_file_dir => '/languages'}
+  default_options = {:language => 'de', :lang_file_dir => "#{File.dirname(__FILE__)}/../languages"}
   default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
   
