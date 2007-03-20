@@ -57,7 +57,7 @@ class LocalizedModelsTest < Test::Unit::TestCase
   def test_localized_error_messages
     assert_equal @contact.valid?, false
     assert_equal @contact.errors.full_messages.size, 1
-    assert_equal @contact.errors.full_messages.first, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :empty]
+    assert_equal @contact.errors.full_messages.first, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :blank]
   end
   
   def test_localized_active_record_helpers
@@ -67,7 +67,7 @@ class LocalizedModelsTest < Test::Unit::TestCase
     
     assert_contains html_output, format(localized_title, 1, CONTACT_MODEL_NAME)
     assert_contains html_output, ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :description]
-    assert_contains html_output, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :empty]
+    assert_contains html_output, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :blank]
   end
   
 end

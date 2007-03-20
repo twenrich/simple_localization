@@ -16,7 +16,7 @@ class LocalizedNumberHelpersTest < Test::Unit::TestCase
   end
   
   def test_number_to_percentage
-    assert_equal "100,00%", number_to_percentage(100, :percision => 2, :seperator => ',')
+    assert_equal "100,00%", number_to_percentage(100, :precision => 2, :separator => ',')
   end
   
   def test_number_to_phone

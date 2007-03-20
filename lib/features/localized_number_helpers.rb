@@ -39,7 +39,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
   module LocalizedNumberHelpers
     
     def number_to_currency(number, options = {})
-      options = Language[:numbers].update(Language[:helpers, :number_to_currency]).update(options)
+      options = Language[:numbers].stringify_keys.update(Language[:helpers, :number_to_currency].stringify_keys).update(options.stringify_keys)
       options = options.stringify_keys
       precision, unit, separator, delimiter = options.delete("precision") { 2 }, options.delete("unit") { "$" }, options.delete("separator") { "." }, options.delete("delimiter") { "," }
       separator = "" unless precision > 0
@@ -52,12 +52,12 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
     end
     
     def number_to_percentage(number, options = {})
-      options = Language[:numbers].update(options)
+      options = Language[:numbers].stringify_keys.update(options.stringify_keys)
       super number, options
     end
     
     def number_to_phone(number, options = {})
-      options = Language[:helpers, :number_to_phone].update(options)
+      options = Language[:helpers, :number_to_phone].stringify_keys.update(options.stringify_keys)
       super number, options
     end
     
