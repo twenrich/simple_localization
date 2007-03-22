@@ -43,7 +43,7 @@ information or instructions for creating a new language file can be found in the
 
 You can install the newest version of the plugin (for Rails 1.2.x) directly from the SubVersion repository:
 
-  ./script/plugin install https://svn.arkanis-development.de/projects/rails_plugins/current/simple_localization
+  ./script/plugin install http://svn.arkanis-development.de/projects/rails_plugins/current/simple_localization
 
 The next and already last thing is to call the +simple_localization+ method at the end of your <code>environment.rb</code> file:
 
@@ -57,7 +57,7 @@ one method call gives you quite more control over the plugin but this is describ
 There is also an development branch for a Rails 1.1.x compartible version. To install this one you just have to install the plugin from
 another repository path and then call the +simple_localization+ method like described above.
 
-  ./script/plugin install https://svn.arkanis-development.de/projects/rails_plugins/current/simple_localization-rails-1.1
+  ./script/plugin install http://svn.arkanis-development.de/projects/rails_plugins/current/simple_localization-rails-1.1
 
 
 == The magic of the +simple_localization+ method
