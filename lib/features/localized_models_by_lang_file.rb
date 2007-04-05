@@ -47,14 +47,15 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     # +human_attribute_name+ calls the super method if no entry matches and
     # therefore falls back to Rails default behavior.
     def self.included(base)
-      class << base
+      class<<self
         
         def localized_model_name
           Language[:models, self.class_name.underscore.to_sym, :name]
         end
         
         def human_attribute_name(attribute_key_name)
-          Language[:models, self.class_name.underscore.to_sym, :attributes][attribute_key_name.to_s] || super
+          localized_attributes = Language[:models, self.class_name.underscore.to_sym, :attributes]
+          localized_attributes ? localized_attributes[attribute_key_name.to_s] : super
         end
         
       end
