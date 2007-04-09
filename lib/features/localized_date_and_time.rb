@@ -38,23 +38,27 @@
 # +date_formats+ and +time_formats+ entries are used to update the formats
 # available to the +to_formated_s+ method.
 
-class Date
-  silence_warnings do
-    MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
-    DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
-    ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
-    ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]
-    
-    MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
-    DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :daynames], :start_index => 0
-    ABBR_MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_monthnames], :start_index => 1
-    ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_daynames], :start_index => 0
+ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
+  
+  class Date
+    silence_warnings do
+      MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
+      DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
+      ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
+      ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]
+      
+      MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
+      DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :daynames], :start_index => 0
+      ABBR_MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_monthnames], :start_index => 1
+      ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_daynames], :start_index => 0
+    end
   end
+  
+  ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(
+    ArkanisDevelopment::SimpleLocalization::Language[:dates, :date_formats].symbolize_keys
+  )
+  
 end
-
-ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(
-  ArkanisDevelopment::SimpleLocalization::Language[:dates, :date_formats].symbolize_keys
-)
 
 class Time
   
@@ -75,6 +79,10 @@ class Time
   
 end
 
-ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
-  ArkanisDevelopment::SimpleLocalization::Language[:dates, :time_formats].symbolize_keys
-)
+ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
+  
+  ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
+    ArkanisDevelopment::SimpleLocalization::Language[:dates, :time_formats].symbolize_keys
+  )
+  
+end

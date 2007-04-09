@@ -111,6 +111,30 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
+    # Manages a list of actions which should be executed each time a language
+    # file is loaded (when initializing the app _and_ when changing the lang
+    # file on the fly).
+    class Features
+      
+      @@updates = []
+      
+      def self.each_time_after_loading_lang_file(&block)
+        add_update(&block)
+      end
+      
+      def self.add_update(&block)
+        @@updates << block
+      end
+      
+      def self.clear_updates
+        @@updates.clear
+      end
+      
+      def self.update
+        @@updates.each{|action| action.call}
+      end
+      
+    end
   end
 end
 

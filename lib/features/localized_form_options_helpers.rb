@@ -15,6 +15,21 @@
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedFormOptionsHelpers
+    ORIGINAL_COUNTRIES = ActionView::Helpers::FormOptionsHelper::COUNTRIES
+  end
+end
+
+ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
+  
+  ActionView::Helpers::FormOptionsHelper::COUNTRIES = ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers.ORIGINAL_COUNTRIES.collect do |orginal_country|
+    ArkanisDevelopment::SimpleLocalization::Language[:countries][orginal_country] || orginal_country
+  end
+  
+end
+
+=begin
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedFormOptionsHelpers
     
     COUNTRIES = ActionView::Helpers::FormOptionsHelper::COUNTRIES
     Language[:countries].each do |original_name, localized_name|
@@ -27,3 +42,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
 end
 
 ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers
+=end

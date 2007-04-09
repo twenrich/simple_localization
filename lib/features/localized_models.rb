@@ -62,7 +62,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # +localized_model_name+. The +human_attribute_name+ method will also be
       # extended so you'll get the localized names from it if available.
       def localized_names(model_name, attribute_names = {})
-        class<<self
+        class << self
           attr_accessor :localized_model_name, :localized_attribute_names
           
           def human_attribute_name(attribute_key_name)
