@@ -34,8 +34,8 @@ end
 
 ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
   
-  ActionView::Helpers::FormOptionsHelper::COUNTRIES.replace ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers::ORIGINAL_COUNTRIES.collect do |orginal_country|
+  ActionView::Helpers::FormOptionsHelper::COUNTRIES.replace(ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers::ORIGINAL_COUNTRIES.collect do |orginal_country|
     ArkanisDevelopment::SimpleLocalization::Language[:countries][orginal_country] || orginal_country
-  end
+  end)
   
 end

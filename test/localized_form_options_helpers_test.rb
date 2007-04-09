@@ -7,7 +7,6 @@ simple_localization :language => LANG, :only => :localized_form_options_helpers
 class LocalizedFormOptionsHelpersTest < Test::Unit::TestCase
   
   include ActionView::Helpers::FormOptionsHelper
-  include ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers
   
   def test_country_options_for_select
     html_options = country_options_for_select

@@ -5,14 +5,20 @@ simple_localization :language => LANG, :only => :localized_number_helpers
 class LocalizedNumberHelpersTest < Test::Unit::TestCase
   
   include ActionView::Helpers::NumberHelper
-  include ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers
+  
+  if Rails::VERSION::MAJOR == 1 and Rails::VERSION::MINOR == 1
+    include ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers::Rails11
+  else
+    include ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers::Rails12
+  end
+  include ArkanisDevelopment::SimpleLocalization::LocalizedNumberHelpers::RailsCommon
   
   def setup
     @lang = ArkanisDevelopment::SimpleLocalization::Language
   end
   
   def test_number_to_currency
-    assert_equal '€ 1.500,49', number_to_currency(1500.49, :precision => 2, :unit => '€ ', :separator => ',', :delimiter => '.')
+    assert_equal '1.500,49 €', number_to_currency(1500.49, :precision => 2, :unit => ' €', :separator => ',', :delimiter => '.', :order => [:main, :separator, :fraction, :unit])
   end
   
   def test_number_to_percentage

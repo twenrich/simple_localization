@@ -41,7 +41,12 @@ end
 class LocalizedModelsTest < Test::Unit::TestCase
   
   include ActionView::Helpers::TagHelper
-  include ArkanisDevelopment::SimpleLocalization::LocalizedActiveRecordHelpers
+  
+  if Rails::VERSION::MAJOR == 1 and Rails::VERSION::MINOR == 1
+    include ArkanisDevelopment::SimpleLocalization::LocalizedActiveRecordHelpers::Rails11
+  else
+    include ArkanisDevelopment::SimpleLocalization::LocalizedActiveRecordHelpers::Rails12
+  end
   
   def setup
     @contact = Contact.new :name => 'Stephan Soller',
