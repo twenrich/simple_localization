@@ -51,6 +51,7 @@ module ArkanisDevelopment #:nodoc:
         lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
         @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
         require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
+        Features.update
         self.current_language = language
       end
       
@@ -123,6 +124,7 @@ module ArkanisDevelopment #:nodoc:
       end
       
       def self.add_update(&block)
+        puts 'added update action...'
         @@updates << block
       end
       
@@ -131,6 +133,7 @@ module ArkanisDevelopment #:nodoc:
       end
       
       def self.update
+        puts 'updating...'
         @@updates.each{|action| action.call}
       end
       
@@ -200,4 +203,6 @@ def simple_localization(options)
   enabled_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
   end
+  
+  ArkanisDevelopment::SimpleLocalization::Features.update
 end
