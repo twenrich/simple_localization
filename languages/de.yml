@@ -50,7 +50,8 @@ helpers:
     description: 'Folgende Probleme sind aufgetreten:'
   number_to_currency:
     precision: 2
-    unit: '€ '
+    unit: ' €'
+    order: [main, separator, fraction, unit]
   number_to_phone:
     area_code: false
     delimiter: ' '

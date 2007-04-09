@@ -54,6 +54,7 @@ helpers:
   number_to_currency:
     precision: 2
     unit: '$'
+    order: [unit, main, separator, fraction]
   number_to_phone:
     area_code: false
     delimiter: '-'

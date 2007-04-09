@@ -1,12 +1,8 @@
 # = Localized Date and Time classes
 # 
-# This feature will overwrite the month and day name constants of the Date
-# class with the proper names from the language file. Here +silence_warnings+
-# gets used to prevent const reassignment warnings. We know we're doing
-# something bad...
-# 
-# Also updates the date formates of the Date class with the ones from the
-# language file.
+# This feature will replace the month and day name constants of the Date class
+# with the proper names from the language file. It also updates the date
+# formates of the Date class with the ones from the language file.
 # 
 # Next on the Time class is localized. More specifically it's +strftime+
 # method. This is based on the quick'n dirty localization from Patrick Lenz:
@@ -41,17 +37,15 @@
 ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
   
   class Date
-    silence_warnings do
-      MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
-      DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
-      ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
-      ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]
-      
-      MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
-      DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :daynames], :start_index => 0
-      ABBR_MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_monthnames], :start_index => 1
-      ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_daynames], :start_index => 0
-    end
+    MONTHNAMES.replace([nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames])
+    DAYNAMES.replace(ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames])
+    ABBR_MONTHNAMES.replace([nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames])
+    ABBR_DAYNAMES.replace(ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames])
+    
+    MONTHS.replace(ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash(:section => [:dates, :monthnames], :start_index => 1))
+    DAYS.replace(ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash(:section => [:dates, :daynames], :start_index => 0))
+    ABBR_MONTHS.replace(ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash(:section => [:dates, :abbr_monthnames], :start_index => 1))
+    ABBR_DAYS.replace(ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash(:section => [:dates, :abbr_daynames], :start_index => 0))
   end
   
   ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(

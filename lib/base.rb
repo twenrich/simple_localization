@@ -215,7 +215,7 @@ def simple_localization(options)
   
   ArkanisDevelopment::SimpleLocalization::Features.update
   
-  RAILS_DEFAULT_LOGGER.info "Initialized Simple Localization plugin:\n" +
-    "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}\n" +
+  RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
+    "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
     "  features: #{enabled_features.join(', ')}"
 end
