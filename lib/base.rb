@@ -51,8 +51,19 @@ module ArkanisDevelopment #:nodoc:
         lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
         @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
         require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
-        Features.update
         self.current_language = language
+      end
+      
+      # Changes the used language by loading the specified language file (using
+      # the +load+ method). It also asks all features to update the ncessary
+      # stuff.
+      # 
+      # You should use this method if you want to switch the localized language
+      # at runtime.
+      def self.switch_to(language)
+        self.load(language)
+        Features.update
+        RAILS_DEFAULT_LOGGER.info "Changed Simple Localization language to '#{language}'"
       end
       
       # Returns a hash with the meta data of the language file. Entries not
@@ -124,7 +135,6 @@ module ArkanisDevelopment #:nodoc:
       end
       
       def self.add_update(&block)
-        puts 'added update action...'
         @@updates << block
       end
       
@@ -133,7 +143,6 @@ module ArkanisDevelopment #:nodoc:
       end
       
       def self.update
-        puts 'updating...'
         @@updates.each{|action| action.call}
       end
       
@@ -205,4 +214,8 @@ def simple_localization(options)
   end
   
   ArkanisDevelopment::SimpleLocalization::Features.update
+  
+  RAILS_DEFAULT_LOGGER.info "Initialized Simple Localization plugin:\n" +
+    "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}\n" +
+    "  features: #{enabled_features.join(', ')}"
 end
