@@ -33,8 +33,8 @@
 # == Notes
 # 
 # This feature contains code for Rails 1.1.x and 1.2.x in different modules
-# (+Rails11+ and +Rails12+). Depending on the running Rails version the
-# matching module will be included (see end of file).
+# (<code>Rails11</code> and <code>Rails12</code>). Depending on the running
+# Rails version the matching module will be included (see end of file).
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedActiveRecordHelpers

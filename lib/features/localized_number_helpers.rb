@@ -39,11 +39,11 @@
 # == Notes
 # 
 # This feature contains code for Rails 1.1.x and 1.2.x in different modules
-# (+Rails11+ and +Rails12+). Code common to all versions is located in the
-# +RailsCommon+ module. Depending on the running Rails version the matching
-# module will be included (see end of file). The +RailsCommon+ module will be
-# included afterwards because it uses the version depended
-# +number_with_delimiter+ helper.
+# (<code>Rails11</code> and <code>Rails12</code>). Code common to all version
+# is located in the +RailsCommon+ module. Depending on the running Rails
+# version the matching module will be included (see end of file). The
+# +RailsCommon+ module will be included afterwards because it uses the version
+# depended +number_with_delimiter+ helper.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc
   module LocalizedNumberHelpers

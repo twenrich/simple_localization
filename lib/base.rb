@@ -130,18 +130,22 @@ module ArkanisDevelopment #:nodoc:
       
       @@updates = []
       
+      # Alias for the +add_update+ method.
       def self.each_time_after_loading_lang_file(&block)
         add_update(&block)
       end
       
+      # Registers a proc to be called after a language file is loaded.
       def self.add_update(&block)
         @@updates << block
       end
       
+      # Clears all registered updates.
       def self.clear_updates
         @@updates.clear
       end
       
+      # Calls each registered update proc.
       def self.update
         @@updates.each{|action| action.call}
       end
