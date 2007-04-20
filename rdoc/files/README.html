@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Fri Apr 20 23:52:19 Westeuropäische Sommerzeit 2007</td>
+      <td>Sat Apr 21 00:16:50 Westeuropäische Sommerzeit 2007</td>
     </tr>
     </table>
   </div>
@@ -178,6 +178,14 @@ only a german language file (named <tt>de.yml</tt>) and an english language
 file (as reference and template for new languages) exists though. This one
 method call gives you quite more control over the plugin but this is
 described in the next chapter.
+</p>
+<p>
+<b>When using Rails model observers you&#8217;ll have to place the
+<tt>simple_localization</tt> call at the end of the plugins
+<tt>init.rb</tt> file.</b> This is neccessary because an observer (and with
+it the correponding model) is loaded before the plugin is initialized in
+<tt>environment.rb</tt>. Thanks to MK for reporting this problem.
+We&#8216;re looking for ways to solve this limitation.
 </p>
 <h2>The magic of the <tt>simple_localization</tt> method</h2>
 <p>

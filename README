@@ -54,6 +54,10 @@ the name of the language file without the <code>.yml</code> extension as a symbo
 file (named <code>de.yml</code>) and an english language file (as reference and template for new languages) exists though. This
 one method call gives you quite more control over the plugin but this is described in the next chapter.
 
+<b>When using Rails model observers you'll have to place the +simple_localization+ call at the end of the plugins <code>init.rb</code> file.</b>
+This is neccessary because an observer (and with it the correponding model) is loaded before the plugin is initialized in
+<code>environment.rb</code>. Thanks to MK for reporting this problem. We're looking for ways to solve this limitation.
+
 
 == The magic of the +simple_localization+ method
 
