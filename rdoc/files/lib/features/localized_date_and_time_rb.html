@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Mon Apr 09 14:31:30 Westeuropäische Sommerzeit 2007</td>
+      <td>Fri Apr 20 20:49:21 Westeuropäische Sommerzeit 2007</td>
     </tr>
     </table>
   </div>
@@ -71,9 +71,13 @@
     <div id="description">
       <h1>Localized <a href="../../../classes/Date.html">Date</a> and <a href="../../../classes/Time.html">Time</a> classes</h1>
 <p>
-This feature will replace the month and day name constants of the <a
+This feature will overwrite the month and day name constants of the <a
 href="../../../classes/Date.html">Date</a> class with the proper names from
-the language file. It also updates the date formates of the <a
+the language file. Here <tt>silence_warnings</tt> gets used to prevent
+const reassignment warnings. We know we&#8217;re doing something bad&#8230;
+</p>
+<p>
+Also updates the date formates of the <a
 href="../../../classes/Date.html">Date</a> class with the ones from the
 language file.
 </p>
