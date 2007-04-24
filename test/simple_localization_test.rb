@@ -1,12 +1,12 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 # Load the specified language file and all features
-simple_localization :language => LANG
+simple_localization :language => LANG_FILE
 
 class SimpleLocalizationTest < Test::Unit::TestCase
   
   def setup
-    @lang_file = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{LANG}.yml")
+    @lang_file = YAML.load_file(File.dirname(__FILE__) + "/../languages/#{LANG_FILE}.yml")
     @lang = ArkanisDevelopment::SimpleLocalization::Language
   end
   
@@ -24,6 +24,10 @@ class SimpleLocalizationTest < Test::Unit::TestCase
   def test_lang_file_access
     assert_equal @lang_file['dates']['monthnames'], @lang[:dates, :monthnames]
     assert_nil @lang[:not_existant_key]
+  end
+  
+  def test_lang_file_access_with_format
+    assert_equal format(@lang_file['helpers']['distance_of_time_in_words']['n minutes'], 1), @lang[:helpers, :distance_of_time_in_words, 'n minutes', [1]]
   end
   
 end

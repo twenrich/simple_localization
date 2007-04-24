@@ -8,12 +8,12 @@
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
-    # This class loads, caches and manages the used language file.
+    # This class loads, caches and manages the used language files.
     class Language
       
-      @@cached_language_data = nil
+      @@cached_language_data = {}
       
-      cattr_accessor :lang_file_dir, :current_language
+      cattr_accessor :lang_file_dir, :current_language, :loaded_languages
       
       # Searches the language file for the specified entry. It's possible to
       # specify neasted entries by using more than one parameter.
@@ -21,37 +21,54 @@ module ArkanisDevelopment #:nodoc:
       #   Language[:active_record_messages, :not_a_number] # => "ist keine Zahl."
       # 
       # This will return the +not_a_number+ entry within the +active_record_messages+
-      # entry. The YAML in the language file looks like this:
+      # entry. The YAML code in the language file looks like this:
       # 
       #   active_record_messages:
       #     not_a_number: ist keine Zahl.
       # 
-      def self.[](*sections)
-        unless @@cached_language_data
-          raise 'Can not access language data. It seems there is no language ' +
-            'file loaded. Please call the simple_localization method at the ' +
-            'end of your environment.rb file to initialize Simple Localization.'
+      def self.[](*args)
+        if args.last.kind_of?(Array)
+          format_args = args.delete_at(-1)
+          sections = args
+          format(self.entry(self.current_language, *sections), format_args)
+        else
+          sections = args
+          self.entry(self.current_language, *sections)
+        end
+      end
+      
+      def self.entry(language, *sections)
+        if @@cached_language_data.empty? or not @@cached_language_data[language]
+          raise 'Can not access language data. It seems the selected language ' +
+            "#{language}' is not loaded. Please call the simple_localization " +
+            'method at the end of your environment.rb file to initialize ' +
+            'Simple Localization or modify this call to include the selected ' +
+            'language.'
         end
         
-        sections.inject(@@cached_language_data) do |memo, section|
+        sections.inject(@@cached_language_data[language]) do |memo, section|
           memo[(section.kind_of?(Numeric) ? section : section.to_s)] if memo
         end
       end
       
-      # Loads a language file and caches it.
+      # Loads the specified language files, caches them and selects the first
+      # one as the active language.
       # 
       # The path to the language files can be specified in the +lang_file_dir+
       # attribute.
       # 
-      #   Language.load :de
+      #   Language.load :de, :en
       # 
-      # This will load the file <code>de.yaml</code> in the language file
-      # directory and caches it in the class.
-      def self.load(language)
-        lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
-        @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
-        require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
-        self.current_language = language
+      # This will load the files <code>de.yaml</code> and <code>en.yaml</code>
+      # in the language file directory and caches them in a class variable. It
+      # also selects <code>:de</code> as the active language.
+      def self.load(*languages)
+        languages.each do |language|
+          lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
+          @@cached_language_data[language.to_sym] = YAML.load_file "#{lang_file_without_ext}.yml"
+          require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
+        end
+        self.current_language = languages.first
       end
       
       # Changes the used language by loading the specified language file (using
@@ -123,34 +140,18 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
-    # Manages a list of actions which should be executed each time a language
-    # file is loaded (when initializing the app _and_ when changing the lang
-    # file on the fly).
-    class Features
+    class LangSectionProxy
       
-      @@updates = []
-      
-      # Alias for the +add_update+ method.
-      def self.each_time_after_loading_lang_file(&block)
-        add_update(&block)
+      def initialize(*lang_file_sections)
+        @lang_file_sections = lang_file_sections
       end
       
-      # Registers a proc to be called after a language file is loaded.
-      def self.add_update(&block)
-        @@updates << block
-      end
-      
-      # Clears all registered updates.
-      def self.clear_updates
-        @@updates.clear
-      end
-      
-      # Calls each registered update proc.
-      def self.update
-        @@updates.each{|action| action.call}
+      def method_missing(name, *args)
+        Language[*@lang_file_sections].send name, *args
       end
       
     end
+    
   end
 end
 

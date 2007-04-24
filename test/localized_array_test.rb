@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper'
 
 # Init SimpleLocalization with just the localized_date_and_time feature
 # activated.
-simple_localization :language => LANG, :only => :localized_array
+simple_localization :language => LANG_FILE, :only => :localized_array
 
 class LocalizedArrayTest < Test::Unit::TestCase
   

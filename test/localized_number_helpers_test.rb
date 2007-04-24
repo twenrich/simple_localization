@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-simple_localization :language => LANG, :only => :localized_number_helpers
+simple_localization :language => LANG_FILE, :only => :localized_number_helpers
 
 class LocalizedNumberHelpersTest < Test::Unit::TestCase
   

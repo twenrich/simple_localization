@@ -12,7 +12,7 @@ end
 
 # Init SimpleLocalization with just the localized_date_helpers feature
 # activated.
-simple_localization :language => LANG, :only => :localized_date_helpers
+simple_localization :language => LANG_FILE, :only => :localized_date_helpers
 
 class LocalizedDateHelpersTest < Test::Unit::TestCase
   

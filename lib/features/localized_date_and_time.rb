@@ -42,10 +42,10 @@ ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_fi
   
   class Date
     silence_warnings do
-      MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]
-      DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]
-      ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]
-      ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]
+      MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :monthnames)
+      DAYNAMES = ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :daynames)
+      ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :abbr_monthnames)
+      ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :abbr_daynames)
       
       MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
       DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :daynames], :start_index => 0
