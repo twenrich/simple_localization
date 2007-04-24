@@ -140,14 +140,54 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
+    # This little thing is a big part of the magic of doing things behind Rails
+    # back. Basically it mimics an object (Array or Hash) by redirecting all
+    # calls to it. The target object will be accessed by the Language#[]
+    # accessor and therefore will always return the data for the currently
+    # selcted language without replacing the proxy object.
     class LangSectionProxy
       
-      def initialize(*lang_file_sections)
-        @lang_file_sections = lang_file_sections
+      def initialize(*args)
+        options = args.last.kind_of?(Hash) ? args.delete_at(-1).symbolize_keys : {:reverse_merge_with => nil, :mock_lang_data => nil}
+        @reverse_merge_with = options[:reverse_merge_with]
+        @mock_lang_data = options[:mock_lang_data]
+        @lang_file_sections = args
+      end
+      
+      def receiver
+        receiver = @mock_lang_data || Language[*@lang_file_sections]
+        receiver.reverse_merge! @reverse_merge_with if @reverse_merge_with and receiver.respond_to?(:reverse_merge!)
+        receiver
       end
       
       def method_missing(name, *args)
-        Language[*@lang_file_sections].send name, *args
+        self.receiver.send name, *args
+      end
+      
+    end
+    
+    class CachedLangSectionProxy < LangSectionProxy
+      
+      @@instances = []
+      
+      def self.clear_caches
+        @@instances.each{|instance| instance.clear_cache}
+      end
+      
+      @cached_targets = {}
+      
+      def initialize(*lang_file_sections)
+        super
+        @@instances << self
+      end
+      
+      def clear_cache
+        @cached_targets = {}
+      end
+      
+      def receiver
+        cached = @cached_targets[Language.current_language]
+        (cached || (@cached_targets[Language.current_language] = Language[*@lang_file_sections])).send name, *args
       end
       
     end
