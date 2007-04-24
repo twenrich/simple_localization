@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper'
 
 # Init SimpleLocalization with just the localized_form_options_helpers feature
 # activated.
-simple_localization :language => LANG_FILE, :only => :localized_form_options_helpers
+simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => :localized_form_options_helpers
 
 class LocalizedFormOptionsHelpersTest < Test::Unit::TestCase
   

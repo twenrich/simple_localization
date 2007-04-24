@@ -80,8 +80,8 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000019">human_attribute_name</a>&nbsp;&nbsp;
-      <a href="#M000018">localized_names</a>&nbsp;&nbsp;
+      <a href="#M000017">human_attribute_name</a>&nbsp;&nbsp;
+      <a href="#M000016">localized_names</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -121,19 +121,19 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000019" class="method-detail">
-        <a name="M000019"></a>
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
 
         <div class="method-heading">
-          <a href="#M000019" class="method-signature">
+          <a href="#M000017" class="method-signature">
           <span class="method-name">human_attribute_name</span><span class="method-args">(attribute_key_name)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000019-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000019-source">
+            onclick="toggleCode('M000017-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000017-source">
 <pre>
     <span class="ruby-comment cmt"># File lib/features/localized_models.rb, line 68</span>
 68:           <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">human_attribute_name</span>(<span class="ruby-identifier">attribute_key_name</span>)
@@ -146,11 +146,11 @@
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000018" class="method-detail">
-        <a name="M000018"></a>
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
 
         <div class="method-heading">
-          <a href="#M000018" class="method-signature">
+          <a href="#M000016" class="method-signature">
           <span class="method-name">localized_names</span><span class="method-args">(model_name, attribute_names = {})</span>
           </a>
         </div>
@@ -163,7 +163,7 @@ is a hash of attribute names, each specifying the localized name of the
 attribute.
 </p>
 <p>
-This example adds german names to the model and it&#8217;s attributes.
+This example adds german names to the model and it&#8216;s attributes.
 </p>
 <pre>
   class Computer &lt; ActiveRecord::Base
@@ -182,13 +182,13 @@ This example adds german names to the model and it&#8217;s attributes.
 <p>
 To access the localized model name use the class method
 <tt>localized_model_name</tt>. The <tt><a
-href="ClassMethods.html#M000019">human_attribute_name</a></tt> method will
-also be extended so you&#8217;ll get the localized names from it if
+href="ClassMethods.html#M000017">human_attribute_name</a></tt> method will
+also be extended so you&#8216;ll get the localized names from it if
 available.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000018-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000018-source">
+            onclick="toggleCode('M000016-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000016-source">
 <pre>
     <span class="ruby-comment cmt"># File lib/features/localized_models.rb, line 64</span>
 64:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">localized_names</span>(<span class="ruby-identifier">model_name</span>, <span class="ruby-identifier">attribute_names</span> = {})

@@ -3,12 +3,13 @@ require 'rubygems'
 require 'test/unit'
 require 'logger'
 require_gem 'rails'
-require 'active_record'
-require 'action_view'
+require_gem 'activerecord'
+require_gem 'actionpack'
+require_gem 'activesupport'
 require File.dirname(__FILE__) + '/../init'
 
-# Set the LANG constant to the LANG environment variable. This is the name of
-# the used language file the tests will use. Defaults to 'de'.
+# Set the LANG_FILE constant to the LANG_FILE environment variable. This is the
+# name of the language file the tests will use. Defaults to 'de'.
 LANG_FILE = ENV['LANG_FILE'] || 'de'
 
 # Emulate the default Rails logger and send it's output to STDOUT.

@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Sat Apr 21 00:16:50 Westeuropäische Sommerzeit 2007</td>
+      <td>Mon Apr 23 20:54:26 +0200 2007</td>
     </tr>
     </table>
   </div>
@@ -171,7 +171,7 @@ method at the end of your <tt>environment.rb</tt> file:
   simple_localization :language =&gt; :de
 </pre>
 <p>
-With this you&#8217;re done. The <tt>:language</tt> parameter lets you
+With this you&#8216;re done. The <tt>:language</tt> parameter lets you
 define the language you want to use. Just specify the name of the language
 file without the <tt>.yml</tt> extension as a symbol or string. Currently
 only a german language file (named <tt>de.yml</tt>) and an english language
@@ -180,7 +180,7 @@ method call gives you quite more control over the plugin but this is
 described in the next chapter.
 </p>
 <p>
-<b>When using Rails model observers you&#8217;ll have to place the
+<b>When using Rails model observers you&#8216;ll have to place the
 <tt>simple_localization</tt> call at the end of the plugins
 <tt>init.rb</tt> file.</b> This is neccessary because an observer (and with
 it the correponding model) is loaded before the plugin is initialized in
@@ -345,7 +345,7 @@ Overwrites the english ActiveRecord error messages with localized ones from
 the language file. If the user submits an invalid form Rails´
 <tt>error_messages_for</tt> helper generates a box detailing why the record
 is invalid. This feature localizes the error messages used to build the
-box. However to get a completely localized error box you&#8217;ll have to
+box. However to get a completely localized error box you&#8216;ll have to
 localize your models (localized_models or localized_models_by_lang_file
 feature) as well as the ActiveRecord helpers
 (localized_active_record_helpers feature).
@@ -422,7 +422,7 @@ Rails. So this feature can my be considered as a &quot;goody&quot;.
 <p>
 The language files contain all language specific strings the plugin uses
 and are written in simple YAML. Take a look at the english language file
-(<tt>languages/en.yml</tt>) and you&#8217;ll see how simple they are.
+(<tt>languages/en.yml</tt>) and you&#8216;ll see how simple they are.
 </p>
 <p>
 YAML may be nice but sometimes a language may require more complex things
@@ -437,9 +437,8 @@ Ruby code to further setup the english language.
 </p>
 <p>
 The YAML language file also contains some information about the author of
-the language file. This information can be accessed using the <tt><a
-href="../classes/ArkanisDevelopment/SimpleLocalization/Language.html#M000029">ArkanisDevelopment::SimpleLocalization::Language#about</a></tt>
-method.
+the language file. This information can be accessed using the
+<tt>ArkanisDevelopment::SimpleLocalization::Language#about</tt> method.
 </p>
 <p>
 By default all language files are located in the <tt>languages</tt>
@@ -463,7 +462,7 @@ the YAML file.
 </p>
 <h2>License</h2>
 <p>
-Copyright &#169; 2006 Stephan Soller &lt;stephan.soller@addcom.de&gt;
+Copyright (c) 2006 Stephan Soller &lt;stephan.soller@addcom.de&gt;
 </p>
 <p>
 The MIT License

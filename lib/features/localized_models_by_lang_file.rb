@@ -39,23 +39,27 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedModelsByLangFile
     
     # This method adds the +localized_model_name+ and the
-    # +human_attribute_name+ to the ActiveRecord::Base class.
+    # +human_attribute_name+ to the ActiveRecord::Base class. The original
+    # +human_attribute_name+ is still available as +human_attribute_name_without_localization+.
     # 
-    # +localized_model_name+ looks for the localized model name in the language
-    # file and +human_attribute_name+ looks for the localized attribute names.
-    # +localized_model_name+ returns +nil+ if no matching entry could be found.
-    # +human_attribute_name+ calls the super method if no entry matches and
-    # therefore falls back to Rails default behavior.
+    # +localized_model_name+ returns the localized model name from the language
+    # file. If no localized name is available +nil+ is returned.
+    # 
+    # The new +human_attribute_name+ looks for the localized name of the
+    # attribute. If the language file does not contain a matching entry the
+    # requrest will be redirected to the original +human_attribute_name+ method.
     def self.included(base)
-      class << self
+      class << base
         
         def localized_model_name
           Language[:models, self.class_name.underscore.to_sym, :name]
         end
         
+        alias_method :human_attribute_name_without_localization, :human_attribute_name
+        
         def human_attribute_name(attribute_key_name)
-          localized_attributes = Language[:models, self.class_name.underscore.to_sym, :attributes]
-          localized_attributes ? localized_attributes[attribute_key_name.to_s] : super
+          localized_attributes = Language[:models, self.class_name.underscore.to_sym, :attributes] || {}
+          localized_attributes[attribute_key_name.to_s] || human_attribute_name_without_localization(attribute_key_name)
         end
         
       end

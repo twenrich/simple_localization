@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :language => LANG_FILE, :only => [:localized_models, :localized_error_messages, :localized_active_record_helpers]
+simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => [:localized_models, :localized_error_messages, :localized_active_record_helpers]
 
 # Localized names for the model and it's attributes.
 # The city and state attribute are commented out to test attributes with no

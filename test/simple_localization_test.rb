@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 # Load the specified language file and all features
-simple_localization :language => LANG_FILE
+simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE
 
 class SimpleLocalizationTest < Test::Unit::TestCase
   
@@ -11,7 +11,7 @@ class SimpleLocalizationTest < Test::Unit::TestCase
   end
   
   def test_if_language_file_is_loaded
-    assert_equal LANG, @lang.current_language
+    assert_equal LANG_FILE, @lang.current_language
   end
   
   def test_about_lang
