@@ -1,3 +1,4 @@
+
 # This is the base file of the Simple Localization plugin. It is loaded at
 # application startup and defines the +simple_localization+ method which should
 # be used in the environment.rb file to configure and initialize the
@@ -141,25 +142,38 @@ module ArkanisDevelopment #:nodoc:
     end
     
     # This little thing is a big part of the magic of doing things behind Rails
-    # back. Basically it mimics an object (Array or Hash) by redirecting all
-    # calls to it. The target object will be accessed by the Language#[]
-    # accessor and therefore will always return the data for the currently
-    # selcted language without replacing the proxy object.
+    # back. Basically it mimics an variable (ie. number, array, hash, ...) by
+    # redirecting all calls to it. The target object will be accessed by the
+    # Language#[] accessor and therefore will always return the data for the
+    # currently selcted language without replacing the proxy object.
+    # 
+    # This is useful if Rails stors the target data only in a constant. With
+    # this proxy the constant can be replaced once (with a proxy) and will
+    # always return the language data of the currently selected language.
     class LangSectionProxy
       
-      def initialize(*args)
-        options = args.last.kind_of?(Hash) ? args.delete_at(-1).symbolize_keys : {:reverse_merge_with => nil, :mock_lang_data => nil}
-        @reverse_merge_with = options[:reverse_merge_with]
+      # Read the specified options and save them to the instance variables.
+      # You can specify a block if you want to combine the original data with
+      # the localized one (ie. merging the old data with the localized data).
+      def initialize(options, &transformation)
+        default_options = {:sections => nil, :orginal_receiver => nil, :mock_lang_data => nil}
+        options.reverse_merge! default_options
+        options.assert_valid_keys default_options.keys
+        
+        @sections = options[:sections]
+        @orginal_receiver = options[:orginal_receiver]
         @mock_lang_data = options[:mock_lang_data]
-        @lang_file_sections = args
+        @transformation = transformation
       end
       
+      # Generates the receiver which will receive the messages.
       def receiver
-        receiver = @mock_lang_data || Language[*@lang_file_sections]
-        receiver.reverse_merge! @reverse_merge_with if @reverse_merge_with and receiver.respond_to?(:reverse_merge!)
+        receiver = @mock_lang_data || Language[*@sections]
+        receiver = @transformation.call receiver, @orginal_receiver if @transformation.respond_to?(:call)
         receiver
       end
       
+      # Intercept all messages and send them to the receiver.
       def method_missing(name, *args)
         self.receiver.send name, *args
       end
