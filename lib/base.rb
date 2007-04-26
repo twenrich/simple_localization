@@ -152,23 +152,65 @@ module ArkanisDevelopment #:nodoc:
     # always return the language data of the currently selected language.
     class LangSectionProxy
       
-      # Read the specified options and save them to the instance variables.
-      # You can specify a block if you want to combine the original data with
-      # the localized one (ie. merging the old data with the localized data).
+      # Stripped out of Rails AssociationProxy class to undefine many of the
+      # methods that come with new objects...
+      instance_methods.each { |m| undef_method m unless m =~ /(^__|^nil\?$|^send$)/ }
+      
+      # Reads the specified options and the accociated block and save them to
+      # instance variables.
+      # 
+      # Available options are:
+      # 
+      # <code>:sections</code>
+      #   Specifies the sections of the language file which contain the
+      #   receiver. These sections will be used as parameters to the
+      #   Language#[] method to actually get the receiver.
+      # <code>:orginal_receiver</code>
+      #   Specify the original variable that is replaced by this proxy to store
+      #   this variable inside the proxy. This is useful if you want to combine
+      #   the language data with the original data. The variable specified here
+      #   is accessable as the second variable of the attached block.
+      # <code>:lang_class</code>
+      #   The class supplying the proxy with language data. Defaults to
+      #   <code>ArkanisDevelopment::SimpleLocalization::Language</code>. You
+      #   can for example write a mock class implementing the [] class method
+      #   use and this option to make the proxy use this mock class.
+      #   
+      #     class LangMock
+      #       def self.[](*sections)
+      #         {:title => 'test data'}
+      #       end
+      #     end
+      #     
+      #     LangSectionProxy.new :lang_class => LangMock
+      # 
+      # If you want to combine the original data (supplied to the
+      # <code>:orginal_receiver</code> option) with the localized data in some
+      # way (ie. merging the old data with the localized data) you can specify
+      # a block. The block takes the localized data as the first parameter, the
+      # original data as the second parameter and should return the combined
+      # result.
+      # 
+      #   data = {:a => 'first', :b => 'second', :c => 'third'}
+      #   LangSectionProxy.new :sections => [:letter_to_word, :mapping], :original_data => data do |localized, original|
+      #     original.merge localized
+      #   end
+      # 
       def initialize(options, &transformation)
-        default_options = {:sections => nil, :orginal_receiver => nil, :mock_lang_data => nil}
+        default_options = {:sections => nil, :orginal_receiver => nil, :lang_class => ArkanisDevelopment::SimpleLocalization::Language}
         options.reverse_merge! default_options
         options.assert_valid_keys default_options.keys
         
         @sections = options[:sections]
         @orginal_receiver = options[:orginal_receiver]
-        @mock_lang_data = options[:mock_lang_data]
+        @lang_class = options[:lang_class]
         @transformation = transformation
       end
       
-      # Generates the receiver which will receive the messages.
+      # Gets the receiver from the language class and combines this data with
+      # the original data if wanted (a block was specified to the constructor).
       def receiver
-        receiver = @mock_lang_data || Language[*@sections]
+        receiver = @lang_class[*@sections]
         receiver = @transformation.call receiver, @orginal_receiver if @transformation.respond_to?(:call)
         receiver
       end
@@ -180,28 +222,29 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
+    # Extends the LangSectionProxy with simple caching functionality to avoid
+    # extensive combination work on every proxy method call.
     class CachedLangSectionProxy < LangSectionProxy
       
-      @@instances = []
-      
-      def self.clear_caches
-        @@instances.each{|instance| instance.clear_cache}
-      end
-      
-      @cached_targets = {}
-      
-      def initialize(*lang_file_sections)
+      # Calls +super+ to do the work and initializes +@cached_receivers+ with
+      # an empty hash (empty cache). +@cached_receivers+ will hold a cached
+      # version of the receiver for each language file (keys of the hash).
+      def initialize(*args)
         super
-        @@instances << self
+        @cached_receivers = {}
       end
       
-      def clear_cache
-        @cached_targets = {}
-      end
-      
-      def receiver
-        cached = @cached_targets[Language.current_language]
-        (cached || (@cached_targets[Language.current_language] = Language[*@lang_file_sections])).send name, *args
+      # Looks in the +@cached_receivers+ hash for a cached receiver for the
+      # current language. If found the cached on will be used. Otherwise
+      # +self.receiver+ will be called to get the receiver (and all the
+      # combination work is done) and the result is cached in the
+      # +@cached_receivers+ hash.
+      def method_missing(name, *args)
+        lang = @lang_class.current_language
+        cached_receiver = @cached_receivers[lang] || begin
+          @cached_receivers[lang] = self.receiver
+        end
+        cached_receiver.send name, *args
       end
       
     end
