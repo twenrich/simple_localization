@@ -11,6 +11,7 @@ require File.dirname(__FILE__) + '/../init'
 # Set the LANG_FILE constant to the LANG_FILE environment variable. This is the
 # name of the language file the tests will use. Defaults to 'de'.
 LANG_FILE = ENV['LANG_FILE'] || 'de'
+LANG_FILE_DIR = ENV['LANG_FILE_DIR'] || (File.dirname(__FILE__) + '/languages')
 
 # Emulate the default Rails logger and send it's output to STDOUT.
 RAILS_DEFAULT_LOGGER = Logger.new(File.dirname(__FILE__) + '/test.log')

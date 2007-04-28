@@ -2,12 +2,13 @@ require File.dirname(__FILE__) + '/test_helper'
 
 # Init SimpleLocalization with just the localized_date_and_time feature
 # activated.
-simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => :localized_date_and_time
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => :localized_date_and_time
 
 class LocalizedDatesTest < Test::Unit::TestCase
   
   def setup
     @language = ArkanisDevelopment::SimpleLocalization::Language
+    @tools = ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime
     @test_date = Date.new 2007, 1, 1
     @test_time = Time.utc 2007, 1, 1
   end
@@ -18,10 +19,10 @@ class LocalizedDatesTest < Test::Unit::TestCase
     assert_equal Date::ABBR_MONTHNAMES, [nil] +  @language[:dates, :abbr_monthnames]
     assert_equal Date::ABBR_DAYNAMES, @language[:dates, :abbr_daynames]
     
-    assert_equal Date::MONTHS, @language.convert_to_name_indexed_hash(:section => [:dates, :monthnames], :start_index => 1)
-    assert_equal Date::DAYS, @language.convert_to_name_indexed_hash(:section => [:dates, :daynames], :start_index => 0)
-    assert_equal Date::ABBR_MONTHS, @language.convert_to_name_indexed_hash(:section => [:dates, :abbr_monthnames], :start_index => 1)
-    assert_equal Date::ABBR_DAYS, @language.convert_to_name_indexed_hash(:section => [:dates, :abbr_daynames], :start_index => 0)
+    assert_equal Date::MONTHS, @tools.convert_to_name_indexed_hash(@language[:dates, :monthnames], 1)
+    assert_equal Date::DAYS, @tools.convert_to_name_indexed_hash(@language[:dates, :daynames], 0)
+    assert_equal Date::ABBR_MONTHS, @tools.convert_to_name_indexed_hash(@language[:dates, :abbr_monthnames], 1)
+    assert_equal Date::ABBR_DAYS, @tools.convert_to_name_indexed_hash(@language[:dates, :abbr_daynames], 0)
   end
   
   def test_date_strftime

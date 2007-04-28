@@ -32,12 +32,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
   end
 end
 
-ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
-  
-  silence_warnings do
-    ActionView::Helpers::FormOptionsHelper::COUNTRIES = ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers::ORIGINAL_COUNTRIES.collect do |orginal_country|
-      ArkanisDevelopment::SimpleLocalization::Language[:countries][orginal_country] || orginal_country
-    end
+silence_warnings do
+  ActionView::Helpers::FormOptionsHelper::COUNTRIES = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:countries],
+  :orginal_receiver => ActionView::Helpers::FormOptionsHelper::COUNTRIES do |localized, orginal|
+    orginal.collect{|original_country| localized[original_country] || original_country}
   end
-  
 end

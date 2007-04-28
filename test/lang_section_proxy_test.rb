@@ -34,6 +34,17 @@ class LangSectionProxyTest < Test::Unit::TestCase
     assert_equal proxy.receiver.object_id, proxy.receiver.object_id
   end
   
+  def test_proxy_transformation
+    data = [1, 2, 3]
+    additional_data = [4, 5]
+    LanguageMock.current_lang_data = data
+    proxy = LangSectionProxy.new :lang_class => LanguageMock do |localized_data|
+      localized_data + additional_data
+    end
+    
+    assert_equal data + additional_data, proxy
+  end
+  
   def test_proxy_hash_with_transformation_and_no_caching
     orignial_data = {:a => 'first', :b => 'second', :c => 'third'}
     lang_data = {:a => 'erster', :c => 'dritter'}

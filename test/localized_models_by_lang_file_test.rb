@@ -5,7 +5,7 @@ LANG_FILE ||= 'de'
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => [:localized_models_by_lang_file]
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_models_by_lang_file]
 
 # Create a tableless model. See Rails Weenie:
 # http://www.railsweenie.com/forums/2/topics/724
@@ -33,7 +33,7 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
   
   def setup
     # Load the lang file data directly form the YAML file.
-    lang_file_data = YAML.load_file(File.dirname(__FILE__) + "/#{LANG_FILE}.yml")
+    lang_file_data = YAML.load_file "#{LANG_FILE_DIR}/#{LANG_FILE}.yml"
     @model_name = lang_file_data['models']['address']['name']
     @attribute_names = lang_file_data['models']['address']['attributes'].symbolize_keys
   end

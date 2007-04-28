@@ -14,7 +14,7 @@ end
 
 # Init SimpleLocalization with just the localized_date_helpers feature
 # activated.
-simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => [:localized_date_helpers, :localized_date_and_time]
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_date_helpers, :localized_date_and_time]
 
 class LocalizedDateHelpersTest < Test::Unit::TestCase
   

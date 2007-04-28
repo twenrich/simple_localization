@@ -38,26 +38,58 @@
 # +date_formats+ and +time_formats+ entries are used to update the formats
 # available to the +to_formated_s+ method.
 
-ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
-  
-  class Date
-    silence_warnings do
-      MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :monthnames)
-      DAYNAMES = ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :daynames)
-      ABBR_MONTHNAMES = [nil] + ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :abbr_monthnames)
-      ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::LangSectionProxy.new(:dates, :abbr_daynames)
-      
-      MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :monthnames], :start_index => 1
-      DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :daynames], :start_index => 0
-      ABBR_MONTHS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_monthnames], :start_index => 1
-      ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section => [:dates, :abbr_daynames], :start_index => 0
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module LocalizedDateAndTime
+    
+    # Just a little helper for the date localization (used in the
+    # +localized_date_and_time+ feature). Converts arrays into hashes with
+    # the array values as keys and their indexes as values. Takes and
+    # optional start index which defaults to 0.
+    # 
+    #   convert_to_name_indexed_hash ['Son', 'Mon', 'Din', 'Mit', 'Don', 'Fri', 'Sam'], 1
+    #   # => {"Son" => 1, "Mon" => 2, "Din" => 3, "Mit" => 4, "Don" => 5, "Fri" => 6, "Sam" => 7}
+    # 
+    def self.convert_to_name_indexed_hash(array, start_index = 0)
+      array.inject({}) do |memo, element|
+        memo[element] = array.index(element) + start_index
+        memo
+      end
+    end
+    
+  end
+end
+
+class Date
+  silence_warnings do
+    MONTHNAMES = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :monthnames] do |localized_data|
+      [nil] + localized_data
+    end
+    DAYNAMES = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :daynames]
+    ABBR_MONTHNAMES = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :abbr_monthnames] do |localized_data|
+      [nil] + localized_data
+    end
+    ABBR_DAYNAMES = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :abbr_daynames]
+    
+    MONTHS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :monthnames] do |localized_data|
+      ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data, 1
+    end
+    DAYS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :daynames] do |localized_data|
+      ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data
+    end
+    ABBR_MONTHS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :abbr_monthnames] do |localized_data|
+      ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data, 1
+    end
+    ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :abbr_daynames] do |localized_data|
+      ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data
     end
   end
-  
-  ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS.merge!(
-    ArkanisDevelopment::SimpleLocalization::Language[:dates, :date_formats].symbolize_keys
-  )
-  
+end
+
+silence_warnings do
+  ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :date_formats],
+    :orginal_receiver => ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS do |localized, orginal|
+      orginal.merge localized.symbolize_keys
+  end
 end
 
 class Time
@@ -79,10 +111,9 @@ class Time
   
 end
 
-ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
-  
-  ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
-    ArkanisDevelopment::SimpleLocalization::Language[:dates, :time_formats].symbolize_keys
-  )
-  
+silence_warnings do
+  ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :time_formats],
+    :orginal_receiver => ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS do |localized, orginal|
+      orginal.merge localized.symbolize_keys
+  end
 end

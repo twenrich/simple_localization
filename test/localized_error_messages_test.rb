@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper'
 
 # Init SimpleLocalization with just the localized_error_messages feature
 # activated.
-simple_localization :lang_file_dir => File.dirname(__FILE__), :language => LANG_FILE, :only => :localized_error_messages
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => :localized_error_messages
 
 class LocalizedErrorMessagesTest < Test::Unit::TestCase
   
