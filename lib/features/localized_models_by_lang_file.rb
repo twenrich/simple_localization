@@ -81,4 +81,50 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
   end
 end
 
+# This little bit of code is necessary to get this feature and scaffold to
+# work together. By default the default input block would call the columns
+# +human_name+ method to get the display name of the column. Sadly this method
+# calls the +human_attribute_name+ method direclty on the ActiveRecord::Base
+# class.
+# 
+# Usually this won't be a problem because without localization the
+# +human_attribute_name+ method simply asks the Inflector for the name and does
+# not need such fancy things as the table name or the model class. However with
+# localization we need the name of the model class to get the localized data
+# out of the language file. So this is a problem.
+# 
+# To solve this the following code patches the +all_input_tags+ and
+# +default_input_block+ methods of the +ActiveRecordHelper+ module in a way
+# that allows access to the model class and thus the localization data.
+module ActionView::Helpers::ActiveRecordHelper
+    
+    private
+    
+    alias_method :all_input_tags_without_localization, :all_input_tags
+    alias_method :default_input_block_without_localization, :default_input_block
+    
+    # To get this feature and scaffold to work together we need this method to
+    # pass the real record object to the default input block (which in turn
+    # needs this objects class to access the localized data).
+    # 
+    # To make this as painless as possible the method now also accepts blocks
+    # which take 3 parameters. The third parameter is the real record object.
+    def all_input_tags(record, record_name, options)
+      input_block = options[:input_block] || default_input_block
+      if input_block.arity == 2
+        record.class.content_columns.collect{ |column| input_block.call(record_name, column) }.join("\n")
+      else
+        record.class.content_columns.collect{ |column| input_block.call(record_name, column, record) }.join("\n")
+      end
+    end
+    
+    # Set a new default input block for the +all_input_tags+ method. This block
+    # accepts the third (+record+ object) parameter and uses it to access the
+    # localized data of the records class.
+    def default_input_block
+      Proc.new { |record_name, column, record| %(<p><label for="#{record_name}_#{column.name}">#{record.class.human_attribute_name(column.name)}</label><br />#{input(record_name, column.name)}</p>) }
+    end
+    
+end
+
 ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedModelsByLangFile
