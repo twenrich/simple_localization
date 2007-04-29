@@ -50,9 +50,10 @@ The next and already last thing is to call the +simple_localization+ method at t
   simple_localization :language => :de
 
 With this you're done. The <code>:language</code> parameter lets you define the language you want to use. Just specify
-the name of the language file without the <code>.yml</code> extension as a symbol or string. Currently only a german language
-file (named <code>de.yml</code>) and an english language file (as reference and template for new languages) exists though. This
-one method call gives you quite more control over the plugin but this is described in the next chapter.
+the name of the language file without the <code>.yml</code> extension as a symbol or string. Currently german (<code>de.yml</code>),
+dutch (<code>nl.yml</code>), france (<code>fr.yml</code>) and english (<code>en.yml</code>) language files are available. The english
+language file just serves as a reference and template for new language files. This one call of the +simple_localization+ method
+gives you quite more control over the plugin but this is described in the next chapter.
 
 <b>When using Rails model observers you'll have to place the +simple_localization+ call at the end of the plugins <code>init.rb</code> file.</b>
 This is neccessary because an observer (and with it the correponding model) is loaded before the plugin is initialized in
@@ -258,9 +259,19 @@ strings. If you need some Ruby stuff you can create a file named <code>fr.rb</co
 YAML file.
 
 
+== Contributors
+
+[Mark Kocera]
+	Dutch language file (<code>nl.yml</code>)
+
+[Sylvain OBEGI]
+	French language file (<code>fr.yml</code>)
+
+
+
 == License
 
-Copyright (c) 2006 Stephan Soller <stephan.soller@addcom.de>
+Copyright (c) 2006 Stephan Soller <stephan.soller@addcom.de> and contributors
 
 The MIT License
 

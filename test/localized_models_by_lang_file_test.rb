@@ -16,7 +16,9 @@ class Address < ActiveRecord::Base
   
   def self.columns() @columns ||= []; end
   def self.column(name, sql_type = nil, default = nil, null = true)
-    columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    column = ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    column.model_class = self
+    columns << column
   end
   
   column :name,          :string
@@ -61,6 +63,13 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
     assert_nil ActiveRecord::Base.localized_model_name
     assert_not_equal @attribute_names[:name], ActiveRecord::Base.human_attribute_name('name')
     assert_equal 'name'.humanize, ActiveRecord::Base.human_attribute_name('name')
+  end
+  
+  # This tests the extended Column class. It now holds a reference to the model
+  # class the column belongs to and is using it to call human_attribute_name on
+  # the proper class (see extensions/localized_column_human_name.rb).
+  def test_column_human_name
+    assert_equal @attribute_names[:name], Address.columns.find{|c| c.name == 'name'}.human_name
   end
   
 end

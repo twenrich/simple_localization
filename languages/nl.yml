@@ -43,6 +43,7 @@ arrays:
     skip_last_comma: true
 
 countries:
+  'Netherlands': Nederland
 
 helpers:
   error_messages_for:
@@ -95,4 +96,3 @@ models:
 # localized_application feature. The entries defined here are accesable by the
 # global method "l". See the RDoc for details.
 app:
-
