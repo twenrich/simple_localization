@@ -48,16 +48,29 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     # The new +human_attribute_name+ looks for the localized name of the
     # attribute. If the language file does not contain a matching entry the
     # requrest will be redirected to the original +human_attribute_name+ method.
+    # 
+    # Note: since we are extending ActiveRecord::Base it's possible to call both
+    # methods directly on the base class (the +scaffold+ method does this indirectly
+    # on the +human_attribute_name+ method using Column#human_name). In this case we
+    # simply don't know which table or model we belong to and therefore we can't
+    # access the localized data. To prevent error messages in this situation
+    # ("undefined method `abstract_class?' for Object:Class" because Base#table_name
+    # doesn't work here) +localized_model_name+ returns +nil+ and
+    # +human_attribute_name+ delegates the request to it's former non localized
+    # version (which doesn't need to know the table name because it simply asks the
+    # Inflector).
     def self.included(base)
       class << base
         
         def localized_model_name
+          return nil if self == ActiveRecord::Base
           Language[:models, self.class_name.underscore.to_sym, :name]
         end
         
         alias_method :human_attribute_name_without_localization, :human_attribute_name
         
         def human_attribute_name(attribute_key_name)
+          return human_attribute_name_without_localization(attribute_key_name) if self == ActiveRecord::Base
           localized_attributes = Language[:models, self.class_name.underscore.to_sym, :attributes] || {}
           localized_attributes[attribute_key_name.to_s] || human_attribute_name_without_localization(attribute_key_name)
         end
