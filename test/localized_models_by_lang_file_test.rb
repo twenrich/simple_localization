@@ -53,4 +53,14 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
     assert_equal 'state'.humanize, Address.human_attribute_name('state')
   end
   
+  # This one tests what happens if the +localized_model_name+ and overwritten
+  # +human_attribute_name+ methods are called directly on the
+  # ActiveRecord::Base class. The +scaffold+ method does this indirectly. See
+  # the note of the +LocalizedModelsByLangFile+ +included+ method.
+  def test_direct_base_call
+    assert_nil ActiveRecord::Base.localized_model_name
+    assert_not_equal @attribute_names[:name], ActiveRecord::Base.human_attribute_name('name')
+    assert_equal 'name'.humanize, ActiveRecord::Base.human_attribute_name('name')
+  end
+  
 end
