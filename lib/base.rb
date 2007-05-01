@@ -3,6 +3,23 @@
 # be used in the environment.rb file to configure and initialize the
 # localization.
 
+module ArkanisDevelopment #:nodoc:
+  module SimpleLocalization #:nodoc:
+    
+    # A list of features loaded directly in the <code>init.rb</code> of the
+    # plugin. This is necessary for some features to work with rails observers.
+    # 
+    # If the constant already exists it will not be overwritten. This provides
+    # a way to modify which features are preloaded.
+    begin
+      PRELOAD_FEATURES
+    rescue NameError
+      PRELOAD_FEATURES = [:localized_models]
+    end
+    
+  end
+end
+
 # The main method of the SimpleLocalization plugin used to initialize and
 # configure the plugin. Usually it is called in the environment.rb file.
 # 
@@ -62,11 +79,26 @@ def simple_localization(options)
     enabled_features = available_features & options.collect{|feature, enabled| feature if enabled}.compact
   end
   
-  enabled_features.each do |feature|
+  preloaded_features = ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES
+  unwanted_features = preloaded_features - enabled_features
+  to_load_features = enabled_features - preloaded_features
+  
+  unless unwanted_features.empty?
+    RAILS_DEFAULT_LOGGER.warn "You don't want the features #{unwanted_features.join(', ')} to be loaded. " +
+      'However to work with rails observers these features are loaded at the end of the plugins init.rb. ' +
+      'You can just remove these features from the list of direclty loaded features in the init.rb of the ' +
+      'plugin and they won\'t be loaded.'
+  end
+  
+  to_load_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
   end
   
+  loaded_features = (enabled_features + preloaded_features).uniq
+  
   RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
     "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
-    "  features: #{enabled_features.join(', ')}"
+    "  features: #{loaded_features.join(', ')}"
+  
+  loaded_features
 end

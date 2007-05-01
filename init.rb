@@ -5,3 +5,7 @@ require File.dirname(__FILE__) + '/lib/language'
 require File.dirname(__FILE__) + '/lib/lang_section_proxy'
 require File.dirname(__FILE__) + '/lib/cached_lang_section_proxy'
 require File.dirname(__FILE__) + '/lib/base'
+
+ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES.each do |feature|
+  require "#{File.dirname(__FILE__)}/lib/features/#{feature}"
+end
