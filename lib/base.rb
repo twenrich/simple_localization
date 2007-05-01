@@ -6,18 +6,20 @@
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
+    # An array of features which should not be preloaded. If this constant is
+    # already defined it will not be overwritten. This provides a way to
+    # exclude features from preloading. You'll just have to define this
+    # constant by yourself before the Rails::Initializer.run call in your
+    # environment.rb file.
+    begin
+      SUPPRESS_FEATURES
+    rescue NameError
+      SUPPRESS_FEATURES = []
+    end
+    
     # A list of features loaded directly in the <code>init.rb</code> of the
     # plugin. This is necessary for some features to work with rails observers.
-    # 
-    # If the constant already exists it will not be overwritten. This provides
-    # a way to specify which features are preloaded. You'll just have to define
-    # this constant by yourself. Do this before the Rails::Initializer.run call
-    # in your environment.rb file.
-    begin
-      PRELOAD_FEATURES
-    rescue NameError
-      PRELOAD_FEATURES = [:localized_models]
-    end
+    PRELOAD_FEATURES = [:localized_models] - SUPPRESS_FEATURES
     
   end
 end
@@ -66,12 +68,13 @@ end
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   
-  default_options = {:language => 'de', :lang_file_dir => "#{File.dirname(__FILE__)}/../languages"}
+  default_options = {:language => :de, :languages => nil, :lang_file_dir => "#{File.dirname(__FILE__)}/../languages"}
   default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
+  languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
   
   ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
-  ArkanisDevelopment::SimpleLocalization::Language.load(options.delete(:language))
+  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
   
   if options[:only]
     enabled_features = available_features & Array(options[:only])
@@ -86,10 +89,10 @@ def simple_localization(options)
   to_load_features = enabled_features - preloaded_features
   
   unless unwanted_features.empty?
-    RAILS_DEFAULT_LOGGER.warn "You don't want the features #{unwanted_features.join(', ')} to be loaded.\n" +
-      'However to work with rails observers these features are loaded at the end of the plugins init.rb.\n' +
-      'You can just remove these features from the list of direclty loaded features in the init.rb of the ' +
-      'plugin and they won\'t be loaded.'
+    RAILS_DEFAULT_LOGGER.warn "Simple Localization plugin configuration:\n" +
+      "  You don't want the feature #{unwanted_features.join(', ')} to be loaded.\n" +
+      "  However to work with rails observers these features are loaded at the end of the plugins init.rb.\n" +
+      '  To suppress a preloaded feature please look into the plugins readme file (chapter "Preloaded features").'
   end
   
   to_load_features.each do |feature|
@@ -99,7 +102,7 @@ def simple_localization(options)
   loaded_features = (enabled_features + preloaded_features).uniq
   
   RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
-    "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
+    "  language: #{languages.join(', ')}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
     "  features: #{loaded_features.join(', ')}"
   
   loaded_features
