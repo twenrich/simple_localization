@@ -10,7 +10,9 @@ module ArkanisDevelopment #:nodoc:
     # plugin. This is necessary for some features to work with rails observers.
     # 
     # If the constant already exists it will not be overwritten. This provides
-    # a way to modify which features are preloaded.
+    # a way to specify which features are preloaded. You'll just have to define
+    # this constant by yourself. Do this before the Rails::Initializer.run call
+    # in your environment.rb file.
     begin
       PRELOAD_FEATURES
     rescue NameError
@@ -84,8 +86,8 @@ def simple_localization(options)
   to_load_features = enabled_features - preloaded_features
   
   unless unwanted_features.empty?
-    RAILS_DEFAULT_LOGGER.warn "You don't want the features #{unwanted_features.join(', ')} to be loaded. " +
-      'However to work with rails observers these features are loaded at the end of the plugins init.rb. ' +
+    RAILS_DEFAULT_LOGGER.warn "You don't want the features #{unwanted_features.join(', ')} to be loaded.\n" +
+      'However to work with rails observers these features are loaded at the end of the plugins init.rb.\n' +
       'You can just remove these features from the list of direclty loaded features in the init.rb of the ' +
       'plugin and they won\'t be loaded.'
   end
