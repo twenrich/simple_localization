@@ -24,14 +24,24 @@ class LanguageTest < Test::Unit::TestCase
   
   def test_lang_file_access
     assert_equal @lang_file['dates']['monthnames'], @lang[:dates, :monthnames]
+    
+    @lang.debug = true
+    assert_raise ArkanisDevelopment::SimpleLocalization::EntryNotFound do
+      @lang[:not_existant_key]
+    end
+    
+    @lang.debug = false
     assert_nil @lang[:not_existant_key]
+    @lang.debug = true
+    
     assert_raise ArkanisDevelopment::SimpleLocalization::LangFileNotLoaded do
-      @lang.entry :not_loaded_lang, :dates, :monthnames
+      @lang.find :not_loaded_lang, :dates, :monthnames
     end
   end
   
   def test_lang_file_access_with_format
     assert_equal format(@lang_file['helpers']['distance_of_time_in_words']['n minutes'], 1), @lang[:helpers, :distance_of_time_in_words, 'n minutes', [1]]
+    assert_equal @lang_file['helpers']['distance_of_time_in_words']['n minutes'], @lang[:helpers, :distance_of_time_in_words, 'n minutes', []]
   end
   
   def test_simple_lang_section_proxy

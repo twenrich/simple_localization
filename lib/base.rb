@@ -68,10 +68,21 @@ end
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   
-  default_options = {:language => :de, :languages => nil, :lang_file_dir => "#{File.dirname(__FILE__)}/../languages"}
+  default_options = {
+    :language => :de,
+    :languages => nil,
+    :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
+    :debug => nil
+  }
   default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
+  
+  unless options[:debug].nil?
+    ArkanisDevelopment::SimpleLocalization::Language.debug = options[:debug]
+  else
+    ArkanisDevelopment::SimpleLocalization::Language.debug = (ENV['RAILS_ENV'] != 'production')
+  end
   
   ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
   ArkanisDevelopment::SimpleLocalization::Language.load(languages)

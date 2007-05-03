@@ -38,9 +38,17 @@ class MultipleLanguagesTest < Test::Unit::TestCase
   
   def test_lang_file_access
     assert_equal @lang_files[:de]['dates']['monthnames'], @lang[:dates, :monthnames]
-    assert_equal @lang_files[:de]['dates']['monthnames'], @lang.entry(:de, :dates, :monthnames)
-    assert_equal @lang_files[:en]['dates']['monthnames'], @lang.entry(:en, :dates, :monthnames)
+    assert_equal @lang_files[:de]['dates']['monthnames'], @lang.find(:de, :dates, :monthnames)
+    assert_equal @lang_files[:en]['dates']['monthnames'], @lang.find(:en, :dates, :monthnames)
+    
+    @lang.debug = true
+    assert_raise ArkanisDevelopment::SimpleLocalization::EntryNotFound do
+      @lang[:not_existant_key]
+    end
+    
+    @lang.debug = false
     assert_nil @lang[:not_existant_key]
+    @lang.debug = true
   end
   
   def test_lang_switching

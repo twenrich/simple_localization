@@ -2,7 +2,16 @@ module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
     # Custom error class raised if the uses tries to select a language file
-    # which is not loaded.
+    # which is not loaded. Also stores the name of the failed language file and
+    # a list of the loaded ones.
+    # 
+    #   begin
+    #     Language.about :xyz
+    #   rescue LangFileNotLoaded => e
+    #     e.failed_lang # => :xyz
+    #     e.loaded_langs # => [:de, :en]
+    #   end
+    # 
     class LangFileNotLoaded < StandardError
       
       attr_reader :failed_lang, :loaded_langs
@@ -24,12 +33,12 @@ module ArkanisDevelopment #:nodoc:
     # 
     #   begin
     #     Language.find :en, :nonsens, :void
-    #   rescue LangFileEntryNotFound => e
+    #   rescue EntryNotFound => e
     #     e.requested_entry # => [:nonsens, :void]
     #     e.language # => :en
     #   end
     # 
-    class LangFileEntryNotFound < StandardError
+    class EntryNotFound < StandardError
       
       attr_reader :requested_entry, :language
       
@@ -119,7 +128,7 @@ module ArkanisDevelopment #:nodoc:
           end
           
           entry || begin
-            raise LangFileEntryNotFound.new(sections, language) if self.debug
+            raise EntryNotFound.new(sections, language) if self.debug
           end
         end
         
@@ -155,16 +164,14 @@ module ArkanisDevelopment #:nodoc:
           
           lang_entry = self.find(self.current_language, *args)
           
-          if format_values
+          if format_values and not format_values.empty?
             format(lang_entry, *format_values)
           else
             lang_entry
           end
         end
         
-        def [](*args)
-          entry(*args)
-        end
+        alias_method :[], :entry
         
         # Returns a hash with the meta data of the specified language (defaults
         # to the currently used language). Entries not present in the language
