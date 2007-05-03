@@ -18,13 +18,37 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
+    # This error is raised if a requested entry could not be found. This error
+    # also stores the requested entry and the language for which the entry
+    # could not be found.
+    # 
+    #   begin
+    #     Language.find :en, :nonsens, :void
+    #   rescue LangFileEntryNotFound => e
+    #     e.requested_entry # => [:nonsens, :void]
+    #     e.language # => :en
+    #   end
+    # 
+    class LangFileEntryNotFound < StandardError
+      
+      attr_reader :requested_entry, :language
+      
+      def initialize(requested_entry, language)
+        @requested_entry, @language = Array(requested_entry), language
+        super "The requested entry '#{@requested_entry.join('\' -> \'')}' could " +
+          "not be found in the language '#{@language}'."
+      end
+      
+    end
+    
     # This class loads, caches and manages the used language files.
     class Language
       
       @@cached_language_data = {}
       @@current_language = nil
       
-      cattr_accessor :lang_file_dir
+      cattr_accessor :lang_file_dir, :debug
+      self.debug = true
       
       class << self
         
@@ -82,80 +106,96 @@ module ArkanisDevelopment #:nodoc:
         # If the specified language file is not loaded an +LangFileNotLoaded+
         # exception is raised. If the entry is not found +nil+ is returned.
         # 
-        #   Language.entry :de, :active_record_messages, :not_a_number  # => "ist keine Zahl."
+        #   Language.find :de, :active_record_messages, :not_a_number  # => "ist keine Zahl."
         # 
-        def entry(language, *sections)
+        def find(language, *sections)
           language = language.to_sym
           if @@cached_language_data.empty? or not @@cached_language_data[language]
             raise LangFileNotLoaded.new(language, loaded_languages)
           end
           
-          sections.inject(@@cached_language_data[language]) do |memo, section|
+          entry = sections.inject(@@cached_language_data[language]) do |memo, section|
             memo[(section.kind_of?(Numeric) ? section : section.to_s)] if memo
+          end
+          
+          entry || begin
+            raise LangFileEntryNotFound.new(sections, language) if self.debug
           end
         end
         
-      end
-      
-      # Searches the currently used language for the specified entry. It's
-      # possible to specify neasted entries by using more than one parameter.
-      # 
-      #   Language[:active_record_messages, :too_short] # => "ist zu kurz (mindestens %d Zeichen)."
-      # 
-      # This will return the +too_short+ entry within the +active_record_messages+
-      # entry. The YAML code in the language file looks like this:
-      # 
-      #   active_record_messages:
-      #     too_short: ist zu kurz (mindestens %d Zeichen).
-      # 
-      # If the specified language file is not loaded an +LangFileNotLoaded+
-      # exception is raised. If the entry is not found +nil+ is returned.
-      # 
-      # This method also integrates +format+. To format an entry specify an
-      # array with the format options as the last paramter:
-      # 
-      #   Language[:active_record_messages, :too_short, [10]] # => "ist zu kurz (mindestens 10 Zeichen)."
-      # 
-      def self.[](*args)
-        if args.last.kind_of?(Array)
-          format_args = args.delete_at(-1)
-          sections = args
-          format(self.entry(self.current_language, *sections), *format_args)
-        else
-          sections = args
-          self.entry(self.current_language, *sections)
+        # Returns the specified entry from the currently used language file. It's
+        # possible to specify neasted entries by using more than one parameter.
+        # 
+        #   Language.get :active_record_messages, :too_short  # => "ist zu kurz (mindestens %d Zeichen)."
+        # 
+        # This will return the +too_short+ entry within the +active_record_messages+
+        # entry. The YAML code in the language file looks like this:
+        # 
+        #   active_record_messages:
+        #     too_short: ist zu kurz (mindestens %d Zeichen).
+        # 
+        # If the specified language file is not loaded an +LangFileNotLoaded+
+        # exception is raised. If the entry is not found +nil+ is returned.
+        # 
+        # This method also integrates +format+. To format an entry specify an
+        # array with the format options as the last paramter:
+        # 
+        #   Language[:active_record_messages, :too_short, [10]] # => "ist zu kurz (mindestens 10 Zeichen)."
+        # 
+        def entry(*args)
+          if args.last.kind_of?(Hash)
+            options = {:values => nil}.merge args.delete_at(-1)
+            options.assert_valid_keys :values
+            format_values = options[:values]
+          end
+          
+          if args.last.kind_of?(Array)
+            format_values = args.delete_at(-1).compact
+          end
+          
+          lang_entry = self.find(self.current_language, *args)
+          
+          if format_values
+            format(lang_entry, *format_values)
+          else
+            lang_entry
+          end
         end
-      end
-      
-      # Returns a hash with the meta data of the specified language (defaults
-      # to the currently used language). Entries not present in the language
-      # file will default to +nil+. If the specified language file is not
-      # loaded an +LangFileNotLoaded+ exception is raised.
-      # 
-      #   Language.about :de
-      #   # => {
-      #          :language => 'Deutsch',
-      #          :author => 'Stephan Soller',
-      #          :comment => 'Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.',
-      #          :website => 'http://www.arkanis-development.de/',
-      #          :email => nil, # happens if no email is specified in the language file.
-      #          :date => '2007-01-20'
-      #        }
-      # 
-      def self.about(lang = self.current_language)
-        lang = lang.to_sym
-        raise LangFileNotLoaded.new(lang, loaded_languages) unless loaded_languages.include? lang
         
-        defaults = {
-          :language => nil,
-          :author => nil,
-          :comment => nil,
-          :website => nil,
-          :email => nil,
-          :date => nil
-        }
+        def [](*args)
+          entry(*args)
+        end
         
-        defaults.update self.entry(lang, :about).symbolize_keys
+        # Returns a hash with the meta data of the specified language (defaults
+        # to the currently used language). Entries not present in the language
+        # file will default to +nil+. If the specified language file is not
+        # loaded an +LangFileNotLoaded+ exception is raised.
+        # 
+        #   Language.about :de
+        #   # => {
+        #          :language => 'Deutsch',
+        #          :author => 'Stephan Soller',
+        #          :comment => 'Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.',
+        #          :website => 'http://www.arkanis-development.de/',
+        #          :email => nil, # happens if no email is specified in the language file.
+        #          :date => '2007-01-20'
+        #        }
+        # 
+        def about(lang = self.current_language)
+          lang = lang.to_sym
+          
+          defaults = {
+            :language => nil,
+            :author => nil,
+            :comment => nil,
+            :website => nil,
+            :email => nil,
+            :date => nil
+          }
+          
+          defaults.update self.find(lang, :about).symbolize_keys
+        end
+        
       end
       
     end

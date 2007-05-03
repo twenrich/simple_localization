@@ -1,36 +1,36 @@
 about:
-  language: Français
+  language: FranÃ§ais
   author: Sylvain OBEGI
-  comment:  Fichier de traduction en Français pour simple_localization (premier jet, les pays manquent, n'hésitez pas à envoyer des commentaires ou des patchs).
+  comment:  Fichier de traduction en FranÃ§ais pour simple_localization (premier jet, les pays manquent, n'hÃ©sitez pas Ã  envoyer des commentaires ou des patchs).
   website: none
   email: katios@nolabel.net
   date: 2007-04-29
 
 active_record_messages:
   inclusion: n'est pas inclu dans la liste
-  exclusion: est réservé
+  exclusion: est rÃ©servÃ©
   invalid: est invalide
-  confirmation: ne correspond pas à la confirmation
-  accepted: doit être accepté
-  empty: ne peut être vide
-  blank: ne peut être vide
-  too_long: est trop long (le maximum est de %d caractères)
-  too_short: est trop court (le minimum est de %d caractères)
-  wrong_length: est de la mauvaise taille (devrait être de %d caractères)
-  taken: a déjà été utilisé
+  confirmation: ne correspond pas Ã  la confirmation
+  accepted: doit Ãªtre acceptÃ©
+  empty: ne peut Ãªtre vide
+  blank: ne peut Ãªtre vide
+  too_long: est trop long (le maximum est de %d caractÃ¨res)
+  too_short: est trop court (le minimum est de %d caractÃ¨res)
+  wrong_length: est de la mauvaise taille (devrait Ãªtre de %d caractÃ¨res)
+  taken: a dÃ©jÃ  Ã©tÃ© utilisÃ©
   not_a_number: n'est pas un nombre
 
 dates:
-  monthnames: [Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
+  monthnames: [Janvier, FÃ©vrier, Mars, Avril, Mai, Juin, Juillet, AoÃ»t, Septembre, Octobre, Novembre, DÃ©cembre]
   daynames: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
-  abbr_monthnames: [Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Dec]
+  abbr_monthnames: [Jan, FÃ©v, Mar, Avr, Mai, Juin, Juil, AoÃ», Sep, Oct, Nov, Dec]
   abbr_daynames: [Dim, Lun, Mar, Mer, Jeu, Ven, Sam]
   date_formats:
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
     short: '%e %b %H:%M'
-    long: '%e %B %Y à %H:%M'
+    long: '%e %B %Y Ã  %H:%M'
 
 numbers:
   separator: ','
@@ -48,12 +48,12 @@ countries:
 helpers:
   error_messages_for:
     heading:
-      1: '1 erreur a empêché ce %s d''être enregistré'
-      n: '%d erreurs ont empêché ce %s d''être enregistré'
-    description: 'Il y a eu des problèmes avec les champs suivants:'
+      1: '1 erreur a empÃªchÃ© ce %2$s d''Ãªtre enregistrÃ©'
+      n: '%d erreurs ont empÃªchÃ© ce %s d''Ãªtre enregistrÃ©'
+    description: 'Il y a eu des problÃ¨mes avec les champs suivants:'
   number_to_currency:
     precision: 2
-    unit: '€'
+    unit: 'â‚¬'
     order: [unit, main, separator, fraction]
   number_to_phone:
     area_code: false
