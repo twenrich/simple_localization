@@ -8,8 +8,8 @@ module ArkanisDevelopment #:nodoc:
     #   begin
     #     Language.about :xyz
     #   rescue LangFileNotLoaded => e
-    #     e.failed_lang # => :xyz
-    #     e.loaded_langs # => [:de, :en]
+    #     e.failed_lang   # => :xyz
+    #     e.loaded_langs  # => [:de, :en]
     #   end
     # 
     class LangFileNotLoaded < StandardError
@@ -34,8 +34,8 @@ module ArkanisDevelopment #:nodoc:
     #   begin
     #     Language.find :en, :nonsens, :void
     #   rescue EntryNotFound => e
-    #     e.requested_entry # => [:nonsens, :void]
-    #     e.language # => :en
+    #     e.requested_entry  # => [:nonsens, :void]
+    #     e.language         # => :en
     #   end
     # 
     class EntryNotFound < StandardError
@@ -53,6 +53,19 @@ module ArkanisDevelopment #:nodoc:
     # Error raised if the format method for a language file entry fails. The
     # main purpose of this error is to make debuging easier if format fails.
     # Therefore the detailed error message.
+    # 
+    #   Language.use :en
+    #   
+    #   begin
+    #     Language.entry :active_record_messages, :too_short, ['a']
+    #   rescue EntryFormatError => e
+    #     e.language            # => :en
+    #     e.entry               # => [:active_record_messages, :too_short]
+    #     e.entry_content       # => 'is too short (minimum is %d characters)'
+    #     e.format_values       # => ['a']
+    #     e.original_exception  # => #<ArgumentError: invalid value for Integer: "a">
+    #   end
+    # 
     class EntryFormatError < StandardError
       
       attr_reader :language, :entry, :entry_content, :format_values, :original_exception
@@ -152,7 +165,7 @@ module ArkanisDevelopment #:nodoc:
         # Returns the specified entry from the currently used language file. It's
         # possible to specify neasted entries by using more than one parameter.
         # 
-        #   Language.get :active_record_messages, :too_short  # => "ist zu kurz (mindestens %d Zeichen)."
+        #   Language.entry :active_record_messages, :too_short  # => "ist zu kurz (mindestens %d Zeichen)."
         # 
         # This will return the +too_short+ entry within the +active_record_messages+
         # entry. The YAML code in the language file looks like this:
@@ -166,7 +179,7 @@ module ArkanisDevelopment #:nodoc:
         # This method also integrates +format+. To format an entry specify an
         # array with the format options as the last paramter:
         # 
-        #   Language[:active_record_messages, :too_short, [10]] # => "ist zu kurz (mindestens 10 Zeichen)."
+        #   Language.entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
         # 
         def entry(*args)
           if args.last.kind_of?(Hash)
@@ -181,11 +194,15 @@ module ArkanisDevelopment #:nodoc:
           
           lang_entry = self.find(self.current_language, *args)
           
-          if format_values and not format_values.empty?
+          if format_values
             begin
               format(lang_entry, *format_values)
             rescue StandardError => e
-              raise EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)
+              if self.debug
+                raise EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)
+              else
+                lang_entry
+              end
             end
           else
             lang_entry
