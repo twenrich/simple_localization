@@ -50,6 +50,23 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
+    # Error raised if the format method for a language file entry fails. The
+    # main purpose of this error is to make debuging easier if format fails.
+    # Therefore the detailed error message.
+    class EntryFormatError < StandardError
+      
+      attr_reader :language, :entry, :entry_content, :format_values, :original_exception
+      
+      def initialize(language, entry, entry_content, format_values, original_exception)
+        @language, @entry, @entry_content, @format_values, @original_exception = language, entry, entry_content, format_values, original_exception
+        super "An error occured while formating the language file entry '#{@entry.join('\' -> \'')}'.\n" +
+          "Format string: '#{@entry_content}'\n" +
+          "Format arguments: #{@format_values.collect{|v| v.inspect}.join(', ')}\n" +
+          "Original exception: #{@original_exception.inspect}"
+      end
+      
+    end
+    
     # This class loads, caches and manages the used language files.
     class Language
       
@@ -159,13 +176,17 @@ module ArkanisDevelopment #:nodoc:
           end
           
           if args.last.kind_of?(Array)
-            format_values = args.delete_at(-1).compact
+            format_values = args.delete_at(-1)
           end
           
           lang_entry = self.find(self.current_language, *args)
           
           if format_values and not format_values.empty?
-            format(lang_entry, *format_values)
+            begin
+              format(lang_entry, *format_values)
+            rescue StandardError => e
+              raise EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)
+            end
           else
             lang_entry
           end
