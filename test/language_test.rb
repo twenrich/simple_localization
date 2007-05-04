@@ -41,7 +41,15 @@ class LanguageTest < Test::Unit::TestCase
   
   def test_lang_file_access_with_format
     assert_equal format(@lang_file['helpers']['distance_of_time_in_words']['n minutes'], 1), @lang[:helpers, :distance_of_time_in_words, 'n minutes', [1]]
+    
+    @lang.debug = true
+    assert_raise ArkanisDevelopment::SimpleLocalization::EntryFormatError do
+      @lang[:helpers, :distance_of_time_in_words, 'n minutes', []]
+    end
+    
+    @lang.debug = false
     assert_equal @lang_file['helpers']['distance_of_time_in_words']['n minutes'], @lang[:helpers, :distance_of_time_in_words, 'n minutes', []]
+    @lang.debug = true
   end
   
   def test_simple_lang_section_proxy

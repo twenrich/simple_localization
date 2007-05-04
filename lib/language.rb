@@ -198,11 +198,7 @@ module ArkanisDevelopment #:nodoc:
             begin
               format(lang_entry, *format_values)
             rescue StandardError => e
-              if self.debug
-                raise EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)
-              else
-                lang_entry
-              end
+              self.debug ? raise(EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)) : lang_entry
             end
           else
             lang_entry
