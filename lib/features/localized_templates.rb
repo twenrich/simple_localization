@@ -8,7 +8,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         # Name of file extensions which are handled internally in rails. Other types
         # like liquid has to register through register_handler.
-        @@re_extension = /\.(rjs|rhtml|rxml)$/
+        @@native_extensions = /\.(rjs|rhtml|rxml)$/
         
         @@localized_path_cache = {}
     
@@ -26,7 +26,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         # Override because the original version is too minimalist
         def path_and_extension(template_path) #:nodoc:
-          template_path_without_extension = template_path.sub(@@re_extension, '')
+          template_path_without_extension = template_path.sub(@@native_extensions, '')
           [ template_path_without_extension, $1 ]
         end
         
