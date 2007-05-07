@@ -96,3 +96,5 @@ models:
 # localized_application feature. The entries defined here are accesable by the
 # global method "l". See the RDoc for details.
 app:
+  test:
+    section: Test string

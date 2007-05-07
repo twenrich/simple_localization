@@ -185,7 +185,7 @@ module ArkanisDevelopment #:nodoc:
           if args.last.kind_of?(Hash)
             options = {:values => nil}.merge args.delete_at(-1)
             options.assert_valid_keys :values
-            format_values = options[:values]
+            format_values = Array(options[:values])
           end
           
           if args.last.kind_of?(Array)
