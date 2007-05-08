@@ -36,15 +36,14 @@
 # The +monthnames+, +daynames+, +abbr_monthnames+ and +abbr_daynames+ entries
 # will overwrite the corresponding constants of the Date class. The
 # +date_formats+ and +time_formats+ entries are used to update the formats
-# available to the +to_formated_s+ method.
+# available to the +to_formated_s+ method of the Date and Time classes.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedDateAndTime
     
-    # Just a little helper for the date localization (used in the
-    # +localized_date_and_time+ feature). Converts arrays into hashes with
-    # the array values as keys and their indexes as values. Takes and
-    # optional start index which defaults to 0.
+    # Just a little helper to handle the language file data more easily.
+    # Converts arrays into hashes with the array values as keys and their
+    # indexes as values. Takes and optional start index which defaults to 0.
     # 
     #   convert_to_name_indexed_hash ['Son', 'Mon', 'Din', 'Mit', 'Don', 'Fri', 'Sam'], 1
     #   # => {"Son" => 1, "Mon" => 2, "Din" => 3, "Mit" => 4, "Don" => 5, "Fri" => 6, "Sam" => 7}

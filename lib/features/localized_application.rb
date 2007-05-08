@@ -15,8 +15,33 @@
 #   l(:headings, :wellcome) # => "Wellcome to the RDoc Documentation of this plugin"
 # 
 # The +l+ method is just like the 
-# ArkanisDevelopment::SimpleLocalization::Language#[] operator but is limited
+# ArkanisDevelopment::SimpleLocalization::Language#entry method but is limited
 # to the +app+ section of the language file.
+# 
+# To save some work you can narrow down the scope of the +l+ method even
+# further by using the +l_scope+ method:
+# 
+#   app:
+#     layout:
+#       nav:
+#         main:
+#           home: Homepage
+#           contact: Contact
+#           login: Login
+# 
+#   l :layout, :nav, :main, :home     # => "Homepage"
+#   l :layout, :nav, :main, :contact  # => "Contact"
+# 
+# Same as
+# 
+#   l_scope :layout, :nav, :main do
+#     l :home     # => "Homepage"
+#     l :contact  # => "Contact"
+#   end
+# 
+# Please note that it is NOT possible to nest scopes. Each call to +l_scope+
+# will overwrite the last scope. When used with a block +l_scope+ will restore
+# the previous scope after the block was executed.
 # 
 # == Used sections of the language file
 # 

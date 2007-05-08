@@ -37,7 +37,7 @@
 # Rails version the matching module will be included (see end of file).
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
-  module LocalizedActiveRecordHelpers
+  module LocalizedActiveRecordHelpers #:nodoc:
     
     module Rails12
       

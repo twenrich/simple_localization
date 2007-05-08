@@ -19,7 +19,7 @@ module ArkanisDevelopment #:nodoc:
     
     # A list of features loaded directly in the <code>init.rb</code> of the
     # plugin. This is necessary for some features to work with rails observers.
-    PRELOAD_FEATURES = [:localized_models] - SUPPRESS_FEATURES
+    PRELOAD_FEATURES = [:localized_models] - Array(SUPPRESS_FEATURES).flatten
     
   end
 end
@@ -96,8 +96,9 @@ def simple_localization(options)
   end
   
   preloaded_features = ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES
+  suppressed_features = Array(ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES)
   unwanted_features = preloaded_features - enabled_features
-  to_load_features = enabled_features - preloaded_features
+  to_load_features = enabled_features - preloaded_features - suppressed_features
   
   unless unwanted_features.empty?
     RAILS_DEFAULT_LOGGER.warn "Simple Localization plugin configuration:\n" +

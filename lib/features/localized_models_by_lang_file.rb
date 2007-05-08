@@ -7,8 +7,8 @@
 # loaded language file.
 # 
 # This feature is the right choice if your application should support multiple
-# languages, but only one at runtime. If your application is strictly developed
-# for just one language +localized_models+ is the better choice.
+# languages. If your application is strictly developed for just one language
+# +localized_models+ is the better choice.
 # 
 # To localize a model with this feature just add the necessary section to the
 # languge file. How to do this is descriped in the next chapter.

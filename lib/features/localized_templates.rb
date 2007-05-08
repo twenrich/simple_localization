@@ -1,3 +1,19 @@
+# = Localized templates
+# 
+# This feature extends Rails template handling and allows the use of localized
+# templates like <code>index.de.rhtml</code>. The plugin will then pick the
+# template matching the currently used language
+# (<code>Language#current_language</code>).
+# 
+# The code for this feature is taken from the Globalize plugin for Rails
+# (http://www.globalize-rails.org/) and is slighly modified to avoid naming
+# conflicts. The Globalize team deserves all credit for this great solution.
+# If you find this feature helpful thank them.
+# 
+# == Used sections of the language file
+# 
+# This feature does not use sections from the lanuage file.
+
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedTemplates
     

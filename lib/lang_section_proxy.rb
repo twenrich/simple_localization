@@ -3,9 +3,10 @@ module ArkanisDevelopment #:nodoc:
     
     # This little thing is a big part of the magic of doing things behind Rails
     # back. Basically it mimics an variable (ie. number, array, hash, ...) by
-    # redirecting all calls to it. The target object will be accessed by the
-    # Language#[] accessor and therefore will always return the data for the
-    # currently selcted language without replacing the proxy object.
+    # redirecting all calls to another variable of that kind. The target object
+    # will be accessed by the Language#[] accessor and therefore will always
+    # return the data for the currently selcted language without replacing the
+    # proxy object.
     # 
     # This is useful if Rails stors the target data only in a constant. With
     # this proxy the constant can be replaced once (with a proxy) and will
@@ -77,7 +78,7 @@ module ArkanisDevelopment #:nodoc:
         receiver
       end
       
-      # Intercept all messages and send them to the receiver.
+      # Intercept all other messages and send them to the receiver.
       def method_missing(name, *args, &block)
         self.receiver.send name, *args, &block
       end

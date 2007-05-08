@@ -80,7 +80,7 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
-    # This class loads, caches and manages the used language files.
+    # This class loads, caches and manages access to the used language files.
     class Language
       
       @@cached_language_data = {}
