@@ -10,8 +10,8 @@ simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :on
 # Create a tableless model. See Rails Weenie:
 # http://www.railsweenie.com/forums/2/topics/724
 # The localized_models_test uses a tableless model called Contact. To not mess
-# up validation code (validates_presence_of called twice) this model has
-# another name.
+# up validation code (validates_presence_of called twice, by another test case)
+# this model has another name.
 class Address < ActiveRecord::Base
   
   def self.columns() @columns ||= []; end
@@ -28,6 +28,20 @@ class Address < ActiveRecord::Base
   column :email_address, :string
   
   validates_presence_of :name, :email_address
+  
+end
+
+# Define a model used to tests undefined models in the lang file.
+class UndefinedModel < ActiveRecord::Base
+  
+  def self.columns() @columns ||= []; end
+  def self.column(name, sql_type = nil, default = nil, null = true)
+    column = ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    column.model_class = self
+    columns << column
+  end
+  
+  column :name, :string
   
 end
 
@@ -70,6 +84,17 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
   # the proper class (see extensions/localized_column_human_name.rb).
   def test_column_human_name
     assert_equal @attribute_names[:name], Address.columns.find{|c| c.name == 'name'}.human_name
+  end
+  
+  # Test a bug (EntryNotFound exceptions are raised in development and test
+  # mode for models which are not defined in the language file) reported by
+  # Ralph. If this test passes the bug is fixed.
+  def test_undefined_models
+    [true, false].each do |with_debug_or_not|
+      ArkanisDevelopment::SimpleLocalization::Language.debug = with_debug_or_not
+      assert_nil UndefinedModel.localized_model_name
+      assert_equal 'name'.humanize, UndefinedModel.human_attribute_name('name')
+    end
   end
   
 end
