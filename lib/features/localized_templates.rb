@@ -24,7 +24,8 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         # Name of file extensions which are handled internally in rails. Other types
         # like liquid has to register through register_handler.
-        @@native_extensions = /\.(rjs|rhtml|rxml|html\.erb)$/
+        # The erb extension is used to handle .html.erb templates.
+        @@native_extensions = /\.(rjs|rhtml|rxml|erb)$/
         
         @@localized_path_cache = {}
     
@@ -64,6 +65,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
             end
           else
             template_file_name = template_path
+            #raise [template_path, path_and_extension(template_path)].inspect
             template_extension = path_and_extension(template_path).last
           end
           
