@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Fri Apr 20 20:49:21 Westeuropäische Sommerzeit 2007</td>
+      <td>Tue May 29 18:07:41 +0200 2007</td>
     </tr>
     </table>
   </div>
@@ -69,12 +69,12 @@
   <div id="contextContent">
 
     <div id="description">
-      <h1>Localized <a href="../../../classes/Date.html">Date</a> and <a href="../../../classes/Time.html">Time</a> classes</h1>
+      <h1>Localized <a href="../../../classes/Date.html">Date</a> and Time classes</h1>
 <p>
 This feature will overwrite the month and day name constants of the <a
 href="../../../classes/Date.html">Date</a> class with the proper names from
 the language file. Here <tt>silence_warnings</tt> gets used to prevent
-const reassignment warnings. We know we&#8217;re doing something bad&#8230;
+const reassignment warnings. We know we&#8216;re doing something bad&#8230;
 </p>
 <p>
 Also updates the date formates of the <a
@@ -82,17 +82,16 @@ href="../../../classes/Date.html">Date</a> class with the ones from the
 language file.
 </p>
 <p>
-Next on the <a href="../../../classes/Time.html">Time</a> class is
-localized. More specifically it&#8217;s <tt>strftime</tt> method. This is
-based on the quick&#8217;n dirty localization from Patrick Lenz: <a
+Next on the Time class is localized. More specifically it&#8216;s
+<tt>strftime</tt> method. This is based on the quick&#8216;n dirty
+localization from Patrick Lenz: <a
 href="http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime">poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime</a>.
-It&#8217;s a bit modified to respect the &#8217;%%&#8217; escape sequence.
+It&#8216;s a bit modified to respect the &#8217;%%&#8217; escape sequence.
 </p>
 <p>
 As done with the date formats of the <a
-href="../../../classes/Date.html">Date</a> class the time formats of the <a
-href="../../../classes/Time.html">Time</a> class will be updated, too.
-Again with ones from the language file.
+href="../../../classes/Date.html">Date</a> class the time formats of the
+Time class will be updated, too. Again with ones from the language file.
 </p>
 <h2>Used sections of the language file</h2>
 <p>
@@ -117,7 +116,8 @@ The <tt>monthnames</tt>, <tt>daynames</tt>, <tt>abbr_monthnames</tt> and
 <tt>abbr_daynames</tt> entries will overwrite the corresponding constants
 of the <a href="../../../classes/Date.html">Date</a> class. The
 <tt>date_formats</tt> and <tt>time_formats</tt> entries are used to update
-the formats available to the <tt>to_formated_s</tt> method.
+the formats available to the <tt>to_formated_s</tt> method of the <a
+href="../../../classes/Date.html">Date</a> and Time classes.
 </p>
 
     </div>
@@ -134,6 +134,24 @@ the formats available to the <tt>to_formated_s</tt> method.
     <div id="section">
 
 
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">ABBR_DAYNAMES</td>
+          <td>=</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:dates, :abbr_daynames]</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">MONTHS</td>
+          <td>=</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:dates, :monthnames] do |localized_data|       ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data, 1</td>
+        </tr>
+        </table>
+      </div>
+    </div>
 
 
 

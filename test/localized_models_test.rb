@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :language => LANG, :only => [:localized_models, :localized_error_messages, :localized_active_record_helpers]
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_models, :localized_error_messages, :localized_active_record_helpers]
 
 # Localized names for the model and it's attributes.
 # The city and state attribute are commented out to test attributes with no
@@ -23,7 +23,9 @@ class Contact < ActiveRecord::Base
   
   def self.columns() @columns ||= []; end
   def self.column(name, sql_type = nil, default = nil, null = true)
-    columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    column = ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    column.model_class = self
+    columns << column
   end
   
   column :name,          :string
@@ -73,6 +75,13 @@ class LocalizedModelsTest < Test::Unit::TestCase
     assert_contains html_output, format(localized_title, 1, CONTACT_MODEL_NAME)
     assert_contains html_output, ArkanisDevelopment::SimpleLocalization::Language[:helpers, :error_messages_for, :description]
     assert_contains html_output, CONTACT_ATTRIBUTE_NAMES[:email_address] + ' ' + ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages, :blank]
+  end
+  
+  # This tests the extended Column class. It now holds a reference to the model
+  # class the column belongs to and is using it to call human_attribute_name on
+  # the proper class (see extensions/localized_column_human_name.rb).
+  def test_column_human_name
+    assert_equal CONTACT_ATTRIBUTE_NAMES[:name], Contact.columns.find{|c| c.name == 'name'}.human_name
   end
   
 end

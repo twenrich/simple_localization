@@ -2,155 +2,25 @@
 # application startup and defines the +simple_localization+ method which should
 # be used in the environment.rb file to configure and initialize the
 # localization.
-# 
-# It also defines the Language class which manages the used language file.
 
 module ArkanisDevelopment #:nodoc:
-  module SimpleLocalization #:nodoc:
+  module SimpleLocalization
     
-    # This class loads, caches and manages the used language file.
-    class Language
-      
-      @@cached_language_data = nil
-      
-      cattr_accessor :lang_file_dir, :current_language
-      
-      # Searches the language file for the specified entry. It's possible to
-      # specify neasted entries by using more than one parameter.
-      # 
-      #   Language[:active_record_messages, :not_a_number] # => "ist keine Zahl."
-      # 
-      # This will return the +not_a_number+ entry within the +active_record_messages+
-      # entry. The YAML in the language file looks like this:
-      # 
-      #   active_record_messages:
-      #     not_a_number: ist keine Zahl.
-      # 
-      def self.[](*sections)
-        unless @@cached_language_data
-          raise 'Can not access language data. It seems there is no language ' +
-            'file loaded. Please call the simple_localization method at the ' +
-            'end of your environment.rb file to initialize Simple Localization.'
-        end
-        
-        sections.inject(@@cached_language_data) do |memo, section|
-          memo[(section.kind_of?(Numeric) ? section : section.to_s)] if memo
-        end
-      end
-      
-      # Loads a language file and caches it.
-      # 
-      # The path to the language files can be specified in the +lang_file_dir+
-      # attribute.
-      # 
-      #   Language.load :de
-      # 
-      # This will load the file <code>de.yaml</code> in the language file
-      # directory and caches it in the class.
-      def self.load(language)
-        lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
-        @@cached_language_data = YAML.load_file "#{lang_file_without_ext}.yml"
-        require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
-        self.current_language = language
-      end
-      
-      # Changes the used language by loading the specified language file (using
-      # the +load+ method). It also asks all features to update the ncessary
-      # stuff.
-      # 
-      # You should use this method if you want to switch the localized language
-      # at runtime.
-      def self.switch_to(language)
-        self.load(language)
-        Features.update
-        RAILS_DEFAULT_LOGGER.info "Changed Simple Localization language to '#{language}'"
-      end
-      
-      # Returns a hash with the meta data of the language file. Entries not
-      # present in the language file will default to +nil+.
-      # 
-      #   Language.about
-      #   # => {
-      #          :language => 'Deutsch',
-      #          :author => 'Stephan Soller',
-      #          :comment => 'Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.',
-      #          :website => 'http://www.arkanis-development.de/',
-      #          :email => nil, # happens if no email is specified in the language file.
-      #          :date => '2007-01-20'
-      #        }
-      # 
-      def self.about
-        defaults = {
-          :language => nil,
-          :author => nil,
-          :comment => nil,
-          :website => nil,
-          :email => nil,
-          :date => nil
-        }
-        
-        defaults.update self[:about].symbolize_keys
-      end
-      
-      # Just a little helper for the date localization (used in the
-      # +localized_date_and_time+ feature). Converts arrays into hashes with
-      # the array values as keys and their indexes as values. Takes and
-      # optional start index which defaults to 0.
-      # 
-      # The source array will be read from the specified section of the language
-      # file.
-      # 
-      # The YAML in the language file:
-      # 
-      #   dates:
-      #     abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
-      # 
-      # The method call:
-      # 
-      #   Language.convert_to_name_indexed_hash :section => [:dates, :abbr_daynames]
-      #                                         :start_index => 1
-      #   # => {"Son" => 1, "Mon" => 2, "Din" => 3, "Mit" => 4, "Don" => 5, "Fri" => 6, "Sam" => 7}
-      # 
-      def self.convert_to_name_indexed_hash(options)
-        options.assert_valid_keys :section, :start_index
-        
-        array = self[*options[:section]]
-        array.inject({}) do |memo, day_name|
-          memo[day_name] = array.index(day_name) + (options[:start_index] || 0)
-          memo
-        end
-      end
-      
+    # An array of features which should not be preloaded. If this constant is
+    # already defined it will not be overwritten. This provides a way to
+    # exclude features from preloading. You'll just have to define this
+    # constant by yourself before the Rails::Initializer.run call in your
+    # environment.rb file.
+    begin
+      SUPPRESS_FEATURES
+    rescue NameError
+      SUPPRESS_FEATURES = []
     end
     
-    # Manages a list of actions which should be executed each time a language
-    # file is loaded (when initializing the app _and_ when changing the lang
-    # file on the fly).
-    class Features
-      
-      @@updates = []
-      
-      # Alias for the +add_update+ method.
-      def self.each_time_after_loading_lang_file(&block)
-        add_update(&block)
-      end
-      
-      # Registers a proc to be called after a language file is loaded.
-      def self.add_update(&block)
-        @@updates << block
-      end
-      
-      # Clears all registered updates.
-      def self.clear_updates
-        @@updates.clear
-      end
-      
-      # Calls each registered update proc.
-      def self.update
-        @@updates.each{|action| action.call}
-      end
-      
-    end
+    # A list of features loaded directly in the <code>init.rb</code> of the
+    # plugin. This is necessary for some features to work with rails observers.
+    PRELOAD_FEATURES = [:localized_models] - Array(SUPPRESS_FEATURES).flatten
+    
   end
 end
 
@@ -198,12 +68,24 @@ end
 def simple_localization(options)
   available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   
-  default_options = {:language => 'de', :lang_file_dir => "#{File.dirname(__FILE__)}/../languages"}
+  default_options = {
+    :language => :de,
+    :languages => nil,
+    :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
+    :debug => nil
+  }
   default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
+  languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
+  
+  unless options[:debug].nil?
+    ArkanisDevelopment::SimpleLocalization::Language.debug = options[:debug]
+  else
+    ArkanisDevelopment::SimpleLocalization::Language.debug = (ENV['RAILS_ENV'] != 'production')
+  end
   
   ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
-  ArkanisDevelopment::SimpleLocalization::Language.load(options.delete(:language))
+  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
   
   if options[:only]
     enabled_features = available_features & Array(options[:only])
@@ -213,13 +95,27 @@ def simple_localization(options)
     enabled_features = available_features & options.collect{|feature, enabled| feature if enabled}.compact
   end
   
-  enabled_features.each do |feature|
+  preloaded_features = ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES
+  suppressed_features = Array(ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES)
+  unwanted_features = preloaded_features - enabled_features
+  to_load_features = enabled_features - preloaded_features - suppressed_features
+  
+  unless unwanted_features.empty?
+    RAILS_DEFAULT_LOGGER.warn "Simple Localization plugin configuration:\n" +
+      "  You don't want the feature #{unwanted_features.join(', ')} to be loaded.\n" +
+      "  However to work with rails observers these features are loaded at the end of the plugins init.rb.\n" +
+      '  To suppress a preloaded feature please look into the plugins readme file (chapter "Preloaded features").'
+  end
+  
+  to_load_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
   end
   
-  ArkanisDevelopment::SimpleLocalization::Features.update
+  loaded_features = (enabled_features + preloaded_features).uniq
   
   RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
-    "  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
-    "  features: #{enabled_features.join(', ')}"
+    "  language: #{languages.join(', ')}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
+    "  features: #{loaded_features.join(', ')}"
+  
+  loaded_features
 end

@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper'
 
+# Create a fake model because the +date_select+ helper needs an object to
+# operate on.
 class FakeModelWithDate
   
   attr_reader :date
@@ -12,7 +14,7 @@ end
 
 # Init SimpleLocalization with just the localized_date_helpers feature
 # activated.
-simple_localization :language => LANG, :only => :localized_date_helpers
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_date_helpers, :localized_date_and_time]
 
 class LocalizedDateHelpersTest < Test::Unit::TestCase
   

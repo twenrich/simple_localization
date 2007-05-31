@@ -80,9 +80,7 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000013">human_attribute_name</a>&nbsp;&nbsp;
-      <a href="#M000011">included</a>&nbsp;&nbsp;
-      <a href="#M000012">localized_model_name</a>&nbsp;&nbsp;
+      <a href="#M000014">included</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -104,101 +102,79 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000013" class="method-detail">
-        <a name="M000013"></a>
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
 
         <div class="method-heading">
-          <a href="#M000013" class="method-signature">
-          <span class="method-name">human_attribute_name</span><span class="method-args">(attribute_key_name)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000013-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000013-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/features/localized_models_by_lang_file.rb, line 56</span>
-56:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">human_attribute_name</span>(<span class="ruby-identifier">attribute_key_name</span>)
-57:           <span class="ruby-identifier">localized_attributes</span> = <span class="ruby-constant">Language</span>[<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:attributes</span>]
-58:           <span class="ruby-identifier">localized_attributes</span> <span class="ruby-value">? </span><span class="ruby-identifier">localized_attributes</span>[<span class="ruby-identifier">attribute_key_name</span>.<span class="ruby-identifier">to_s</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword kw">super</span>
-59:         <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000011" class="method-detail">
-        <a name="M000011"></a>
-
-        <div class="method-heading">
-          <a href="#M000011" class="method-signature">
+          <a href="#M000014" class="method-signature">
           <span class="method-name">included</span><span class="method-args">(base)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-This method adds the <tt><a
-href="LocalizedModelsByLangFile.html#M000012">localized_model_name</a></tt>
-and the <tt><a
-href="LocalizedModelsByLangFile.html#M000013">human_attribute_name</a></tt>
-to the ActiveRecord::Base class.
+This method adds the <tt>localized_model_name</tt> and the
+<tt>human_attribute_name</tt> to the <a
+href="../../ActiveRecord/Base.html">ActiveRecord::Base</a> class. The
+original <tt>human_attribute_name</tt> is still available as
+<tt>human_attribute_name_without_localization</tt>.
 </p>
 <p>
-<tt><a
-href="LocalizedModelsByLangFile.html#M000012">localized_model_name</a></tt>
-looks for the localized model name in the language file and <tt><a
-href="LocalizedModelsByLangFile.html#M000013">human_attribute_name</a></tt>
-looks for the localized attribute names. <tt><a
-href="LocalizedModelsByLangFile.html#M000012">localized_model_name</a></tt>
-returns <tt>nil</tt> if no matching entry could be found. <tt><a
-href="LocalizedModelsByLangFile.html#M000013">human_attribute_name</a></tt>
-calls the super method if no entry matches and therefore falls back to
-Rails default behavior.
+<tt>localized_model_name</tt> returns the localized model name from the
+language file. If no localized name is available <tt>nil</tt> is returned.
+</p>
+<p>
+The new <tt>human_attribute_name</tt> looks for the localized name of the
+attribute. If the language file does not contain a matching entry the
+requrest will be redirected to the original <tt>human_attribute_name</tt>
+method.
+</p>
+<p>
+Note: since we are extending <a
+href="../../ActiveRecord/Base.html">ActiveRecord::Base</a> it&#8216;s
+possible to call both methods directly on the base class (the
+<tt>scaffold</tt> method does this indirectly on the
+<tt>human_attribute_name</tt> method using Column#human_name). In this case
+we simply don&#8216;t know which table or model we belong to and therefore
+we can&#8216;t access the localized data. To prevent error messages in this
+situation (&quot;undefined method `abstract_class?&#8217; for
+Object:Class&quot; because Base#table_name doesn&#8216;t work here)
+<tt>localized_model_name</tt> returns <tt>nil</tt> and
+<tt>human_attribute_name</tt> delegates the request to it&#8216;s former
+non localized version (which doesn&#8216;t need to know the table name
+because it simply asks the Inflector).
+</p>
+<p>
+This drawback of the scaffold method is fixed by the
+localized_column_human_name extension.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000011-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000011-source">
+            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000014-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/features/localized_models_by_lang_file.rb, line 49</span>
-49:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)
-50:       <span class="ruby-keyword kw">class</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>
-51:         
-52:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">localized_model_name</span>
-53:           <span class="ruby-constant">Language</span>[<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:name</span>]
-54:         <span class="ruby-keyword kw">end</span>
-55:         
-56:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">human_attribute_name</span>(<span class="ruby-identifier">attribute_key_name</span>)
-57:           <span class="ruby-identifier">localized_attributes</span> = <span class="ruby-constant">Language</span>[<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:attributes</span>]
-58:           <span class="ruby-identifier">localized_attributes</span> <span class="ruby-value">? </span><span class="ruby-identifier">localized_attributes</span>[<span class="ruby-identifier">attribute_key_name</span>.<span class="ruby-identifier">to_s</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword kw">super</span>
-59:         <span class="ruby-keyword kw">end</span>
-60:         
-61:       <span class="ruby-keyword kw">end</span>
-62:     <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000012" class="method-detail">
-        <a name="M000012"></a>
-
-        <div class="method-heading">
-          <a href="#M000012" class="method-signature">
-          <span class="method-name">localized_model_name</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000012-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000012-source">
-<pre>
-    <span class="ruby-comment cmt"># File lib/features/localized_models_by_lang_file.rb, line 52</span>
-52:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">localized_model_name</span>
-53:           <span class="ruby-constant">Language</span>[<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:name</span>]
-54:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/features/localized_models_by_lang_file.rb, line 65</span>
+65:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)
+66:       <span class="ruby-keyword kw">class</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">base</span>
+67:         
+68:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">localized_model_name</span>
+69:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+70:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span> <span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:name</span>
+71:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">EntryNotFound</span>
+72:           <span class="ruby-keyword kw">nil</span>
+73:         <span class="ruby-keyword kw">end</span>
+74:         
+75:         <span class="ruby-identifier">alias_method</span> <span class="ruby-identifier">:human_attribute_name_without_localization</span>, <span class="ruby-identifier">:human_attribute_name</span>
+76:         
+77:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">human_attribute_name</span>(<span class="ruby-identifier">attribute_key_name</span>)
+78:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+79:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span>(<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:attributes</span>, <span class="ruby-identifier">attribute_key_name</span>) <span class="ruby-operator">||</span>
+80:             <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>)
+81:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">EntryNotFound</span>
+82:           <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>)
+83:         <span class="ruby-keyword kw">end</span>
+84:         
+85:       <span class="ruby-keyword kw">end</span>
+86:     <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

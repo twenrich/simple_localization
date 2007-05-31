@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Fri Apr 20 20:43:06 Westeuropäische Sommerzeit 2007</td>
+      <td>Thu May 31 19:33:16 +0200 2007</td>
     </tr>
     </table>
   </div>
@@ -75,9 +75,6 @@ application startup and defines the <tt><a
 href="base_rb.html#M000001">simple_localization</a></tt> method which
 should be used in the environment.rb file to configure and initialize the
 localization.
-</p>
-<p>
-It also defines the Language class which manages the used language file.
 </p>
 
     </div>
@@ -181,35 +178,61 @@ plugin.
             onclick="toggleCode('M000001-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000001-source">
 <pre>
-     <span class="ruby-comment cmt"># File lib/base.rb, line 198</span>
-198: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">simple_localization</span>(<span class="ruby-identifier">options</span>)
-199:   <span class="ruby-identifier">available_features</span> = <span class="ruby-constant">Dir</span>[<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">'/features/*.rb'</span>].<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">path</span>, <span class="ruby-value str">'.rb'</span>).<span class="ruby-identifier">to_sym</span>}
-200:   
-201:   <span class="ruby-identifier">default_options</span> = {<span class="ruby-identifier">:language</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'de'</span>, <span class="ruby-identifier">:lang_file_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{File.dirname(__FILE__)}/../languages&quot;</span>}
-202:   <span class="ruby-identifier">default_options</span> = <span class="ruby-identifier">available_features</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-identifier">default_options</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">memo</span>, <span class="ruby-identifier">feature</span><span class="ruby-operator">|</span> <span class="ruby-identifier">memo</span>[<span class="ruby-identifier">feature</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-keyword kw">true</span>; <span class="ruby-identifier">memo</span>}
-203:   <span class="ruby-identifier">options</span> = <span class="ruby-identifier">default_options</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">options</span>)
-204:   
-205:   <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">lang_file_dir</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:lang_file_dir</span>)
-206:   <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:language</span>))
-207:   
-208:   <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:only</span>]
-209:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">&amp;</span> <span class="ruby-constant">Array</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:only</span>])
-210:   <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:except</span>]
-211:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">-</span> <span class="ruby-constant">Array</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:except</span>])
-212:   <span class="ruby-keyword kw">else</span>
-213:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">&amp;</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">feature</span>, <span class="ruby-identifier">enabled</span><span class="ruby-operator">|</span> <span class="ruby-identifier">feature</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">enabled</span>}.<span class="ruby-identifier">compact</span>
-214:   <span class="ruby-keyword kw">end</span>
-215:   
-216:   <span class="ruby-identifier">enabled_features</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">feature</span><span class="ruby-operator">|</span>
-217:     <span class="ruby-identifier">require</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>) <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/features/#{feature}&quot;</span>
-218:   <span class="ruby-keyword kw">end</span>
-219:   
-220:   <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Features</span>.<span class="ruby-identifier">update</span>
-221:   
-222:   <span class="ruby-constant">RAILS_DEFAULT_LOGGER</span>.<span class="ruby-identifier">debug</span> <span class="ruby-value str">&quot;Initialized Simple Localization plugin:\n&quot;</span> <span class="ruby-operator">+</span>
-223:     <span class="ruby-node">&quot;  language: #{ArkanisDevelopment::SimpleLocalization::Language.current_language}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n&quot;</span> <span class="ruby-operator">+</span>
-224:     <span class="ruby-node">&quot;  features: #{enabled_features.join(', ')}&quot;</span>
-225: <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/base.rb, line 68</span>
+ 68: <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">simple_localization</span>(<span class="ruby-identifier">options</span>)
+ 69:   <span class="ruby-identifier">available_features</span> = <span class="ruby-constant">Dir</span>[<span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">'/features/*.rb'</span>].<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">path</span>, <span class="ruby-value str">'.rb'</span>).<span class="ruby-identifier">to_sym</span>}
+ 70:   
+ 71:   <span class="ruby-identifier">default_options</span> = {
+ 72:     <span class="ruby-identifier">:language</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">:de</span>,
+ 73:     <span class="ruby-identifier">:languages</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>,
+ 74:     <span class="ruby-identifier">:lang_file_dir</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;#{File.dirname(__FILE__)}/../languages&quot;</span>,
+ 75:     <span class="ruby-identifier">:debug</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>
+ 76:   }
+ 77:   <span class="ruby-identifier">default_options</span> = <span class="ruby-identifier">available_features</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-identifier">default_options</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">memo</span>, <span class="ruby-identifier">feature</span><span class="ruby-operator">|</span> <span class="ruby-identifier">memo</span>[<span class="ruby-identifier">feature</span>.<span class="ruby-identifier">to_sym</span>] = <span class="ruby-keyword kw">true</span>; <span class="ruby-identifier">memo</span>}
+ 78:   <span class="ruby-identifier">options</span> = <span class="ruby-identifier">default_options</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">options</span>)
+ 79:   <span class="ruby-identifier">languages</span> = [<span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:languages</span>), <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:language</span>)].<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">uniq</span>
+ 80:   
+ 81:   <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:debug</span>].<span class="ruby-identifier">nil?</span>
+ 82:     <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">debug</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:debug</span>]
+ 83:   <span class="ruby-keyword kw">else</span>
+ 84:     <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">debug</span> = (<span class="ruby-constant">ENV</span>[<span class="ruby-value str">'RAILS_ENV'</span>] <span class="ruby-operator">!=</span> <span class="ruby-value str">'production'</span>)
+ 85:   <span class="ruby-keyword kw">end</span>
+ 86:   
+ 87:   <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">lang_file_dir</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:lang_file_dir</span>)
+ 88:   <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">languages</span>)
+ 89:   
+ 90:   <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:only</span>]
+ 91:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">&amp;</span> <span class="ruby-constant">Array</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:only</span>])
+ 92:   <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:except</span>]
+ 93:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">-</span> <span class="ruby-constant">Array</span>(<span class="ruby-identifier">options</span>[<span class="ruby-identifier">:except</span>])
+ 94:   <span class="ruby-keyword kw">else</span>
+ 95:     <span class="ruby-identifier">enabled_features</span> = <span class="ruby-identifier">available_features</span> <span class="ruby-operator">&amp;</span> <span class="ruby-identifier">options</span>.<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">feature</span>, <span class="ruby-identifier">enabled</span><span class="ruby-operator">|</span> <span class="ruby-identifier">feature</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">enabled</span>}.<span class="ruby-identifier">compact</span>
+ 96:   <span class="ruby-keyword kw">end</span>
+ 97:   
+ 98:   <span class="ruby-identifier">preloaded_features</span> = <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">PRELOAD_FEATURES</span>
+ 99:   <span class="ruby-identifier">suppressed_features</span> = <span class="ruby-constant">Array</span>(<span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">SUPPRESS_FEATURES</span>)
+100:   <span class="ruby-identifier">unwanted_features</span> = <span class="ruby-identifier">preloaded_features</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">enabled_features</span>
+101:   <span class="ruby-identifier">to_load_features</span> = <span class="ruby-identifier">enabled_features</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">preloaded_features</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">suppressed_features</span>
+102:   
+103:   <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">unwanted_features</span>.<span class="ruby-identifier">empty?</span>
+104:     <span class="ruby-constant">RAILS_DEFAULT_LOGGER</span>.<span class="ruby-identifier">warn</span> <span class="ruby-value str">&quot;Simple Localization plugin configuration:\n&quot;</span> <span class="ruby-operator">+</span>
+105:       <span class="ruby-node">&quot;  You don't want the feature #{unwanted_features.join(', ')} to be loaded.\n&quot;</span> <span class="ruby-operator">+</span>
+106:       <span class="ruby-value str">&quot;  However to work with rails observers these features are loaded at the end of the plugins init.rb.\n&quot;</span> <span class="ruby-operator">+</span>
+107:       <span class="ruby-value str">'  To suppress a preloaded feature please look into the plugins readme file (chapter &quot;Preloaded features&quot;).'</span>
+108:   <span class="ruby-keyword kw">end</span>
+109:   
+110:   <span class="ruby-identifier">to_load_features</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">feature</span><span class="ruby-operator">|</span>
+111:     <span class="ruby-identifier">require</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span>(<span class="ruby-keyword kw">__FILE__</span>) <span class="ruby-operator">+</span> <span class="ruby-node">&quot;/features/#{feature}&quot;</span>
+112:   <span class="ruby-keyword kw">end</span>
+113:   
+114:   <span class="ruby-identifier">loaded_features</span> = (<span class="ruby-identifier">enabled_features</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">preloaded_features</span>).<span class="ruby-identifier">uniq</span>
+115:   
+116:   <span class="ruby-constant">RAILS_DEFAULT_LOGGER</span>.<span class="ruby-identifier">debug</span> <span class="ruby-value str">&quot;Initialized Simple Localization plugin:\n&quot;</span> <span class="ruby-operator">+</span>
+117:     <span class="ruby-node">&quot;  language: #{languages.join(', ')}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n&quot;</span> <span class="ruby-operator">+</span>
+118:     <span class="ruby-node">&quot;  features: #{loaded_features.join(', ')}&quot;</span>
+119:   
+120:   <span class="ruby-identifier">loaded_features</span>
+121: <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

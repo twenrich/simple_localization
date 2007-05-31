@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Fri Apr 20 20:56:17 Westeuropäische Sommerzeit 2007</td>
+      <td>Tue May 29 18:07:41 +0200 2007</td>
     </tr>
     </table>
   </div>
@@ -83,24 +83,8 @@ list is used by some helpers of this module (ie.
 <p>
 This feature uses the <tt>countries</tt> section of the language file. This
 section contains a map used to replace the default countries with the ones
-specified. This is a simple replace operation so you don&#8217;t need to
+specified. This is a simple replace operation so you don&#8216;t need to
 translate all countries for this feature to work.
-</p>
-<h2>Notes</h2>
-<p>
-This feature keeps a private copy of the original <tt>COUNTRIES</tt>
-constant in it&#8217;s <tt>LocalizedFormOptionsHelpers</tt> module. This
-backup is used to create a localized list each time a language file is
-loaded. If you manipulate the
-<tt>ActionView::Helpers::FormOptionsHelper::COUNTRIES</tt> constant by
-yourself after calling the <tt>simple_localization</tt> method these
-changes are lost each time a language file is loaded.
-</p>
-<p>
-If you don&#8217;t plan to switch to another language file during runtime
-this won&#8217;t be a problem. If you do, please make your changes to the
-<tt>COUNTRIES</tt> constant before calling the <tt>simple_localization</tt>
-method.
 </p>
 
     </div>
@@ -125,7 +109,7 @@ method.
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">COUNTRIES</td>
           <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::LocalizedFormOptionsHelpers::ORIGINAL_COUNTRIES.collect do |orginal_country|       ArkanisDevelopment::SimpleLocalization::Language[:countries][orginal_country] || orginal_country</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:countries],   :orginal_receiver =&gt; ActionView::Helpers::FormOptionsHelper::COUNTRIES do |localized, orginal|     orginal.collect{|original_country| localized[original_country] || original_country}</td>
         </tr>
         </table>
       </div>

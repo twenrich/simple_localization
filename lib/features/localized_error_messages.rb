@@ -23,10 +23,7 @@
 #     not_a_number: is not a number
 # 
 
-ArkanisDevelopment::SimpleLocalization::Features.each_time_after_loading_lang_file do
-  
-  ActiveRecord::Errors.default_error_messages.update(
-    ArkanisDevelopment::SimpleLocalization::Language[:active_record_messages].symbolize_keys
-  )
-  
+ActiveRecord::Errors.default_error_messages = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:active_record_messages],
+  :orginal_receiver => ActiveRecord::Errors.default_error_messages do |localized, orginal|
+  orginal.merge localized.symbolize_keys
 end

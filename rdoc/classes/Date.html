@@ -99,42 +99,17 @@
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">MONTHNAMES</td>
           <td>=</td>
-          <td class="context-item-value">[nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :monthnames]</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:dates, :monthnames] do |localized_data|       [nil] + localized_data</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">DAYNAMES</td>
           <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language[:dates, :daynames]</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:dates, :daynames]</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">ABBR_MONTHNAMES</td>
           <td>=</td>
-          <td class="context-item-value">[nil] + ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_monthnames]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">ABBR_DAYNAMES</td>
-          <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language[:dates, :abbr_daynames]</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">MONTHS</td>
-          <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section =&gt; [:dates, :monthnames], :start_index =&gt; 1</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">DAYS</td>
-          <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section =&gt; [:dates, :daynames], :start_index =&gt; 0</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">ABBR_MONTHS</td>
-          <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section =&gt; [:dates, :abbr_monthnames], :start_index =&gt; 1</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">ABBR_DAYS</td>
-          <td>=</td>
-          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::Language.convert_to_name_indexed_hash :section =&gt; [:dates, :abbr_daynames], :start_index =&gt; 0</td>
+          <td class="context-item-value">ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections =&gt; [:dates, :abbr_monthnames] do |localized_data|       [nil] + localized_data</td>
         </tr>
         </table>
       </div>

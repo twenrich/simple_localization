@@ -91,7 +91,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc
       
       def number_to_percentage(number, options = {})
         options = Language[:numbers].stringify_keys.update(options.stringify_keys)
-        super number, options
+        super(number, options).gsub Language[:numbers, :separator], options['separator']
       end
       
       def number_to_phone(number, options = {})

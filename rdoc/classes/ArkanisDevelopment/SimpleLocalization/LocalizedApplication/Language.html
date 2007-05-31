@@ -88,7 +88,8 @@ class with all necessary class methods.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000004">app</a>&nbsp;&nbsp;
+      <a href="#M000006">app</a>&nbsp;&nbsp;
+      <a href="#M000007">app_with_scope</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -110,23 +111,24 @@ class with all necessary class methods.
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000004" class="method-detail">
-        <a name="M000004"></a>
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
 
         <div class="method-heading">
-          <a href="#M000004" class="method-signature">
+          <a href="#M000006" class="method-signature">
           <span class="method-name">app</span><span class="method-args">(*params)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-The <tt>app</tt> class method will act like the <a
+The <tt><a href="Language.html#M000006">app</a></tt> class method will act
+like the <a
 href="../Language.html">ArkanisDevelopment::SimpleLocalization::Language</a>#[]
-operator but restricts the scope on the <tt>app</tt> section of the
-language file. The method should be used for application localization and
-therefor there is no need to access other sections of the language file
-with this method.
+operator but restricts the scope on the <tt><a
+href="Language.html#M000006">app</a></tt> section of the language file. The
+method should be used for application localization and therefor there is no
+need to access other sections of the language file with this method.
 </p>
 <pre>
   app:
@@ -136,14 +138,99 @@ with this method.
 
   Language.app(:index, :subtitle) # =&gt; &quot;Have a nice day...&quot;
 </pre>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000004-source">
+<p>
+You can restrict the scope even further by using the <tt><a
+href="Language.html#M000007">app_with_scope</a></tt> method.
+</p>
 <pre>
-    <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 60</span>
-60:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">app</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">params</span>)
-61:         <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">:app</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">params</span>]
-62:       <span class="ruby-keyword kw">end</span>
+  Language.app_with_scope :index
+  Language.app :subtitle # =&gt; &quot;Have a nice day...&quot;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000006-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 94</span>
+94:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">app</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">params</span>)
+95:         <span class="ruby-ivar">@@app_scope</span> <span class="ruby-operator">||=</span> []
+96:         <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">entry</span> <span class="ruby-identifier">:app</span>, <span class="ruby-operator">*</span>(<span class="ruby-ivar">@@app_scope</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">params</span>)
+97:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="#M000007" class="method-signature">
+          <span class="method-name">app_with_scope</span><span class="method-args">(*scope_sections) {|| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Narrows down the scope of the <tt><a
+href="Language.html#M000006">app</a></tt> method. Useful if you have a very
+nested language file:
+</p>
+<pre>
+  app:
+    layout:
+      nav:
+        main:
+          home: Homepage
+          contact: Contact
+          about: About
+</pre>
+<p>
+Usually the calls to the <tt><a href="Language.html#M000006">app</a></tt>
+method would look like this:
+</p>
+<pre>
+  Language.app :layout, :nav, :main, :home     # =&gt; &quot;Homepage&quot;
+  Language.app :layout, :nav, :main, :contact  # =&gt; &quot;Contact&quot;
+  Language.app :layout, :nav, :main, :about    # =&gt; &quot;About&quot;
+</pre>
+<p>
+In this situation you can use <tt><a
+href="Language.html#M000007">app_with_scope</a></tt> to save some work:
+</p>
+<pre>
+  Language.app_with_scope :layout, :nav, :main do
+    Language.app :home     # =&gt; &quot;Homepage&quot;
+    Language.app :contact  # =&gt; &quot;Contact&quot;
+    Language.app :about    # =&gt; &quot;About&quot;
+  end
+</pre>
+<p>
+Every call to the <tt><a href="Language.html#M000006">app</a></tt> method
+inside the block will automaticaly prepended with the language file
+sections you specified to <tt><a
+href="Language.html#M000007">app_with_scope</a></tt>.
+</p>
+<p>
+PLEASE NOTE: It&#8216;s currently not possible to nest <tt><a
+href="Language.html#M000007">app_with_scope</a></tt> calls. If no block is
+specified the scope will be set directly and you will have to reset it by
+your own.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000007-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000007-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 131</span>
+131:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">app_with_scope</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">scope_sections</span>)
+132:         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+133:           <span class="ruby-identifier">old_scope</span> = <span class="ruby-ivar">@@app_scope</span>
+134:           <span class="ruby-ivar">@@app_scope</span> = <span class="ruby-identifier">scope_sections</span>
+135:           <span class="ruby-keyword kw">yield</span>
+136:           <span class="ruby-ivar">@@app_scope</span> = <span class="ruby-identifier">old_scope</span>
+137:         <span class="ruby-keyword kw">else</span>
+138:           <span class="ruby-ivar">@@app_scope</span> = <span class="ruby-identifier">scope_sections</span>
+139:         <span class="ruby-keyword kw">end</span>
+140:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

@@ -87,7 +87,8 @@ included into the Object class.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000003">l</a>&nbsp;&nbsp;
+      <a href="#M000004">l</a>&nbsp;&nbsp;
+      <a href="#M000005">l_scope</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -109,11 +110,11 @@ included into the Object class.
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000003" class="method-detail">
-        <a name="M000003"></a>
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
 
         <div class="method-heading">
-          <a href="#M000003" class="method-signature">
+          <a href="#M000004" class="method-signature">
           <span class="method-name">l</span><span class="method-args">(*sections)</span>
           </a>
         </div>
@@ -121,16 +122,43 @@ included into the Object class.
         <div class="method-description">
           <p>
 Defines a global shortcut for the <a
-href="Language.html#M000004">Language#app</a> method.
+href="Language.html#M000006">Language#app</a> method.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000003-source">
+            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000004-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 71</span>
-71:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">l</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>)
-72:         <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">app</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>)
-73:       <span class="ruby-keyword kw">end</span>
+     <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 149</span>
+149:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">l</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>)
+150:         <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">app</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>)
+151:       <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="#M000005" class="method-signature">
+          <span class="method-name">l_scope</span><span class="method-args">(*sections, &amp;block)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+The global shortcut for the <a
+href="Language.html#M000007">Language#app_with_scope</a> method.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000005-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/features/localized_application.rb, line 154</span>
+154:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">l_scope</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+155:         <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>.<span class="ruby-identifier">app_with_scope</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">sections</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+156:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

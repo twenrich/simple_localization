@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Fri Apr 20 20:43:06 Westeuropäische Sommerzeit 2007</td>
+      <td>Tue May 29 18:07:41 +0200 2007</td>
     </tr>
     </table>
   </div>
@@ -88,9 +88,40 @@ simply everywhere.
   l(:headings, :wellcome) # =&gt; &quot;Wellcome to the RDoc Documentation of this plugin&quot;
 </pre>
 <p>
-The <tt>l</tt> method is just like the <a
-href="../../../classes/ArkanisDevelopment/SimpleLocalization/Language.html">ArkanisDevelopment::SimpleLocalization::Language</a>#[]
-operator but is limited to the <tt>app</tt> section of the language file.
+The <tt>l</tt> method is just like the
+ArkanisDevelopment::SimpleLocalization::Language#entry method but is
+limited to the <tt>app</tt> section of the language file.
+</p>
+<p>
+To save some work you can narrow down the scope of the <tt>l</tt> method
+even further by using the <tt>l_scope</tt> method:
+</p>
+<pre>
+  app:
+    layout:
+      nav:
+        main:
+          home: Homepage
+          contact: Contact
+          login: Login
+
+  l :layout, :nav, :main, :home     # =&gt; &quot;Homepage&quot;
+  l :layout, :nav, :main, :contact  # =&gt; &quot;Contact&quot;
+</pre>
+<p>
+Same as
+</p>
+<pre>
+  l_scope :layout, :nav, :main do
+    l :home     # =&gt; &quot;Homepage&quot;
+    l :contact  # =&gt; &quot;Contact&quot;
+  end
+</pre>
+<p>
+Please note that it is NOT possible to nest scopes. Each call to
+<tt>l_scope</tt> will overwrite the last scope. When used with a block
+<tt>l_scope</tt> will restore the previous scope after the block was
+executed.
 </p>
 <h2>Used sections of the language file</h2>
 <p>
