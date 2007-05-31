@@ -4,7 +4,7 @@
 # localization.
 
 module ArkanisDevelopment #:nodoc:
-  module SimpleLocalization #:nodoc:
+  module SimpleLocalization
     
     # An array of features which should not be preloaded. If this constant is
     # already defined it will not be overwritten. This provides a way to
