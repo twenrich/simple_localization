@@ -77,6 +77,8 @@ helpers:
     about 1 month: about 1 month
     n months: %i months
     about 1 year: about 1 year
+    over 2 years: just over 2 years
+    over 3 years: only over 3 years
     over n years: over %i years
 
 # Add your the model translations as descriped in the
