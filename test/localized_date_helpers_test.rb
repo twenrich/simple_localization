@@ -30,12 +30,19 @@ class LocalizedDateHelpersTest < Test::Unit::TestCase
   end
   
   def test_distance_of_time_in_words
-    from, to = Time.now, 10.hours.from_now
-    output_mask = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :distance_of_time_in_words]['about n hours']
-    expected_output = format(output_mask, ((from - to).abs / 60 / 60).round)
+    lang = ArkanisDevelopment::SimpleLocalization::Language[:helpers, :distance_of_time_in_words]
+    now, to = Time.now, 10.hours.from_now
     
-    assert_equal expected_output, distance_of_time_in_words(from, to)
+    expected_output = format(lang['about n hours'], ((now - to).abs / 60 / 60).round)
+    assert_equal expected_output, distance_of_time_in_words(now, to)
     assert_equal expected_output, distance_of_time_in_words_to_now(10.hours.ago)
+    
+    assert_equal lang['about 1 year'], distance_of_time_in_words(now, 1.year.from_now)
+    [2, 3, 4, 5].each do |number_of_years|
+      entry = lang["over #{number_of_years} years"] || lang['over n years']
+      assert_equal format(entry, number_of_years), distance_of_time_in_words(now, number_of_years.years.from_now)
+    end
+    assert_equal format(lang['over n years'], 15), distance_of_time_in_words(now, 15.year.from_now)
   end
   
 end

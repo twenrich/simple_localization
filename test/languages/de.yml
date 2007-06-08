@@ -74,6 +74,9 @@ helpers:
     about 1 month: ungefähr ein Monat
     n months: %i Monate
     about 1 year: ungefähr 1 Jahr
+    over 2 years: über 2 Jährchen
+    over 3 years: über 3 Jährchen
+    over 4 years: über 4 Jährchen
     over n years: über %i Jahre
 
 countries:

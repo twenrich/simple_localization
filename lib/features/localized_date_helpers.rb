@@ -78,7 +78,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         when 43200..86399    then lang['about 1 month']
         when 86400..525959   then format(lang['n months'], (distance_in_minutes / 43200).round)
         when 525960..1051919 then lang['about 1 year']
-        else                      format(lang['over n years'], (distance_in_minutes / 525960).round)
+        else
+          years = (distance_in_minutes / 525960).round
+          format(lang["over #{years} years"] || lang['over n years'], years)
       end
     end
     
