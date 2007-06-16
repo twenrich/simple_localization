@@ -1,10 +1,9 @@
 # Load the Language and LangSectionProxy classes and at the end the base file.
 # It will define the simple_localization method which will do all necessary
 # stuff.
-require File.dirname(__FILE__) + '/lib/language'
-require File.dirname(__FILE__) + '/lib/lang_section_proxy'
-require File.dirname(__FILE__) + '/lib/cached_lang_section_proxy'
-require File.dirname(__FILE__) + '/lib/base'
+Dir[File.dirname(__FILE__) + '/lib/*.rb'].each do |lib_file|
+  require lib_file
+end
 
 # Preload any features which have to be ready immediately so they can be used
 # by models which have observer attected to them (which causes them to be
