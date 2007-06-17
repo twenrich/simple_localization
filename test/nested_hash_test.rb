@@ -71,4 +71,19 @@ class NestedHashTest < Test::Unit::TestCase
     assert_kind_of ArkanisDevelopment::SimpleLocalization::NestedHash, hash_to_test[:b, :z]
   end
   
+  def test_dup
+    hash = ArkanisDevelopment::SimpleLocalization::NestedHash.from @default_hash
+    new_hash = hash.dup
+    
+    assert_not_equal new_hash.object_id, hash.object_id
+    assert_equal new_hash[:a].object_id, hash[:a].object_id
+    assert_not_equal new_hash[:b].object_id, hash[:b].object_id
+    assert_equal new_hash[:b, :y].object_id, hash[:b, :y].object_id
+    assert_not_equal new_hash[:b, :z].object_id, hash[:b, :z].object_id
+    
+    new_hash[:b, :z] = nil
+    assert_nil new_hash[:b, :z]
+    assert_not_nil hash[:b, :z]
+  end
+  
 end

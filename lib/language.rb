@@ -1,84 +1,8 @@
+require File.dirname(__FILE__) + '/lang_file'
+require File.dirname(__FILE__) + '/errors'
+
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
-    
-    # Custom error class raised if the uses tries to select a language file
-    # which is not loaded. Also stores the name of the failed language file and
-    # a list of the loaded ones.
-    # 
-    #   begin
-    #     Language.about :xyz
-    #   rescue LangFileNotLoaded => e
-    #     e.failed_lang   # => :xyz
-    #     e.loaded_langs  # => [:de, :en]
-    #   end
-    # 
-    class LangFileNotLoaded < StandardError
-      
-      attr_reader :failed_lang, :loaded_langs
-      
-      def initialize(failed_lang, loaded_langs)
-        @failed_lang, @loaded_lang = failed_lang, loaded_langs
-        super "The language file \"#{failed_lang}\" is not loaded (currently " +
-          "loaded: #{loaded_langs.join(', ')}). Please call the " +
-          'simple_localization method at the end of your environment.rb ' +
-          'file to initialize Simple Localization or modify this call to ' +
-          'include the selected language.'
-      end
-      
-    end
-    
-    # This error is raised if a requested entry could not be found. This error
-    # also stores the requested entry and the language for which the entry
-    # could not be found.
-    # 
-    #   begin
-    #     Language.find :en, :nonsens, :void
-    #   rescue EntryNotFound => e
-    #     e.requested_entry  # => [:nonsens, :void]
-    #     e.language         # => :en
-    #   end
-    # 
-    class EntryNotFound < StandardError
-      
-      attr_reader :requested_entry, :language
-      
-      def initialize(requested_entry, language)
-        @requested_entry, @language = Array(requested_entry), language
-        super "The requested entry '#{@requested_entry.join('\' -> \'')}' could " +
-          "not be found in the language '#{@language}'."
-      end
-      
-    end
-    
-    # Error raised if the format method for a language file entry fails. The
-    # main purpose of this error is to make debuging easier if format fails.
-    # Therefore the detailed error message.
-    # 
-    #   Language.use :en
-    #   
-    #   begin
-    #     Language.entry :active_record_messages, :too_short, ['a']
-    #   rescue EntryFormatError => e
-    #     e.language            # => :en
-    #     e.entry               # => [:active_record_messages, :too_short]
-    #     e.entry_content       # => 'is too short (minimum is %d characters)'
-    #     e.format_values       # => ['a']
-    #     e.original_exception  # => #<ArgumentError: invalid value for Integer: "a">
-    #   end
-    # 
-    class EntryFormatError < StandardError
-      
-      attr_reader :language, :entry, :entry_content, :format_values, :original_exception
-      
-      def initialize(language, entry, entry_content, format_values, original_exception)
-        @language, @entry, @entry_content, @format_values, @original_exception = language, entry, entry_content, format_values, original_exception
-        super "An error occured while formating the language file entry '#{@entry.join('\' -> \'')}'.\n" +
-          "Format string: '#{@entry_content}'\n" +
-          "Format arguments: #{@format_values.collect{|v| v.inspect}.join(', ')}\n" +
-          "Original exception: #{@original_exception.inspect}"
-      end
-      
-    end
     
     # This class loads, caches and manages access to the used language files.
     class Language
@@ -132,11 +56,33 @@ module ArkanisDevelopment #:nodoc:
         def load(*languages)
           languages.flatten!
           languages.each do |language|
-            lang_file_without_ext = "#{self.lang_file_dir}/#{language}"
-            @@cached_language_data[language.to_sym] = YAML.load_file "#{lang_file_without_ext}.yml"
+            lang_file_name_without_ext = "#{self.lang_file_dir}/#{language}"
+            language_file_parts = Dir.glob("#{lang_file_name_without_ext}*.yml").collect{|f| File.basename f, '.yml'}
+            # Split file parts by dots and sort them by length (shortest first)
+            language_file_parts.collect{|f| f.split('.')}.sort{|a, b| a.size <=> b.size}.each do |file_parts|
+              lang_file_name = "#{self.lang_file_dir}/#{file_parts.join('.')}.yml"
+              
+              lang_data = YAML.load_file "#{lang_file_without_ext}.yml"
+            end
+            @@cached_language_data[language.to_sym] =  {}
             require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
           end
           self.use languages.first if current_language.nil?
+        end
+        
+        def save(*languages)
+          languages = self.loaded_languages if languages.empty?
+          languages.each do |language|
+            lang_file = "#{self.lang_file_dir}/#{language}.yml"
+            current_lang_data = YAML.load_file(lang_file)
+            def current_lang_data.recursive_merge(other_hash)
+              self.merge!(other_hash) do |key, old_value, new_value|
+                if old_value.class == Hash then old_value.recursive_merge(new_value) else new_value end
+              end
+            end
+            current_lang_data
+            @@cached_language_data[language.to_sym]
+          end
         end
         
         # Searches the cached data of the specified language for the entry

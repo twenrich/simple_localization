@@ -96,6 +96,17 @@ module ArkanisDevelopment #:nodoc:
         end
       end
       
+      # Duplicates this NeastedHash and (recursive) all hashes within it.
+      # 
+      # Please note that all hashes within this NeastedHash are converted to
+      # NeastedHash objects.
+      def dup
+        new_dup = super
+        new_dup.each do |key, value|
+          new_dup[key] = NestedHash.from(value).dup if value.kind_of?(Hash)
+        end
+      end
+      
     end
     
   end

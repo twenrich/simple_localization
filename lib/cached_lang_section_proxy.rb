@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/lang_section_proxy'
+
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
