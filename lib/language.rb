@@ -7,7 +7,7 @@ module ArkanisDevelopment #:nodoc:
     # This class loads, caches and manages access to the used language files.
     class Language
       
-      @@cached_language_data = {}
+      @@languages = {}
       @@current_language = nil
       
       cattr_accessor :lang_file_dir, :debug
@@ -21,7 +21,7 @@ module ArkanisDevelopment #:nodoc:
         end
         
         # Sets the currently used language file. If the specified language file
-        # is not loaded a +LangFileNotLoaded+ will be raised
+        # is not loaded a +LangFileNotLoaded+ exception will be raised
         def current_language=(new_lang)
           if loaded_languages.include? new_lang.to_sym
             @@current_language = new_lang.to_sym
@@ -32,12 +32,12 @@ module ArkanisDevelopment #:nodoc:
         
         alias_method :use, :current_language=
         
-        # Returns the list of currently loaded languages.
+        # Returns the language codes of currently loaded languages.
         # 
         #   Language.loaded_languages  # => [:de, :en]
         # 
         def loaded_languages
-          @@cached_language_data.keys
+          @@languages.keys
         end
         
         # Loads the specified language files and caches them. If currently no
@@ -55,34 +55,12 @@ module ArkanisDevelopment #:nodoc:
         # be executed. It also selects <code>:de</code> as the active language.
         def load(*languages)
           languages.flatten!
-          languages.each do |language|
-            lang_file_name_without_ext = "#{self.lang_file_dir}/#{language}"
-            language_file_parts = Dir.glob("#{lang_file_name_without_ext}*.yml").collect{|f| File.basename f, '.yml'}
-            # Split file parts by dots and sort them by length (shortest first)
-            language_file_parts.collect{|f| f.split('.')}.sort{|a, b| a.size <=> b.size}.each do |file_parts|
-              lang_file_name = "#{self.lang_file_dir}/#{file_parts.join('.')}.yml"
-              
-              lang_data = YAML.load_file "#{lang_file_without_ext}.yml"
-            end
-            @@cached_language_data[language.to_sym] =  {}
-            require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
+          languages.each do |lang_code|
+            lang_file = LangFile.new self.lang_file_dir, lang_code
+            lang_file.load
+            @@languages[lang_code.to_sym] = lang_file
           end
           self.use languages.first if current_language.nil?
-        end
-        
-        def save(*languages)
-          languages = self.loaded_languages if languages.empty?
-          languages.each do |language|
-            lang_file = "#{self.lang_file_dir}/#{language}.yml"
-            current_lang_data = YAML.load_file(lang_file)
-            def current_lang_data.recursive_merge(other_hash)
-              self.merge!(other_hash) do |key, old_value, new_value|
-                if old_value.class == Hash then old_value.recursive_merge(new_value) else new_value end
-              end
-            end
-            current_lang_data
-            @@cached_language_data[language.to_sym]
-          end
         end
         
         # Searches the cached data of the specified language for the entry
@@ -95,13 +73,12 @@ module ArkanisDevelopment #:nodoc:
         # 
         def find(language, *sections)
           language = language.to_sym
-          if @@cached_language_data.empty? or not @@cached_language_data[language]
+          if @@languages.empty? or not @@languages[language]
             raise LangFileNotLoaded.new(language, loaded_languages)
           end
           
-          entry = sections.inject(@@cached_language_data[language]) do |memo, section|
-            memo[(section.kind_of?(Numeric) ? section : section.to_s)] if memo
-          end
+          sections.collect!{|section| section.kind_of?(Numeric) ? section : section.to_s}
+          entry = @@languages[language].data[*sections]
           
           entry || begin
             raise EntryNotFound.new(sections, language) if self.debug
