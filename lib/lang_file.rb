@@ -10,7 +10,7 @@ module ArkanisDevelopment #:nodoc:
       # Creates a new LangFile object for the language <code>lang_code</code>
       # in the directory <code>lang_dir</code>.
       def initialize(lang_dir, lang_code)
-        @lang_dir, @lang_code = lang_dir, lang_code
+        @lang_dir, @lang_code = lang_dir, lang_code.to_sym
         @parts = []
         @data = NestedHash.new
       end
@@ -22,23 +22,23 @@ module ArkanisDevelopment #:nodoc:
       # data. At the end the ruby file belonging to the language is loaded (eg.
       # <code>de.rb</code>).
       def load
-        lang_file_name_without_ext = File.join self.lang_file_dir, self.lang_code
-        @data = YAML.load_file "#{lang_file_name_without_ext}.yml"
+        lang_file_name_without_ext = File.join self.lang_dir, self.lang_code.to_s
+        @data = NestedHash.from(YAML.load_file("#{lang_file_name_without_ext}.yml"))
         
-        @parts = Dir["#{lang_file_name_without_ext}.*.rb"].collect do |file_name|
-          File.basename(filename, '.rb').split('.').slice(1..-1)
+        @parts = Dir["#{lang_file_name_without_ext}.*.yml"].collect do |file_name|
+          File.basename(file_name, '.yml').split('.').slice(1..-1)
         end
         @parts.sort! {|a, b| a.size <=> b.size}
         @parts.each do |file_sections|
           @data[*file_sections] = YAML.load_file "#{lang_file_name_without_ext}.#{file_sections.join('.')}.yml"
         end
         
-        require lang_file_without_ext if File.exists?("#{lang_file_without_ext}.rb")
+        require lang_file_name_without_ext if File.exists?("#{lang_file_name_without_ext}.rb")
       end
       
       # Saves the current data back to the language file and it's parts.
       def save
-        lang_file_name_without_ext = File.join self.lang_file_dir, self.lang_code
+        lang_file_name_without_ext = File.join self.lang_dir, self.lang_code.to_s
         data_to_save = @data.dup
         
         @parts.reverse_each do |file_sections|
@@ -49,8 +49,13 @@ module ArkanisDevelopment #:nodoc:
         dump_and_save_yaml @data, "#{lang_file_name_without_ext}.yml"
       end
       
+      # Reloads the data from the language file and merges it with the existing
+      # data in the memory. In case of a conflict the new entries from the
+      # language file overwrite the entries in the memory.
       def reload
-        # TODO: implement merging changes from cache and file before saving to new file
+        old_data = @data
+        self.load
+        @data = old_data.merge! @data
       end
       
       protected
