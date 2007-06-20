@@ -12,7 +12,7 @@ module ArkanisDevelopment #:nodoc:
       def initialize(lang_dir, lang_code)
         @lang_dir, @lang_code = lang_dir, lang_code.to_sym
         @parts = []
-        @data = NestedHash.new
+        @data = NestedHashMimickingHash.new
       end
       
       # This method loads the base YAML language file (eg. <code>de.yml</code>)
@@ -23,7 +23,7 @@ module ArkanisDevelopment #:nodoc:
       # <code>de.rb</code>).
       def load
         lang_file_name_without_ext = File.join self.lang_dir, self.lang_code.to_s
-        @data = NestedHash.from(YAML.load_file("#{lang_file_name_without_ext}.yml"))
+        @data = NestedHashMimickingHash.from(YAML.load_file("#{lang_file_name_without_ext}.yml"))
         
         @parts = Dir["#{lang_file_name_without_ext}.*.yml"].collect do |file_name|
           File.basename(file_name, '.yml').split('.').slice(1..-1)
@@ -43,10 +43,10 @@ module ArkanisDevelopment #:nodoc:
         
         @parts.reverse_each do |file_sections|
           dump_and_save_yaml data_to_save[*file_sections], "#{lang_file_name_without_ext}.#{file_sections.join('.')}.yml"
-          data_to_save[*file_sections_without_lang_code] = nil
+          data_to_save[*file_sections] = nil
         end
         
-        dump_and_save_yaml @data, "#{lang_file_name_without_ext}.yml"
+        dump_and_save_yaml data_to_save, "#{lang_file_name_without_ext}.yml"
       end
       
       # Reloads the data from the language file and merges it with the existing
