@@ -93,7 +93,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # 
       def app(*params)
         @@app_scope ||= []
-        self.entry :app, *(@@app_scope + params)
+        self.entry(:app, *(@@app_scope + params)) || self.entry(:app_default_value)
       end
       
       # Narrows down the scope of the +app+ method. Useful if you have a very
@@ -143,7 +143,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     
     # This method will define global shortcut methods and therefor will be
     # included into the Object class.
-    module GlobalAccessor
+    module GlobalHelpers
       
       # Defines a global shortcut for the Language#app method.
       def l(*sections)
@@ -157,8 +157,46 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       
     end
     
+    module TemplateHelpers
+      
+      def lc(*sections)
+        template_name
+        #raise @request_origin.inspect
+        raise self.assigns.keys.inspect
+        raise sections.inspect
+      end
+      
+    end
+    
+    module ControllerHelpers
+      
+      def lc(*sections)
+        ArkanisDevelopment::SimpleLocalization::Language.app(*([self.controller_name, self.action_name] + sections))
+      end
+      
+    end
+    
+    module ActionViewExtensions
+      
+      def self.included(other)
+        class << other
+          def method_names
+            @@method_names
+          end
+        end
+      end
+      
+      def template_name
+        raise self.class.method_names.inspect
+      end
+      
+    end
+    
   end
 end
 
 ArkanisDevelopment::SimpleLocalization::Language.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::Language
-Object.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::GlobalAccessor
+Object.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::GlobalHelpers
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ActionViewExtensions
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::TemplateHelpers
+ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ControllerHelpers

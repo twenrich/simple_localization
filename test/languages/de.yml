@@ -110,6 +110,7 @@ models:
 # You can use the app section freely to localize you application with the
 # localized_application feature. The entries defined here are accesable by the
 # global method "l". See the RDoc for details.
+app_default_value: ToDo
 app:
   test:
     section: Test Zeichenkette
