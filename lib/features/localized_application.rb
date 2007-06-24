@@ -141,7 +141,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       
     end
     
-    # This method will define global shortcut methods and therefor will be
+    # This module defines global helper methods and therefor will be
     # included into the Object class.
     module GlobalHelpers
       
@@ -157,37 +157,90 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       
     end
     
-    module TemplateHelpers
-      
-      def lc(*sections)
-        template_name
-        #raise @request_origin.inspect
-        raise self.assigns.keys.inspect
-        raise sections.inspect
-      end
-      
-    end
-    
+    # Localization helpers for the use in controllers only. This module will be
+    # mixed into ActionController::Base.
     module ControllerHelpers
       
+      # A more specialized version of the <code>GlobalHelpers#l</code> method
+      # which returns the localization information at the specified sections
+      # but prefixes the sections with the name of the current controller and
+      # action.
+      # 
+      # The main purpose of this method is to avoid unnecessary repeatition of
+      # parameters to the <code>GlobalHelpers#l</code> method.
+      # 
+      # Assume this language file data:
+      # 
+      #   app:
+      #     about:
+      #       index:
+      #         title: About...
+      # 
+      # and that we are in the +index+ action of the +about+ controller:
+      # 
+      #   lc :title # => 'About...'
+      #   l :about, :index, :title # => 'About...'
+      # 
       def lc(*sections)
         ArkanisDevelopment::SimpleLocalization::Language.app(*([self.controller_name, self.action_name] + sections))
       end
       
     end
     
-    module ActionViewExtensions
+    # Localization helpers for use in templates only. This module will be mixed
+    # into ActionView::Base.
+    module TemplateHelpers
       
-      def self.included(other)
-        class << other
-          def method_names
-            @@method_names
-          end
-        end
+      # A more specialized version of the <code>GlobalHelpers#l</code> method
+      # which returns the localization information at the specified sections
+      # but prefixes the sections with the name of the current template.
+      # 
+      # The main purpose of this method is to avoid unnecessary repeatition of
+      # parameters to the <code>GlobalHelpers#l</code> method.
+      # 
+      # Assume this language file data:
+      # 
+      #   app:
+      #     about:
+      #       index:
+      #         title: About...
+      # 
+      # and that we are in the <code>app/views/about/index.rhtml</code>
+      # template:
+      # 
+      #   lc :title # => 'About...'
+      #   l :about, :index, :title
+      # 
+      # Please not that the leading underscore of partial templates is removed.
+      # In the template <code>app/view/shared/_message.rhtml</code> the +lc+
+      # method will prefix the sections with <code>:app, :shared,
+      # :message</code>.
+      # 
+      def lc(*sections)
+        current_template = path_and_extension(template_name).first
+        dir, file = File.split(current_template)
+        prefix_sections = dir.split '/'
+        prefix_sections << file.gsub(/^_/, '')
+        ArkanisDevelopment::SimpleLocalization::Language.app(*(prefix_sections + sections))
       end
       
+      # Returns the name of the template (relative to the ActionView base dir)
+      # from which this method is called.
+      # 
+      # The call stack is used to get information about the current template.
+      # This is not the perfect way but currently the simplest and fastest.
+      # 
+      # Called in app/views/about/index.rhtml:
+      # 
+      #   <%= template_name %> # => about/index.rhtml
+      # 
+      # Called in the partial template app/views/shared/_message.rhtml
+      # 
+      #   <%= template_name %> # => shared/_messages.rhtml
+      # 
       def template_name
-        raise self.class.method_names.inspect
+        template_path = caller.detect{|level| level.slice @base_path}
+        template_path.slice Regexp.new(".*#{Regexp.escape(@base_path)}/(.*)\\:\\d+.*"), 1
       end
       
     end
@@ -197,6 +250,5 @@ end
 
 ArkanisDevelopment::SimpleLocalization::Language.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::Language
 Object.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::GlobalHelpers
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ActionViewExtensions
 ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::TemplateHelpers
 ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ControllerHelpers
