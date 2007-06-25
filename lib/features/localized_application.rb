@@ -68,8 +68,31 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     # class with all necessary class methods.
     module Language
       
-      # Class variable to hold the current scope for the +app+ method.
-      @@app_scope = []
+      # Class variable to hold the scope stack of the +app_with_scope+ method.
+      @@app_scope_stack = []
+      
+      def app_scoped(*keys)
+        self.app_not_scoped(*(@@app_scope_stack.flatten + keys))
+      end
+      
+      def app_not_scoped(*keys)
+        self.entry(:app, *keys) || begin
+          keys.last.kind_of?(String) ? keys.last : self.entry(:app_default_value)
+        end
+      end
+      
+      def with_app_scope(*scope_sections, &block)
+        @@app_scope_stack.push scope_sections
+        begin
+          yield
+        ensure
+          @@app_scope_stack.pop
+        end
+      end
+      
+      # Added aliases for backward compartibility (pre 2.4 versions).
+      alias_method :app, :app_scoped
+      alias_method :app_with_scope, :with_app_scope
       
       # The +app+ class method will act like the
       # ArkanisDevelopment::SimpleLocalization::Language#[] operator but
@@ -91,10 +114,14 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       #   Language.app_with_scope :index
       #   Language.app :subtitle # => "Have a nice day..."
       # 
-      def app(*params)
+=begin
+      def app(*keys)
         @@app_scope ||= []
-        self.entry(:app, *(@@app_scope + params)) || self.entry(:app_default_value)
+        self.entry(:app, *(@@app_scope + args)) || begin
+          keys.last.kind_of?(String) ? keys.last : self.entry(:app_default_value)
+        end
       end
+=end
       
       # Narrows down the scope of the +app+ method. Useful if you have a very
       # nested language file:
@@ -128,7 +155,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # PLEASE NOTE: It's currently not possible to nest +app_with_scope+
       # calls. If no block is specified the scope will be set directly and you
       # will have to reset it by your own.
+=begin
       def app_with_scope(*scope_sections)
+        @@app_scope_stack
         if block_given?
           old_scope = @@app_scope
           @@app_scope = scope_sections
@@ -138,6 +167,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
           @@app_scope = scope_sections
         end
       end
+=end
       
     end
     
@@ -145,14 +175,14 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     # included into the Object class.
     module GlobalHelpers
       
-      # Defines a global shortcut for the Language#app method.
+      # Defines a global shortcut for the Language#app_scoped method.
       def l(*sections)
-        ArkanisDevelopment::SimpleLocalization::Language.app(*sections)
+        ArkanisDevelopment::SimpleLocalization::Language.app_scoped(*sections)
       end
       
-      # The global shortcut for the Language#app_with_scope method.
+      # The global shortcut for the Language#with_app_scope method.
       def l_scope(*sections, &block)
-        ArkanisDevelopment::SimpleLocalization::Language.app_with_scope(*sections, &block)
+        ArkanisDevelopment::SimpleLocalization::Language.with_app_scope(*sections, &block)
       end
       
     end
@@ -182,7 +212,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       #   l :about, :index, :title # => 'About...'
       # 
       def lc(*sections)
-        ArkanisDevelopment::SimpleLocalization::Language.app(*([self.controller_name, self.action_name] + sections))
+        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped(*([self.controller_name, self.action_name] + sections))
       end
       
     end
@@ -221,7 +251,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         dir, file = File.split(current_template)
         prefix_sections = dir.split '/'
         prefix_sections << file.gsub(/^_/, '')
-        ArkanisDevelopment::SimpleLocalization::Language.app(*(prefix_sections + sections))
+        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped(*(prefix_sections + sections))
       end
       
       # Returns the name of the template (relative to the ActionView base dir)
