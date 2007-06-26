@@ -89,7 +89,3 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
 end
 
 ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedModelsByLangFile
-
-# Enable the localized Column#human_name method to make this feature work
-# with scaffold.
-require "#{File.dirname(__FILE__)}/../extensions/localized_column_human_name.rb"

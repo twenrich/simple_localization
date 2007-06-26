@@ -58,7 +58,31 @@ module ArkanisDevelopment #:nodoc:
         @data = old_data.merge! @data
       end
       
+      def create_key(keys, value = nil)
+        keys.collect!{|key| key.to_s}
+        lang_file_name_without_ext = File.join self.lang_dir, self.lang_code.to_s
+        
+        target_part = @parts.reverse.detect{|file_sections| file_sections & keys == keys}
+        if target_part
+          target_file_name = "#{lang_file_name_without_ext}.#{target_part.join('.')}.yml"
+          keys = keys - target_part
+        else
+          target_file_name = "#{lang_file_name_without_ext}.yml"
+        end
+        
+        File.new target_file_name, 'r+b' do |f|
+          level = 0
+          keys.each do |key|
+            line = f.readline until line.starts_with?(('  ' * level) + yaml_escape(key))
+          end
+        end
+      end
+      
       protected
+      
+      def yaml_escape(string)
+        "'#{string.gsub("'", "''")}'"
+      end
       
       # Dumps the data as YAML to a string, removes any leading document marker
       # ('---') and saves the YAML code to the file <code>target_file</code>.

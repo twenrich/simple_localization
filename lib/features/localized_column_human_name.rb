@@ -1,7 +1,9 @@
+# = Localized human name method of the Column class
+# 
 # This file contains code which extends ActiveRecords Column class. The aim is
 # to localize the Column#human_name method which is heavily used by scaffold.
 # 
-# So, wheres the prblem? By default the +human_name+ method calls the
+# So, wheres the problem? By default the +human_name+ method calls the
 # ActiveRecord::Base#human_attribute_name method. The localized_models and
 # localized_models_by_lang_file features are overwriting this method to provide
 # localized data. However for these overwritten methods to work they need to be
@@ -20,7 +22,7 @@
 # +human_attribute_name+ method on the model class if one is available. The
 # last step is to update the Base#columns method which builds the column array
 # belonging to a model class. After these columns are defined we just have to
-# set thier newly added +model_class+ property to the current class.
+# set their newly added +model_class+ property to the current class.
 # 
 # This way the two features work like usual and we should get the localized
 # data. Even when using scaffold.
@@ -50,7 +52,7 @@ module ActiveRecord #:nodoc:
       
       alias_method :columns_without_localization, :columns
       
-      # Updates the ActiveRecord::Base#columns method (orginal renamed to
+      # Updates the ActiveRecord::Base#columns method (original renamed to
       # +columns_without_localization+) to set the +model_class+ property on
       # every column belonging to this model class. This is necessary for the
       # overwritten Column#human_name method to work.
