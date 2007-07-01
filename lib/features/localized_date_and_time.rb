@@ -81,6 +81,26 @@ class Date
     ABBR_DAYS = ArkanisDevelopment::SimpleLocalization::CachedLangSectionProxy.new :sections => [:dates, :abbr_daynames] do |localized_data|
       ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data
     end
+    
+    #make them optional to let default formatting be used. 
+    begin
+      DATE_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :date]
+      USE_DEFAULT_DATE = false
+    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
+      USE_DEFAULT_DATE = true
+    end
+    begin
+      TIME_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :time]
+      USE_DEFAULT_TIME = false
+    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
+      USE_DEFAULT_TIME = true
+    end
+    begin
+      DATE_TIME_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :datetime]
+      USE_DEFAULT_DATE_TIME = false
+    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
+      USE_DEFAULT_DATE_TIME = true
+    end
   end
 end
 
@@ -104,6 +124,9 @@ class Time
     format.gsub!(/([^%])%A/) {$1 + Date::DAYNAMES[self.wday]}
     format.gsub!(/([^%])%b/) {$1 + Date::ABBR_MONTHNAMES[self.mon]}
     format.gsub!(/([^%])%B/) {$1 + Date::MONTHNAMES[self.mon]}
+    format.gsub!(/([^%])%c/) {$1 + Date::Date::DATE_TIME_FORMAT} if !Date::USE_DEFAULT_DATE_TIME
+    format.gsub!(/([^%])%x/) {$1 + Date::DATE_FORMAT} if !Date::USE_DEFAULT_DATE
+    format.gsub!(/([^%])%X/) {$1 + Date::TIME_FORMAT} if !Date::USE_DEFAULT_TIME
     format = format[1, format.length]
     self.strftime_without_localization(format)
   end
