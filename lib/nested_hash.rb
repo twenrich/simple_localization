@@ -109,26 +109,5 @@ module ArkanisDevelopment #:nodoc:
       
     end
     
-    # A subclass of NestedHash which mimicks an ordinary hash when dumped as
-    # YAML code. The purpose of this class is to keep the YAML code clean
-    # because the plugin already convert the ordinary hashes into nested
-    # hashes.
-    # 
-    #   NestedHash[:a => 1].to_yaml
-    #   # => !map:ArkanisDevelopment::SimpleLocalization::NestedHash \n:a: 1\n"
-    #   
-    #   NestedHashMimickingHash[:a => 1].to_yaml
-    #   # => "--- \n:a: 1\n"
-    class NestedHashMimickingHash < NestedHash
-      
-      # Set the taguri of this class to +nil+. This removes the
-      # <code>!map:ArkanisDevelopment::SimpleLocalization::NestedHash</code>
-      # tag when this class is dumped to YAML.
-      def taguri
-        nil
-      end
-      
-    end
-    
   end
 end
