@@ -78,6 +78,7 @@ module ArkanisDevelopment #:nodoc:
         end
         
         # Read all lines from the target part and search the last existing key
+        lines = nil
         File.open(target_file_name, 'rb'){|f| lines = f.readlines}
         keys_left_to_search = keys.dup
         currently_searched_key = keys_left_to_search.first
@@ -85,11 +86,12 @@ module ArkanisDevelopment #:nodoc:
         current_line = 0
         
         lines.each_with_index do |line, line_number|
-          if line.starts_with?(('  ' * level) + currently_searched_key)
+          if !line.nil? and line.starts_with?(('  ' * level) + currently_searched_key)
             current_line = line_number
             level += 1
             keys_left_to_search.shift
             currently_searched_key = keys_left_to_search.first
+            break if currently_searched_key.nil?
           end
         end
         
@@ -98,7 +100,7 @@ module ArkanisDevelopment #:nodoc:
         # line of the next section.
         current_line += 1
         lines.each_with_index do |line, line_number|
-          next unless index > current_line
+          next unless line_number > current_line
           if line.starts_with?('  ' * level)
             current_line = line_number
           else
@@ -108,9 +110,10 @@ module ArkanisDevelopment #:nodoc:
         
         # Add all not already existing keys to the lines array. The specified
         # value will be added to the last key if the value is not nil.
-        begin
+        begin 
           key = keys_left_to_search.shift
-          line = ('  ' * level) + key + (keys_left_to_search.empty? and value ? ": #{value}\n" : ":\n")
+          val = (keys_left_to_search.empty? and value) ? ": #{value}\n" : ":\n"
+          line = ('  ' * level) + key + val if key 
           current_line += 1
           lines.insert(current_line, line)
           level += 1

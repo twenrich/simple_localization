@@ -10,9 +10,10 @@ module ArkanisDevelopment #:nodoc:
       @@languages = {}
       @@current_language = nil
       
-      cattr_accessor :lang_file_dir, :debug
+      cattr_accessor :lang_file_dir, :create_missing_key, :missing_value_default, :debug
       self.debug = true
-      
+      self.create_missing_key = false
+            
       class << self
         
         # Returns the name of the currently used language file.
@@ -81,7 +82,13 @@ module ArkanisDevelopment #:nodoc:
           entry = @@languages[language].data[*sections]
           
           entry || begin
-            raise EntryNotFound.new(sections, language) if self.debug
+            if create_missing_key
+              entry = missing_value_default.nil? ? sections.last : missing_value_default
+              @@languages[language].create_key(sections, entry)
+              return entry
+            else
+              raise EntryNotFound.new(sections, language) if self.debug
+            end
           end
         end
         
