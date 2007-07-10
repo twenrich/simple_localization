@@ -4,14 +4,14 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedApplicationString #:nodoc:
     
     def l(*format_args)
-      app_args = [self]
+      app_args = [self.to_s]
       app_args << {:values => format_args} unless format_args.empty?
       Language.app_scoped *app_args
     end
     
     def lc(*format_args)
       app_args = get_app_file_in_context.split '/'
-      app_args << self
+      app_args << self.to_s
       app_args << {:values => format_args} unless format_args.empty?
       Language.app_not_scoped *app_args
     end
@@ -28,3 +28,4 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
 end
 
 String.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplicationString
+Symbol.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplicationString
