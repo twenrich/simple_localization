@@ -130,6 +130,20 @@ module ArkanisDevelopment #:nodoc:
         File.join self.lang_dir, self.lang_code.to_s
       end
       
+      # Extracts the key out of a line of YAML code by parsing it partially.
+      # If the line does not contain a key +nil+ is returned.
+      def yaml_get_key_of_line(line)
+        matches = line.strip.scan(/(.*):.*/)
+        return unless matches
+        
+        key = matches.flatten.first
+        begin
+          YAML.parse(key).value
+        rescue ArgumentError
+          key
+        end
+      end
+      
       def yaml_escape(string)
         "'#{string.gsub("'", "''")}'"
       end
