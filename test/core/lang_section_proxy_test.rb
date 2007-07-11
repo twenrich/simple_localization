@@ -1,5 +1,5 @@
-require File.dirname(__FILE__) + '/test_helper'
-require File.dirname(__FILE__) + '/lang_section_proxy_helper'
+require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../lang_section_proxy_helper'
 
 class LangSectionProxyTest < Test::Unit::TestCase
   

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 # Load the specified language file and no features
 simple_localization :lang_file_dir => LANG_FILE_DIR, :language => [:de, :en], :only => []

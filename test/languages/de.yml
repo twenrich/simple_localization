@@ -114,3 +114,5 @@ app_default_value: ToDo
 app:
   test:
     section: Test Zeichenkette
+    nested:
+      another test: Noch ein Test

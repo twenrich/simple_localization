@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => :localized_number_helpers
 

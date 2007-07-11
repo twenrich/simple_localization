@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 # Create a fake model because the +date_select+ helper needs an object to
 # operate on.

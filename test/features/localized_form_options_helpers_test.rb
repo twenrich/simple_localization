@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 # Init SimpleLocalization with just the localized_form_options_helpers feature
 # activated.

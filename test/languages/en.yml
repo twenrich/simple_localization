@@ -109,3 +109,5 @@ app_default_value: ToDo
 app:
   test:
     section: Test string
+    nested:
+      another test: Another test
