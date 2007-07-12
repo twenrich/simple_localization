@@ -36,7 +36,7 @@
 # The +monthnames+, +daynames+, +abbr_monthnames+ and +abbr_daynames+ entries
 # will overwrite the corresponding constants of the Date class. The
 # +date_formats+ and +time_formats+ entries are used to update the formats
-# available to the +to_formated_s+ method of the Date and Time classes.
+# available to the +to_formatted_s+ method of the Date and Time classes.
 
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedDateAndTime
@@ -53,6 +53,14 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         memo[element] = array.index(element) + start_index
         memo
       end
+    end
+    
+    def self.overwrite_formats(original_format)
+      localized_format = ' ' + original_format
+      (Language.entry(:dates, :format_overwrites) || {}).each do |original, replacement|
+        localized_format.gsub!(/([^%])%#{original}/) {$1 + replacement}
+      end
+      localized_format[1, localized_format.length]
     end
     
   end
@@ -82,25 +90,13 @@ class Date
       ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.convert_to_name_indexed_hash localized_data
     end
     
-    #make them optional to let default formatting be used. 
-    begin
-      DATE_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :date]
-      USE_DEFAULT_DATE = false
-    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
-      USE_DEFAULT_DATE = true
+    alias :strftime_without_localization :strftime
+    
+    def strftime(format)
+      localized_format = ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.overwrite_formats(format)
+      strftime_without_localization(localized_format)
     end
-    begin
-      TIME_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :time]
-      USE_DEFAULT_TIME = false
-    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
-      USE_DEFAULT_TIME = true
-    end
-    begin
-      DATE_TIME_FORMAT = ArkanisDevelopment::SimpleLocalization::Language[:dates, :default_formats, :datetime]
-      USE_DEFAULT_DATE_TIME = false
-    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound
-      USE_DEFAULT_DATE_TIME = true
-    end
+    
   end
 end
 
@@ -119,16 +115,16 @@ class Time
   # Patrick Lenz: http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime.
   # It's a bit modified to respect the '%%' escape sequence.
   def strftime(format)
-    format = ' ' + format.dup
-    format.gsub!(/([^%])%a/) {$1 + Date::ABBR_DAYNAMES[self.wday]}
-    format.gsub!(/([^%])%A/) {$1 + Date::DAYNAMES[self.wday]}
-    format.gsub!(/([^%])%b/) {$1 + Date::ABBR_MONTHNAMES[self.mon]}
-    format.gsub!(/([^%])%B/) {$1 + Date::MONTHNAMES[self.mon]}
-    format.gsub!(/([^%])%c/) {$1 + Date::Date::DATE_TIME_FORMAT} if !Date::USE_DEFAULT_DATE_TIME
-    format.gsub!(/([^%])%x/) {$1 + Date::DATE_FORMAT} if !Date::USE_DEFAULT_DATE
-    format.gsub!(/([^%])%X/) {$1 + Date::TIME_FORMAT} if !Date::USE_DEFAULT_TIME
-    format = format[1, format.length]
-    self.strftime_without_localization(format)
+    localized_format = ' ' + format
+    localized_format.gsub!(/([^%])%a/) {$1 + Date::ABBR_DAYNAMES[self.wday]}
+    localized_format.gsub!(/([^%])%A/) {$1 + Date::DAYNAMES[self.wday]}
+    localized_format.gsub!(/([^%])%b/) {$1 + Date::ABBR_MONTHNAMES[self.mon]}
+    localized_format.gsub!(/([^%])%B/) {$1 + Date::MONTHNAMES[self.mon]}
+    localized_format = localized_format[1, localized_format.length]
+    
+    localized_format = ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.overwrite_formats(localized_format)
+    
+    strftime_without_localization(localized_format)
   end
   
 end
