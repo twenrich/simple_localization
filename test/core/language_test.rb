@@ -10,6 +10,15 @@ class LanguageTest < Test::Unit::TestCase
     @lang = ArkanisDevelopment::SimpleLocalization::Language
   end
   
+  def test_option_accessors
+    @lang.options.each do |option, default_value|
+      assert_equal @lang.send(option), default_value
+      @lang.send "#{option}=".to_sym, 'test value'
+      assert_equal @lang.send(option), 'test value'
+      @lang.send "#{option}=".to_sym, default_value
+    end
+  end
+  
   def test_if_language_file_is_loaded
     assert_equal LANG_FILE.to_sym, @lang.current_language
   end

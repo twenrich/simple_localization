@@ -4,17 +4,28 @@ require File.dirname(__FILE__) + '/errors'
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
-    # This class loads, caches and manages access to the used language files.
-    class Language
+    # This module loads and manages access to the used language files.
+    module Language
       
       @@languages = {}
       @@current_language = nil
+      @@options = {
+        :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
+        :debug => true,
+        :create_missing_keys => false
+      }
       
-      cattr_accessor :lang_file_dir, :create_missing_key, :missing_value_default, :debug
-      self.debug = true
-      self.create_missing_key = false
-            
+      mattr_accessor :options
+      
       class << self
+        
+        # Define class level accessors for all options in the @@options hash.
+        @@options.keys.each do |option|
+          class_eval <<-EOM
+            def #{option}; options[:#{option}]; end
+            def #{option}=(new_value); options[:#{option}] = new_value; end
+          EOM
+        end
         
         # Returns the name of the currently used language file.
         def current_language
@@ -41,19 +52,19 @@ module ArkanisDevelopment #:nodoc:
           @@languages.keys
         end
         
-        # Loads the specified language files and caches them. If currently no
-        # language is selected the first one of the specified files will be
-        # selected.
+        # Loads the specified language files. If currently no language is
+        # selected the first one of the specified files will be selected.
         # 
         # The path to the language files can be specified in the +lang_file_dir+
-        # attribute.
+        # option.
         # 
         #   Language.load :de, :en
         # 
         # This will load the files <code>de.yml</code> and <code>en.yml</code>
         # in the language file directory and caches them in a class variable.
         # If existing the files <code>de.rb</code> and <code>en.rb</code> will
-        # be executed. It also selects <code>:de</code> as the active language.
+        # be executed. It also selects <code>:de</code> as the active language
+        # because it was specified first.
         def load(*languages)
           languages.flatten!
           languages.each do |lang_code|
@@ -64,11 +75,12 @@ module ArkanisDevelopment #:nodoc:
           self.use languages.first if current_language.nil?
         end
         
-        # Searches the cached data of the specified language for the entry
+        # Searches the date of the specified language file for the entry
         # defined by +sections+.
         # 
         # If the specified language file is not loaded an +LangFileNotLoaded+
-        # exception is raised. If the entry is not found +nil+ is returned.
+        # exception is raised. If the entry is not found an +EntryNotFound+
+        # exception is raised.
         # 
         #   Language.find :de, :active_record_messages, :not_a_number  # => "ist keine Zahl."
         # 
@@ -87,7 +99,7 @@ module ArkanisDevelopment #:nodoc:
               @@languages[language].create_key(sections, entry)
               return entry
             else
-              raise EntryNotFound.new(sections, language) if self.debug
+              raise EntryNotFound.new(sections, language)
             end
           end
         end
@@ -112,6 +124,11 @@ module ArkanisDevelopment #:nodoc:
         #   Language.entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
         # 
         def entry(*args)
+          if args.last.kind_of?(Hash) or args.last.kind_of?(Array)
+            args
+          end
+          
+          
           if args.last.kind_of?(Hash)
             options = {:values => nil}.merge args.delete_at(-1)
             options.assert_valid_keys :values
@@ -125,17 +142,47 @@ module ArkanisDevelopment #:nodoc:
           lang_entry = self.find(self.current_language, *args)
           
           if format_values
-            begin
-              format(lang_entry, *format_values)
-            rescue StandardError => e
-              self.debug ? raise(EntryFormatError.new(self.current_language, args, lang_entry, format_values, e)) : lang_entry
-            end
           else
             lang_entry
           end
         end
         
         alias_method :[], :entry
+        
+        def entry!(*args)
+          
+        end
+        
+        # Formats an etry with +format+ or hash notation.
+        # 
+        #   format_entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
+        # 
+        # Assuming <code>:test_entry</code> has the value <code>"Message by :user: :msg"</code>
+        #   format_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
+        # 
+        def format_entry(*args)
+          last_arg = args.last
+          if last_arg.kind_of(Array) or last_arg.kind_of(Hash)
+            format_options = args.delete_at -1
+          end
+          
+          entry_content = self.find(self.current_language, *args)
+          
+          if format_options.kind_of?(Array)
+            begin
+              format(entry_content, *format_options)
+            rescue StandardError => e
+              self.debug ? raise(EntryFormatError.new(self.current_language, args, entry_content, format_options, e)) : entry_content
+            end
+          elsif format_options.kind_of?(Hash)
+            entry_content = ' ' + entry_content
+            format_options.each do |key, value|
+              entry_content.gsub!(/[^\\]:#{key}/, value)
+            end
+            entry_content.gsub!(/\\:/, ':')
+            entry_content = entry_content[1, entry_content.length]
+          end
+        end
         
         # Returns a hash with the meta data of the specified language (defaults
         # to the currently used language). Entries not present in the language
