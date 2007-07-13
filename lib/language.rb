@@ -160,27 +160,20 @@ module ArkanisDevelopment #:nodoc:
         # Assuming <code>:test_entry</code> has the value <code>"Message by :user: :msg"</code>
         #   format_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
         # 
-        def format_entry(*args)
-          last_arg = args.last
-          if last_arg.kind_of(Array) or last_arg.kind_of(Hash)
-            format_options = args.delete_at -1
-          end
-          
-          entry_content = self.find(self.current_language, *args)
-          
-          if format_options.kind_of?(Array)
+        def format_entry(string, *values)
+          if values.last.kind_of?(Hash)
+            string = ' ' + string
+            values.last.each do |key, value|
+              string.gsub!(/([^\\]):#{key}/, "\\1#{value}")
+            end
+            string.gsub!(/([^\\])\\:/, '\1:')
+            string = string[1, string.length]            
+          else
             begin
-              format(entry_content, *format_options)
+              format(string, *values)
             rescue StandardError => e
-              self.debug ? raise(EntryFormatError.new(self.current_language, args, entry_content, format_options, e)) : entry_content
+              self.debug ? raise(EntryFormatError.new(self.current_language, [], string, values, e)) : string
             end
-          elsif format_options.kind_of?(Hash)
-            entry_content = ' ' + entry_content
-            format_options.each do |key, value|
-              entry_content.gsub!(/[^\\]:#{key}/, value)
-            end
-            entry_content.gsub!(/\\:/, ':')
-            entry_content = entry_content[1, entry_content.length]
           end
         end
         
