@@ -20,8 +20,10 @@ class LanguageTest < Test::Unit::TestCase
   end
   
   def test_entry_format
-    assert_equal @lang.format_entry('test %s to %i', 'this', 10), 'test this to 10'
-    assert_equal @lang.format_entry('test :object to :end', :object => 'this', :end => 10), 'test this to 10'
+    assert_equal 'test this to 10', @lang.format_entry('test %s to %i', 'this', 10)
+    assert_equal 'test this to 10', @lang.format_entry('test :object to :end', :object => 'this', :end => 10)
+    assert_equal 'test :object to :end', @lang.format_entry('test :object to :end')
+    assert_nil @lang.format_entry(nil, 'some', 'values')
   end
   
   def test_if_language_file_is_loaded

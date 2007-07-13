@@ -124,33 +124,16 @@ module ArkanisDevelopment #:nodoc:
         #   Language.entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
         # 
         def entry(*args)
-          if args.last.kind_of?(Hash) or args.last.kind_of?(Array)
-            args
-          end
-          
-          
-          if args.last.kind_of?(Hash)
-            options = {:values => nil}.merge args.delete_at(-1)
-            options.assert_valid_keys :values
-            format_values = Array(options[:values])
-          end
-          
-          if args.last.kind_of?(Array)
-            format_values = args.delete_at(-1)
-          end
-          
-          lang_entry = self.find(self.current_language, *args)
-          
-          if format_values
-          else
-            lang_entry
-          end
+          entry!(*args) rescue EntryNotFound
         end
         
         alias_method :[], :entry
         
         def entry!(*args)
-          
+          keys, default_value, format_values = process_entry_params(*args)
+          entry = self.find(self.current_language, *args)
+          entry = default_value unless entry
+          format_entry entry, format_values
         end
         
         # Formats an etry with +format+ or hash notation.
@@ -161,13 +144,14 @@ module ArkanisDevelopment #:nodoc:
         #   format_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
         # 
         def format_entry(string, *values)
+          return unless string
           if values.last.kind_of?(Hash)
             string = ' ' + string
             values.last.each do |key, value|
               string.gsub!(/([^\\]):#{key}/, "\\1#{value}")
             end
             string.gsub!(/([^\\])\\:/, '\1:')
-            string = string[1, string.length]            
+            string = string[1, string.length]
           else
             begin
               format(string, *values)
@@ -205,6 +189,18 @@ module ArkanisDevelopment #:nodoc:
           }
           
           defaults.update self.find(lang, :about).symbolize_keys
+        end
+        
+        protected
+        
+        def process_entry_params(*args)
+          format_values, default_value = nil, nil
+          
+          last_arg = args.last
+          format_values = args.delete_at(-1) if last_arg.kind_of?(Hash) or last_arg.kind_of?(Array)
+          default_value =  args.last.kind_of? String
+          
+          [args, default_value, format_values]
         end
         
       end
