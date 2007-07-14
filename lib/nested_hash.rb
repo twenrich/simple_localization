@@ -46,7 +46,7 @@ module ArkanisDevelopment #:nodoc:
         else
           keys.inject(self) do |memo, key|
             memo[key] if memo and memo.kind_of?(Hash)
-          end || self.default
+          end || (self.default_proc ? self.default_proc.call : nil) || self.default
         end
       end
       
@@ -73,7 +73,7 @@ module ArkanisDevelopment #:nodoc:
           keys = args
           
           target_hash = keys.inject(self) do |memo, key|
-            memo[key] || memo[key] = {}
+            begin memo[key] rescue nil end || memo[key] = {}
           end
           
           target_hash[last_key] = value

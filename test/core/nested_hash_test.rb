@@ -40,6 +40,12 @@ class NestedHashTest < Test::Unit::TestCase
     assert_equal default_value, hash[:b, :x, :none]
   end
   
+  def test_default_proc
+    hash = setup_nested_hash_with_default_exception
+    assert_raise RuntimeError do hash[:not_existing_entry] end
+    assert_raise RuntimeError do hash[:not, :existing_entry] end
+  end
+  
   def test_set_operator
     hash = ArkanisDevelopment::SimpleLocalization::NestedHash.from @default_hash
     assert_equal @default_hash[:a], hash[:a]
@@ -57,6 +63,17 @@ class NestedHashTest < Test::Unit::TestCase
     assert_equal 99, hash[:c]
     hash[:d, :a, :a] = 100
     assert_equal 100, hash[:d, :a, :a]
+  end
+  
+  def test_auto_create_of_set_operator_with_default_exception
+    hash = setup_nested_hash_with_default_exception
+    assert_nothing_raised do hash[:a, :b] = 200 end
+    assert_kind_of Hash, hash[:a]
+    assert_equal 200, hash[:a, :b]
+    assert_nothing_raised do hash[:a, :bh, :c] = 300 end
+    assert_kind_of Hash, hash[:a]
+    assert_kind_of Hash, hash[:a, :bh]
+    assert_equal 300, hash[:a, :bh, :c]
   end
   
   def test_merge!
@@ -84,6 +101,14 @@ class NestedHashTest < Test::Unit::TestCase
     new_hash[:b, :z] = nil
     assert_nil new_hash[:b, :z]
     assert_not_nil hash[:b, :z]
+  end
+  
+  protected
+  
+  def setup_nested_hash_with_default_exception
+    ArkanisDevelopment::SimpleLocalization::NestedHash.new do |hash, key|
+      raise RuntimeError, "Entry #{key.inspect} could not be found in hash #{hash.inspect}"
+    end
   end
   
 end
