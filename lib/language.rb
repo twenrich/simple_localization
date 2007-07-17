@@ -19,7 +19,7 @@ module ArkanisDevelopment #:nodoc:
       
       class << self
         
-        # Define class level accessors for all options in the @@options hash.
+        # Define module level accessors for all options in the @@options hash.
         @@options.keys.each do |option|
           class_eval <<-EOM
             def #{option}; options[:#{option}]; end
@@ -43,6 +43,13 @@ module ArkanisDevelopment #:nodoc:
         end
         
         alias_method :use, :current_language=
+        
+        # Returns a hash with all loaded LangFile objects.
+        def languages
+          # Duplicate the hash to prevent that it's used to modify the internal
+          # @@languages variable.
+          @@languages.dup
+        end
         
         # Returns the language codes of currently loaded languages.
         # 
@@ -69,8 +76,8 @@ module ArkanisDevelopment #:nodoc:
           languages.flatten!
           languages.each do |lang_code|
             lang_file = LangFile.new self.lang_file_dir, lang_code
-            lang_file.load
             @@languages[lang_code.to_sym] = lang_file
+            lang_file.load
           end
           self.use languages.first if current_language.nil?
         end
@@ -91,16 +98,10 @@ module ArkanisDevelopment #:nodoc:
           end
           
           sections.collect!{|section| section.kind_of?(Numeric) ? section : section.to_s}
-          entry = @@languages[language].data[*sections]
-          
-          entry || begin
-            if create_missing_key
-              entry = missing_value_default.nil? ? sections.last : missing_value_default
-              @@languages[language].create_key(sections, entry)
-              return entry
-            else
-              raise EntryNotFound.new(sections, language)
-            end
+          begin
+            @@languages[language].data[*sections]
+          rescue EntryNotFound
+            raise EntryNotFound.new(sections, language)
           end
         end
         
@@ -124,40 +125,52 @@ module ArkanisDevelopment #:nodoc:
         #   Language.entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
         # 
         def entry(*args)
-          entry!(*args) rescue EntryNotFound
+          begin
+            entry!(*args)
+          rescue EntryNotFound
+            nil
+          end
         end
         
         alias_method :[], :entry
         
         def entry!(*args)
-          keys, default_value, format_values = process_entry_params(*args)
+          substitute_values = if args.last.kind_of?(Hash)
+            [args.delete_at(-1)]
+          elsif args.last.kind_of?(Array)
+            args.delete_at(-1)
+          end
+          
           entry = self.find(self.current_language, *args)
-          entry = default_value unless entry
-          format_entry entry, format_values
+          entry.kind_of?(String) ? substitute_entry(entry, *substitute_values) : entry
+        rescue EntryFormatError => e
+          raise EntryFormatError.new(e.language, args, e.entry_content, e.format_values, e.original_exception)
         end
         
         # Formats an etry with +format+ or hash notation.
         # 
-        #   format_entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
+        #   substitute_entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
         # 
         # Assuming <code>:test_entry</code> has the value <code>"Message by :user: :msg"</code>
-        #   format_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
+        #   substitute_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
         # 
-        def format_entry(string, *values)
+        def substitute_entry(string, *values)
           return unless string
           if values.last.kind_of?(Hash)
             string = ' ' + string
             values.last.each do |key, value|
               string.gsub!(/([^\\]):#{key}/, "\\1#{value}")
             end
-            string.gsub!(/([^\\])\\:/, '\1:')
-            string = string[1, string.length]
-          else
+            string.gsub!(/([^\\])\\:/, '\\1:')
+            string[1, string.length]
+          elsif not values.empty?
             begin
               format(string, *values)
             rescue StandardError => e
               self.debug ? raise(EntryFormatError.new(self.current_language, [], string, values, e)) : string
             end
+          else
+            string
           end
         end
         
@@ -189,18 +202,6 @@ module ArkanisDevelopment #:nodoc:
           }
           
           defaults.update self.find(lang, :about).symbolize_keys
-        end
-        
-        protected
-        
-        def process_entry_params(*args)
-          format_values, default_value = nil, nil
-          
-          last_arg = args.last
-          format_values = args.delete_at(-1) if last_arg.kind_of?(Hash) or last_arg.kind_of?(Array)
-          default_value =  args.last.kind_of? String
-          
-          [args, default_value, format_values]
         end
         
       end

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 # Load the specified language file and no features
-simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => []
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [] if __FILE__ == $0
 
 class LanguageTest < Test::Unit::TestCase
   
@@ -19,11 +19,12 @@ class LanguageTest < Test::Unit::TestCase
     end
   end
   
-  def test_entry_format
-    assert_equal 'test this to 10', @lang.format_entry('test %s to %i', 'this', 10)
-    assert_equal 'test this to 10', @lang.format_entry('test :object to :end', :object => 'this', :end => 10)
-    assert_equal 'test :object to :end', @lang.format_entry('test :object to :end')
-    assert_nil @lang.format_entry(nil, 'some', 'values')
+  def test_entry_substitution
+    assert_equal 'substitute this and 10', @lang.substitute_entry('substitute %s and %i', 'this', 10)
+    assert_equal 'escape %s but not this', @lang.substitute_entry('escape %%s but not %s', 'this')
+    assert_equal 'substitute this and 10', @lang.substitute_entry('substitute :a and :b', :a => 'this', :b => 10)
+    assert_equal 'escape :a but not this', @lang.substitute_entry('escape \:a but not :b', :b => 'this')
+    assert_nil @lang.substitute_entry(nil, 'some', 'values')
   end
   
   def test_if_language_file_is_loaded
@@ -39,33 +40,44 @@ class LanguageTest < Test::Unit::TestCase
   end
   
   def test_lang_file_access
-    assert_equal @lang_file['dates']['monthnames'], @lang[:dates, :monthnames]
-    
-    @lang.debug = true
-    assert_raise ArkanisDevelopment::SimpleLocalization::EntryNotFound do
-      @lang[:not_existant_key]
-    end
-    
-    @lang.debug = false
-    assert_nil @lang[:not_existant_key]
-    @lang.debug = true
-    
+    assert_equal @lang_file['dates']['monthnames'], @lang.find(LANG_FILE, :dates, :monthnames)
+    assert_equal @lang_file['dates']['monthnames'], @lang.entry(:dates, :monthnames)
     assert_raise ArkanisDevelopment::SimpleLocalization::LangFileNotLoaded do
       @lang.find :not_loaded_lang, :dates, :monthnames
     end
   end
   
-  def test_lang_file_access_with_format
-    assert_equal format(@lang_file['helpers']['distance_of_time_in_words']['n minutes'], 1), @lang[:helpers, :distance_of_time_in_words, 'n minutes', [1]]
+  def test_not_existing_entry_handling
+    assert_nil @lang.entry(:not_existant_key)
+    assert_nil @lang[:not_existant_key]
+    assert_raise ArkanisDevelopment::SimpleLocalization::EntryNotFound do
+      @lang.entry! :not_existant_key
+      @lang.entry! :not, :existing, :entry
+    end
+    begin
+      @lang.entry! :not, :existing, :entry
+    rescue ArkanisDevelopment::SimpleLocalization::EntryNotFound => e
+      assert_equal LANG_FILE.to_sym, e.language
+      assert_equal %w(not existing entry), e.requested_entry
+    end
+  end
+  
+  def test_lang_file_access_with_substitution
+    assert_equal 'substitute this and 10', @lang.entry(:tests, :substitution, :format, ['this', 10])
+    assert_equal 'escape %s but not this', @lang.entry(:tests, :substitution, :format_escape, ['this'])
+    assert_equal 'substitute this and 10', @lang.entry(:tests, :substitution, :hash, :a => 'this', :b => 10)
+    assert_equal 'escape :a but not this', @lang.entry(:tests, :substitution, :hash_escape, :b => 'this')
+    assert_nil @lang.entry(:not_existing_key, ['some', 'values'])
+    assert_nil @lang.entry(:not, :existing, :key, ['some', 'values'])
     
+    old_debug_mode = @lang.debug
     @lang.debug = true
     assert_raise ArkanisDevelopment::SimpleLocalization::EntryFormatError do
-      @lang[:helpers, :distance_of_time_in_words, 'n minutes', []]
+      @lang.entry! :tests, :substitution, :format, ['this']
     end
-    
     @lang.debug = false
-    assert_equal @lang_file['helpers']['distance_of_time_in_words']['n minutes'], @lang[:helpers, :distance_of_time_in_words, 'n minutes', []]
-    @lang.debug = true
+    assert_equal 'substitute %s and %i', @lang.entry!(:tests, :substitution, :format, ['this'])
+    @lang.debug = old_debug_mode
   end
   
   def test_simple_lang_section_proxy

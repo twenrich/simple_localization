@@ -42,7 +42,7 @@ module ArkanisDevelopment #:nodoc:
       
       attr_reader :requested_entry, :language
       
-      def initialize(requested_entry, language)
+      def initialize(requested_entry = [], language = nil)
         @requested_entry, @language = Array(requested_entry), language
         super "The requested entry '#{@requested_entry.join('\' -> \'')}' could " +
           "not be found in the language '#{@language}'."

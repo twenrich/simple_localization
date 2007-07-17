@@ -12,7 +12,7 @@ module ArkanisDevelopment #:nodoc:
       def initialize(lang_dir, lang_code)
         @lang_dir, @lang_code = lang_dir, lang_code.to_sym
         @parts = []
-        @data = NestedHash.new
+        @data = NestedHash.new do raise EntryNotFound end
       end
       
       # This method loads the base YAML language file (eg. <code>de.yml</code>)
@@ -23,7 +23,8 @@ module ArkanisDevelopment #:nodoc:
       # <code>de.rb</code>).
       def load
         lang_file_name_without_ext = get_lang_file_name_without_ext
-        @data = NestedHash.from(YAML.load_file("#{lang_file_name_without_ext}.yml"))
+        @data.clear
+        @data.merge! YAML.load_file("#{lang_file_name_without_ext}.yml")
         
         # Split the file names of the parts by dot (without lang code and yml
         # extension) and sort them by the number of elements.

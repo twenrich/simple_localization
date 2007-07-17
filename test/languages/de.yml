@@ -116,3 +116,11 @@ app:
     section: Test Zeichenkette
     nested:
       another test: Noch ein Test
+
+tests:
+  substitution:
+    format: substitute %s and %i
+    format_escape: escape %%s but not %s
+    hash: substitute :a and :b
+    hash_escape: escape \:a but not :b
+
