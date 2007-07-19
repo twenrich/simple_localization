@@ -30,7 +30,7 @@ class Test::Unit::TestCase
   protected
   
   def assert_contains(subject, search_string)
-    assert subject[search_string], "'#{subject}' should contain '#{search_string}' but doesn\'t"
+    assert subject[search_string], "'#{subject}' should contain '#{search_string}' but doesn't"
   end
   
 end

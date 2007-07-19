@@ -73,7 +73,7 @@ module ArkanisDevelopment #:nodoc:
       # Gets the receiver from the language class and combines this data with
       # the original data if wanted (a block was specified to the constructor).
       def receiver
-        receiver = @lang_class[*@sections]
+        receiver = @lang_class.entry(*@sections)
         if @transformation.respond_to?(:call)
           receiver = @transformation.arity == 1 ? @transformation.call(receiver) : @transformation.call(receiver, @orginal_receiver)
         end

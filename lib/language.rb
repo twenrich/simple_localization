@@ -27,13 +27,32 @@ module ArkanisDevelopment #:nodoc:
           EOM
         end
         
-        # Returns the name of the currently used language file.
+        # Returns the name of the currently used language as a symbol.
+        # 
+        #   Language.current_language = :de
+        #   Language.current_language # => :de
+        # 
         def current_language
           @@current_language
         end
         
-        # Sets the currently used language file. If the specified language file
-        # is not loaded a +LangFileNotLoaded+ exception will be raised
+        alias_method :used, :current_language
+        
+        # Sets the currently used language. If the specified language file
+        # is not loaded a +LangFileNotLoaded+ exception will be raised.
+        # 
+        #   simple_localization :languages => [:de, :en]
+        #   Language.current_language # => :de
+        #   Language.current_language = :en
+        #   Language.current_language # => :en
+        # 
+        # There are also aliases for the +current_language+ attribute accessor:
+        # 
+        #   simple_localization :languages => [:de, :en]
+        #   Language.used # => :de
+        #   Language.use :en
+        #   Language.used # => :en
+        # 
         def current_language=(new_lang)
           if loaded_languages.include? new_lang.to_sym
             @@current_language = new_lang.to_sym
@@ -45,7 +64,7 @@ module ArkanisDevelopment #:nodoc:
         alias_method :use, :current_language=
         
         # Returns a hash with all loaded LangFile objects.
-        def languages
+        def lang_files
           # Duplicate the hash to prevent that it's used to modify the internal
           # @@languages variable.
           @@languages.dup
@@ -68,10 +87,10 @@ module ArkanisDevelopment #:nodoc:
         #   Language.load :de, :en
         # 
         # This will load the files <code>de.yml</code> and <code>en.yml</code>
-        # in the language file directory and caches them in a class variable.
-        # If existing the files <code>de.rb</code> and <code>en.rb</code> will
-        # be executed. It also selects <code>:de</code> as the active language
-        # because it was specified first.
+        # and all of it's parts in the language file directory. If existing the
+        # files <code>de.rb</code> and <code>en.rb</code> will be executed. It
+        # also selects <code>:de</code> as the active language because it was
+        # specified first.
         def load(*languages)
           languages.flatten!
           languages.each do |lang_code|
@@ -83,7 +102,7 @@ module ArkanisDevelopment #:nodoc:
         end
         
         # Searches the date of the specified language file for the entry
-        # defined by +sections+.
+        # addressed by +keys+.
         # 
         # If the specified language file is not loaded an +LangFileNotLoaded+
         # exception is raised. If the entry is not found an +EntryNotFound+
@@ -91,22 +110,23 @@ module ArkanisDevelopment #:nodoc:
         # 
         #   Language.find :de, :active_record_messages, :not_a_number  # => "ist keine Zahl."
         # 
-        def find(language, *sections)
+        def find(language, *keys)
           language = language.to_sym
           if @@languages.empty? or not @@languages[language]
             raise LangFileNotLoaded.new(language, loaded_languages)
           end
           
-          sections.collect!{|section| section.kind_of?(Numeric) ? section : section.to_s}
+          keys.collect!{|key| key.kind_of?(Numeric) ? key : key.to_s}
           begin
-            @@languages[language].data[*sections]
+            @@languages[language].data[*keys]
           rescue EntryNotFound
-            raise EntryNotFound.new(sections, language)
+            raise EntryNotFound.new(keys, language)
           end
         end
         
-        # Returns the specified entry from the currently used language file. It's
-        # possible to specify neasted entries by using more than one parameter.
+        # Returns the specified entry from the currently used language file.
+        # It's possible to specify nested entries by using more than one
+        # parameter.
         # 
         #   Language.entry :active_record_messages, :too_short  # => "ist zu kurz (mindestens %d Zeichen)."
         # 
@@ -116,14 +136,35 @@ module ArkanisDevelopment #:nodoc:
         #   active_record_messages:
         #     too_short: ist zu kurz (mindestens %d Zeichen).
         # 
-        # If the specified language file is not loaded an +LangFileNotLoaded+
-        # exception is raised. If the entry is not found +nil+ is returned.
+        # If the entry is not found +nil+ is returned.
         # 
-        # This method also integrates +format+. To format an entry specify an
-        # array with the format options as the last paramter:
+        # This method also allows you to substitute values inside the found
+        # entry. The +substitute_entry+ method is used for this and there are
+        # two ways to do this:
         # 
-        #   Language.entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
+        # With +format+:
         # 
+        # Just specify an array with the format values as last key:
+        # 
+        #   Language.entry :active_record_messages, :too_short, [5] # => "ist zu kurz (mindestens 5 Zeichen)."
+        # 
+        # If +format+ fails the reaction depends on the +debug+ option of the
+        # Language module. If +debug+ is set to +false+ the unformatted entry is
+        # returned. If +debug+ is +true+ an +EntryFormatError+ is raised
+        # detailing what went wrong.
+        # 
+        # With "hash notation" like used by the ActiveRecord conditions:
+        # 
+        # It's also possible to use a hash to specify the values to substitute.
+        # This works like the conditions of ActiveRecord:
+        # 
+        #   app:
+        #     welcome: Welcome :name, you have :number new messages.
+        # 
+        #   Language.entry :app, :welcome, :name => 'Mr. X', :number => 5  # => "Welcome Mr. X, you have 5 new messages."
+        # 
+        # Both approaches allow you to use the \ character to escape colons (:)
+        # and percent sings (%).
         def entry(*args)
           begin
             entry!(*args)
@@ -134,6 +175,8 @@ module ArkanisDevelopment #:nodoc:
         
         alias_method :[], :entry
         
+        # Same as the +Language#entry+ method but it raises an +EntryNotFound+
+        # exception if the specified entry does not exists.
         def entry!(*args)
           substitute_values = if args.last.kind_of?(Hash)
             [args.delete_at(-1)]
@@ -147,13 +190,17 @@ module ArkanisDevelopment #:nodoc:
           raise EntryFormatError.new(e.language, args, e.entry_content, e.format_values, e.original_exception)
         end
         
-        # Formats an etry with +format+ or hash notation.
+        # Substitutes a string with values by using +format+ or a hash like
+        # known from the ActiveRecord conditions.
         # 
-        #   substitute_entry :active_record_messages, :too_short, [10] # => "ist zu kurz (mindestens 10 Zeichen)."
+        #   substitute_entry 'substitute %s and %i', 'this', 10               # => "substitute this and 10"
+        #   substitute_entry 'escape %%s but not %s', 'this'                  # => "escape %s but not this"
+        #   substitute_entry 'substitute :a and :b', :a => 'this', :b => 10   # => "substitute this and 10"
+        #   substitute_entry 'escape \:a but not :b', :b => 'this'            # => "escape :a but not this"
         # 
-        # Assuming <code>:test_entry</code> has the value <code>"Message by :user: :msg"</code>
-        #   substitute_entry :test_entry, :user => 'Mr. X', :msg => 'Hello' # => "Message by Mr. X: Hello"
-        # 
+        # If the format style is used and an error occurs an +EntryFormatError+
+        # will be raised. It contains some extra information as well as the
+        # original exception.
         def substitute_entry(string, *values)
           return unless string
           if values.last.kind_of?(Hash)
