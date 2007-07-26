@@ -11,8 +11,9 @@ module ArkanisDevelopment #:nodoc:
       @@current_language = nil
       @@options = {
         :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
-        :debug => true,
-        :create_missing_keys => false
+        :debug => nil,
+        :create_missing_keys => false,
+        :features => Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
       }
       
       mattr_accessor :options
@@ -99,6 +100,14 @@ module ArkanisDevelopment #:nodoc:
             lang_file.load
           end
           self.use languages.first if current_language.nil?
+        end
+        
+        # Reload the data of all loaded language files by calling the
+        # LangFile#reload method on each language file.
+        def reload
+          @@languages.each do |lang_code, lang_file|
+            lang_file.reload
+          end
         end
         
         # Searches the date of the specified language file for the entry
@@ -218,6 +227,14 @@ module ArkanisDevelopment #:nodoc:
             end
           else
             string
+          end
+        end
+        
+        # Creates a new key in each loaded language files. If the key already
+        # exists a new one will not be created.
+        def create_entry(keys, value = nil)
+          @@languages.each do |lang_file|
+            lang_file.create_key keys, value
           end
         end
         
