@@ -11,7 +11,7 @@ module ArkanisDevelopment #:nodoc:
       @@current_language = nil
       @@options = {
         :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
-        :debug => nil,
+        :debug => false,
         :create_missing_keys => false,
         :features => Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
       }

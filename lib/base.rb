@@ -3,27 +3,6 @@
 # be used in the environment.rb file to configure and initialize the
 # localization.
 
-module ArkanisDevelopment #:nodoc:
-  module SimpleLocalization
-    
-    # An array of features which should not be preloaded. If this constant is
-    # already defined it will not be overwritten. This provides a way to
-    # exclude features from preloading. You'll just have to define this
-    # constant by yourself before the Rails::Initializer.run call in your
-    # environment.rb file.
-    begin
-      SUPPRESS_FEATURES
-    rescue NameError
-      SUPPRESS_FEATURES = []
-    end
-    
-    # A list of features loaded directly in the <code>init.rb</code> of the
-    # plugin. This is necessary for some features to work with rails observers.
-    PRELOAD_FEATURES = [:localized_models] - Array(SUPPRESS_FEATURES).flatten
-    
-  end
-end
-
 # The main method of the SimpleLocalization plugin used to initialize and
 # configure the plugin. Usually it is called in the environment.rb file.
 # 
@@ -66,25 +45,21 @@ end
 # directory of your rails application. By default the language files are
 # located in the +languages+ directory of the Simple Localization plugin.
 def simple_localization(options)
-  available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   
-  default_options = {
-    :language => :de,
-    :languages => nil,
-    :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
-    :debug => nil
-  }
+  # available params: language, languages, *options (from the Language module), *features
+  
+  lang = ArkanisDevelopment::SimpleLocalization::Language
+  
+  default_options = {:language => :de, :languages => nil}.update lang.options
+  options.reverse_update! default_options
+  
+  # still need to do some stuff down there...
+  
+  available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
   default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
   options = default_options.update(options)
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
   
-  unless options[:debug].nil?
-    ArkanisDevelopment::SimpleLocalization::Language.debug = options[:debug]
-  else
-    ArkanisDevelopment::SimpleLocalization::Language.debug = (ENV['RAILS_ENV'] != 'production')
-  end
-  
-  ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
   ArkanisDevelopment::SimpleLocalization::Language.load(languages)
   
   if options[:only]
