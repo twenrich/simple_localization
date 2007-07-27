@@ -49,25 +49,22 @@ def simple_localization(options)
   # available params: language, languages, *options (from the Language module), *features
   
   lang = ArkanisDevelopment::SimpleLocalization::Language
+  lang_options = lang.options.dup
+  features = lang_options.delete(:features)
   
-  default_options = {:language => :de, :languages => nil}.update lang.options
+  default_options = {:language => :de, :languages => nil}.update lang_options
+  features.each{|feature| default_options[feature.to_sym] = true}
   options.reverse_update! default_options
   
-  # still need to do some stuff down there...
-  
-  available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
-  default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
-  options = default_options.update(options)
+  # Analyse the specified options
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
   
-  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
-  
   if options[:only]
-    enabled_features = available_features & Array(options[:only])
+    enabled_features = features & Array(options[:only])
   elsif options[:except]
-    enabled_features = available_features - Array(options[:except])
+    enabled_features = features - Array(options[:except])
   else
-    enabled_features = available_features & options.collect{|feature, enabled| feature if enabled}.compact
+    enabled_features = features & options.collect{|feature, enabled| feature if enabled}.compact
   end
   
   preloaded_features = ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES
@@ -82,6 +79,9 @@ def simple_localization(options)
       '  To suppress a preloaded feature please look into the plugins readme file (chapter "Preloaded features").'
   end
   
+  # Load the language files and the features
+  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
+  
   to_load_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
   end
@@ -89,7 +89,7 @@ def simple_localization(options)
   loaded_features = (enabled_features + preloaded_features).uniq
   
   RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
-    "  language: #{languages.join(', ')}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
+    "  language: #{languages.join(', ')}, lang_file_dir: #{lang.lang_file_dir}\n" +
     "  features: #{loaded_features.join(', ')}"
   
   loaded_features
