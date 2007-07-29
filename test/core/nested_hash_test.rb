@@ -3,16 +3,17 @@ require File.dirname(__FILE__) + '/../test_helper'
 class NestedHashTest < Test::Unit::TestCase
   
   def setup
-    @default_hash = {:a => 1, :b => {:x => 10, :y => 'test', :z => {:e => 9}}}
+    @default_hash = {:a => 1, :b => {:x => 10, :y => 'test', :z => {:e => 9}}, :x => 'end'}
   end
   
   def test_creation_from_other_hash
-    hash_out_of_other_hash = ArkanisDevelopment::SimpleLocalization::NestedHash.from @default_hash
+    original_hash = {:a => 1, :b => 'x'}
+    hash_out_of_other_hash = ArkanisDevelopment::SimpleLocalization::NestedHash.from original_hash
     hash_directly_created = ArkanisDevelopment::SimpleLocalization::NestedHash[:a => 1, :b => 'x']
     [hash_out_of_other_hash, hash_directly_created].each do |hash_to_test|
       assert_not_nil hash_to_test
       assert_kind_of ArkanisDevelopment::SimpleLocalization::NestedHash, hash_to_test
-      assert_equal @default_hash.size, hash_to_test.size
+      assert_equal original_hash.size, hash_to_test.size
     end
   end
   
@@ -86,6 +87,7 @@ class NestedHashTest < Test::Unit::TestCase
     assert_equal @default_hash[:b][:z][:e], hash_to_test[:b, :z, :e]
     assert_equal hash_to_merge[:b][:z][:f], hash_to_test[:b, :z, :f]
     assert_kind_of ArkanisDevelopment::SimpleLocalization::NestedHash, hash_to_test[:b, :z]
+    assert_equal @default_hash[:x], hash_to_test[:x]
   end
   
   def test_dup

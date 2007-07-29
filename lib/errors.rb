@@ -1,6 +1,8 @@
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
+    class SimpleLocalizationError < StandardError; end;
+    
     # Custom error class raised if the uses tries to select a language file
     # which is not loaded. Also stores the name of the failed language file and
     # a list of the loaded ones.
@@ -12,7 +14,7 @@ module ArkanisDevelopment #:nodoc:
     #     e.loaded_langs  # => [:de, :en]
     #   end
     # 
-    class LangFileNotLoaded < StandardError
+    class LangFileNotLoaded < SimpleLocalizationError
       
       attr_reader :failed_lang, :loaded_langs
       
@@ -38,7 +40,7 @@ module ArkanisDevelopment #:nodoc:
     #     e.language         # => :en
     #   end
     # 
-    class EntryNotFound < StandardError
+    class EntryNotFound < SimpleLocalizationError
       
       attr_reader :requested_entry, :language
       
@@ -66,7 +68,7 @@ module ArkanisDevelopment #:nodoc:
     #     e.original_exception  # => #<ArgumentError: invalid value for Integer: "a">
     #   end
     # 
-    class EntryFormatError < StandardError
+    class EntryFormatError < SimpleLocalizationError
       
       attr_reader :language, :entry, :entry_content, :format_values, :original_exception
       
@@ -79,6 +81,26 @@ module ArkanisDevelopment #:nodoc:
       end
       
     end
+    
+    class EntryGenerationError < SimpleLocalizationError
+    end
+    
+    # Error raised by the LangFile#find_line_for_new_entry method if the
+    # specified key already exists.
+    class EntryAlreadyExistsError < EntryGenerationError
+    end
+    
+    class ProducedInvalidYamlError < EntryGenerationError
+      
+      attr_reader :original_exception
+      
+      def initialize(original_exception)
+        @original_exception = original_exception
+        super original_exception.message
+      end
+      
+    end
+
     
   end
 end

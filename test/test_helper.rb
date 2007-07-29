@@ -33,4 +33,11 @@ class Test::Unit::TestCase
     assert subject[search_string], "'#{subject}' should contain '#{search_string}' but doesn't"
   end
   
+  def load_language_file_contents(lang_file_dir = LANG_FILE_DIR)
+    Dir.glob("#{lang_file_dir}/*.yml").collect{|path| File.basename(path, '.yml')}.inject({}) do |memo, lang_file|
+      memo[lang_file] = YAML.load_file "#{LANG_FILE_DIR}/#{lang_file}.yml"
+      memo
+    end
+  end
+  
 end

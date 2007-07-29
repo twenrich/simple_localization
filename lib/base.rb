@@ -54,7 +54,7 @@ def simple_localization(options)
   
   default_options = {:language => :de, :languages => nil}.update lang_options
   features.each{|feature| default_options[feature.to_sym] = true}
-  options.reverse_update! default_options
+  options.reverse_merge! default_options
   
   # Analyse the specified options
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
