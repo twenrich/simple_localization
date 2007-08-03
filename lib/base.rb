@@ -52,12 +52,13 @@ def simple_localization(options)
   lang_options = lang.options.dup
   features = lang_options.delete(:features)
   
-  default_options = {:language => :de, :languages => nil}.update lang_options
+  default_options = {:language => nil, :languages => nil}.update lang_options
   features.each{|feature| default_options[feature.to_sym] = true}
   options.reverse_merge! default_options
   
   # Analyse the specified options
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
+  languages << :de if languages.empty?
   
   if options[:only]
     enabled_features = features & Array(options[:only])
