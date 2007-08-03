@@ -30,11 +30,28 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         @@localized_path_cache = {}
     
         def render_file(template_path, use_full_path = true, local_assigns = {})
+          #$stdout.puts "> render_file: template_path: #{template_path.inspect}, use_full_path: #{use_full_path.inspect}, local_assigns: #{local_assigns.inspect}"
           @first_render ||= template_path
           
-          localized_path = locate_localized_path(template_path, use_full_path)
+          localized_path, template_extension = locate_localized_path(template_path, use_full_path)
+          
+          # Delegate templates are picked by the template extension and if
+          # use_full_path is true Rails does not search for an extension and so
+          # delegate templates won't work. To fix this try to convert the path
+          # back to a relative one. This will surely break some other things so
+          # this really needs some more thoughts...
+          if use_full_path
+            localized_path.gsub!(/#{Regexp.escape('.' + template_extension)}$/, '') if template_extension
+            view_paths.each do |view_path|
+              localized_path.gsub!(/^#{Regexp.escape(view_path)}\//, '')
+            end
+          end
+          
+          #$stdout.puts "> done: localized_path: #{localized_path.inspect}, use_full_path: #{use_full_path.inspect}, local_assigns: #{local_assigns.inspect}"
+          
           # don't use_full_path -- we've already expanded the path
-          render_file_without_localization(localized_path, false, local_assigns)
+          # FALSE: doing this will break delegate templates!
+          render_file_without_localization(localized_path, use_full_path, local_assigns)
         end
         
         private
@@ -49,6 +66,8 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         def locate_localized_path(template_path, use_full_path)
           current_language = Language.current_language
+          
+          #$stdout.puts ">> locate_localized_path(template_path: #{template_path.inspect}, use_full_path: #{use_full_path.inspect}) current_language: #{current_language.inspect}, view_paths: #{view_paths.inspect}"
           
           cache_key = "#{current_language}:#{template_path}"
           cached = @@localized_path_cache[cache_key]
@@ -78,7 +97,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
             localized_path = template_file_name
           end
           
-          @@localized_path_cache[cache_key] = localized_path.to_s
+          [@@localized_path_cache[cache_key] = localized_path.to_s, template_extension]
         end
         
       end
