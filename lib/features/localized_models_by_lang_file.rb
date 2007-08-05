@@ -75,9 +75,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         alias_method :human_attribute_name_without_localization, :human_attribute_name
         
         def human_attribute_name(attribute_key_name)
+          attribute_key_name = attribute_key_name.to_s
           return human_attribute_name_without_localization(attribute_key_name) if self == ActiveRecord::Base
-          Language.entry(:models, self.class_name.underscore.to_sym, :attributes, attribute_key_name) ||
-            human_attribute_name_without_localization(attribute_key_name)
+          Language.entry!(:models, self.class_name.underscore.to_sym, :attributes, attribute_key_name)
         rescue EntryNotFound
           human_attribute_name_without_localization(attribute_key_name)
         end

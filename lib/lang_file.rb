@@ -3,6 +3,17 @@ require File.dirname(__FILE__) + '/nested_hash'
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
+    # The LangFile class is the interface for the Simple Localization plugin to
+    # work with the language files. This class takes care of loading a language
+    # file, provides a simple way to access its data (using the NestedHash
+    # class) and  creates new keys in it.
+    # 
+    # = What are language files?
+    # 
+    # The Simple Localization plugin uses language files to store the data
+    # needed for a language.
+    # 
+    # TODO: explain language file parts, loading and saving order and entry creation
     class LangFile
       
       attr_reader :lang_file_dirs, :lang_code, :yaml_parts, :ruby_parts, :data
@@ -90,7 +101,7 @@ module ArkanisDevelopment #:nodoc:
         begin 
           key = keys_left_to_create.shift
           val = (keys_left_to_create.empty? and value) ? ": #{yaml_escape(value)}" : ":"
-          new_line = ('  ' * level) + yaml_escape(key) + val if key 
+          new_line = ('  ' * level) + yaml_escape(key) + val if key
           lines.insert(target_line, new_line)
           target_line += 1
           level += 1
@@ -158,7 +169,7 @@ module ArkanisDevelopment #:nodoc:
         ruby_parts = []
         
         self.lang_file_dirs.each do |lang_file_dir|
-          yaml_parts_in_this_dir = Dir.glob(File.join(lang_file_dir, "#{self.lang_code}*.yml"))
+          yaml_parts_in_this_dir = Dir.glob(File.join(lang_file_dir, "#{self.lang_code}*.yml")).sort
           yaml_parts[lang_file_dir] = yaml_parts_in_this_dir.collect {|part| File.basename(part)}
           ruby_part_in_this_dir = File.join(lang_file_dir, "#{self.lang_code}.rb")
           ruby_parts << ruby_part_in_this_dir if File.exists?(ruby_part_in_this_dir)
@@ -243,61 +254,78 @@ module ArkanisDevelopment #:nodoc:
       def find_line_for_new_entry(keys, yaml_code)
         # Load all lines of the part and parse it as YAML. We then use the
         # parsed YAML structure to check if a key exists and track it's position
-        # by searching through the lines.
+        # by searching through the lines manually.
         lines = yaml_code.split "\n"
         parsed_yaml = YAML.parse yaml_code
         
         keys_left_to_search = keys.dup
-        current_line = 0
-        level = 0
+        # These two variables are pointing to the position where the search for
+        # the next key begins.
+        key_line = 0
+        key_level = 0
         
-        # Only analyse the YAML code if the YAML parser actually finds something
-        # to parse (read: if the file is not empty).
-        if parsed_yaml
-          
-          puts "searching for keys #{keys.inspect}"
-          current_yaml_map = YAML.parse yaml_code
+        # Skip the search if the file is empty. The key_line and key_level
+        # variables still point at the first line and this is what the method
+        # should return in this case.
+        return [key_line, key_level, keys_left_to_search] unless parsed_yaml
+        
+        puts "searching for keys #{keys.inspect}:"
+        current_yaml_map = YAML.parse yaml_code
+        catch :key_not_found do
           keys.each do |key|
             puts "  key #{key.inspect}"
-            current_yaml_map.value.each do |syck_key, syck_value|
-              puts "    checking syck key #{syck_key.value}"
-              if syck_key.value == key
-                key_yaml_code = reconstruct_yaml_key(syck_key) + ':'
-                puts "      start line scan: current line #{current_line}"
-                lines.each_with_index do |line, index|
-                  current_line = index if index >= current_line and line.starts_with?(('  ' * level) + key_yaml_code)
+            syck_key, syck_value = current_yaml_map.value.to_a.detect {|syck_key, syck_value| syck_key.value == key}
+            puts "  -> found syck entry: #{syck_key.inspect}, #{syck_value.inspect}"
+            throw :key_not_found unless syck_key and syck_value
+            
+            key_yaml_code = reconstruct_yaml_key(syck_key) + ':'
+            puts "      start line scan: current line #{key_line}, yaml_key: #{(('  ' * key_level) + key_yaml_code).inspect}, level: #{key_level}"
+            key_line.upto(lines.size - 1) do |line_number|
+              line = lines[line_number]
+              if line.starts_with? '  ' * key_level
+                puts "      -> line #{line.inspect} starts with #{(('  ' * key_level) + key_yaml_code).inspect}"
+                if line.starts_with?(('  ' * key_level) + key_yaml_code)
+                  key_line = line_number
+                  puts "      -> MATCH!"
+                  break
                 end
-                puts "      found key: #{key_yaml_code.inspect}, current line: #{current_line} #{lines[current_line].inspect}"
-                keys_left_to_search.shift
-                current_yaml_map = syck_value
-                level += 1
-                break
+              else
+                puts "      key not found: #{key.inspect}"
+                throw :key_not_found
               end
             end
+            
+            puts "      found key: #{key_yaml_code.inspect}, current line: #{key_line} #{lines[key_line].inspect}"
+            keys_left_to_search.shift
+            current_yaml_map = syck_value
+            
+            # We now know the position of the current key. Now increment the
+            # key variables to point at the position where the search for the
+            # next key should start.
+            key_level += 1
+            key_line += 1
+            puts "next key search: line #{key_line}, level #{key_level}, keys left: #{keys_left_to_search}"
           end
-          
-          puts "last matching key: line #{current_line}, level #{level}, keys left: #{keys_left_to_search}"
-          raise EntryAlreadyExistsError if keys_left_to_search.empty?
-          
-          # Ok, we got the last matching key, now search the last line of this
-          # keys section. After this the current_line variable points to the first
-          # line of the next section.
-          lines.each_with_index do |line, line_number|
-            next unless line_number > current_line
-            if line.starts_with?('  ' * level)
-              current_line = line_number
-            else
-              break
-            end
-          end
-          
-          # Increment the current line because it should point to the line where
-          # the new entry should be added at.
-          current_line += 1
-          
         end
-
-        [current_line, level, keys_left_to_search]
+        
+        # Ok, we expected to find a key in the current section but there
+        # wasn't one. Now search for the last line of this section.
+        key_line.upto(lines.size - 1) do |line_number|
+          if lines[line_number].starts_with? '  ' * key_level
+            key_line = line_number
+          else
+            break
+          end
+        end
+        
+        # Increment the current line because it should point to the line where
+        # the new entry should be added at.
+        key_line += 1
+        
+        puts "line to insert new key: line #{key_line}, level #{key_level}, keys left: #{keys_left_to_search}"
+        raise EntryAlreadyExistsError if keys_left_to_search.empty?
+        
+        [key_line, key_level, keys_left_to_search]
       end
       
       # Generates the name of the base language file (without any file
@@ -305,6 +333,25 @@ module ArkanisDevelopment #:nodoc:
       def get_lang_file_name_without_ext
         File.join self.lang_dir, self.lang_code.to_s
       end
+      
+=begin
+      def get_yaml_code_of_section(key, yaml_code)
+        lines = yaml_code.split "\n"
+        parsed_yaml = YAML.parse yaml_code
+        
+        syck_key = parsed_yaml.value.keys.detect{|k| k.value == key}
+        return nil unless syck_key
+        
+        yaml_code_for_key = reconstruct_yaml_key(syck_key)
+        target_section_lines = []
+        in_target_section = false
+        lines.each do |line|
+          in_target_section = true if line.starts_with? yaml_code_for_key
+          break if in_target_section and not line.starts_with? '  '
+          target_section_lines << line.gsub(/^  /, '') if in_target_section
+        end
+      end
+=end
       
       # Tries to reconstruct the YAML code of the given Syck node by analysing
       # the style of the node and quote the node value if necessary.

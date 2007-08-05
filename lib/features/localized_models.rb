@@ -66,7 +66,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
           attr_accessor :localized_model_name, :localized_attribute_names
           
           def human_attribute_name(attribute_key_name)
-            self.localized_attribute_names[attribute_key_name.to_sym] || super
+            self.localized_attribute_names[attribute_key_name.to_sym] ||
+              self.localized_attribute_names[attribute_key_name.to_s] ||
+              super(attribute_key_name.to_s)
           end
         end
         

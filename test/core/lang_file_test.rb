@@ -159,7 +159,7 @@ class LangFileTest < Test::Unit::TestCase
   def test_find_line_for_new_entry_with_small_part
     yaml_code = "test:\n"
     assert_equal [1, 0, %w(new)], @lang_file.send(:find_line_for_new_entry, %w(new), yaml_code)
-    assert_equal [1, 1, %w(new)], @lang_file.send(:find_line_for_new_entry, %w(test new), yaml_code)
+    assert_equal [1, 1, %w(nested)], @lang_file.send(:find_line_for_new_entry, %w(test nested), yaml_code)
   end
   
   def test_find_line_with_existing_entry
@@ -171,7 +171,7 @@ class LangFileTest < Test::Unit::TestCase
   
   def test_find_line_for_new_entry
     yaml_code = some_complex_test_yaml
-    assert_equal [16, 0, %w(new)], @lang_file.send(:find_line_for_new_entry, %w(new), yaml_code)
+    assert_equal [18, 0, %w(new)], @lang_file.send(:find_line_for_new_entry, %w(new), yaml_code)
     assert_equal [7, 1, %w(x)], @lang_file.send(:find_line_for_new_entry, %w(test x), yaml_code)
     assert_equal [7, 2, %w(c)], @lang_file.send(:find_line_for_new_entry, %w(test a c), yaml_code)
     assert_equal [5, 3, %w(new)], @lang_file.send(:find_line_for_new_entry, %w(test a q1 new), yaml_code)
@@ -230,6 +230,8 @@ test2:
   x2: |
     this is test text
   x3: {inline: hash}
+  a:
+    empty: nothing
 empty:
 
 EOY
@@ -246,7 +248,6 @@ EOY
     end
     file_hash
   end
-  
   
 =begin
   def test_simple_loading
