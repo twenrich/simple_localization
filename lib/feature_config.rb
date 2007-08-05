@@ -26,7 +26,7 @@ module ArkanisDevelopment #:nodoc:
     # Remove the reload_lang_file feature from the loading list if we're not in
     # the development environment. This feature eats some performance so it
     # should only be used when it's useful and disabled otherwise.
-    if ENV['RAILS_ENV'] != 'debug'
+    if ENV['RAILS_ENV'] != 'development'
       Language.features -= [:reload_lang_file]
     end
     
