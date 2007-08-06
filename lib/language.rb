@@ -129,7 +129,7 @@ module ArkanisDevelopment #:nodoc:
           begin
             @@languages[language].data[*keys]
           rescue EntryNotFound
-            raise EntryNotFound.new(keys, language)
+            raise EntryNotFound.new(keys, language) # reraise with more details
           end
         end
         
@@ -196,7 +196,7 @@ module ArkanisDevelopment #:nodoc:
           entry = self.find(self.current_language, *args)
           entry.kind_of?(String) ? substitute_entry(entry, *substitute_values) : entry
         rescue EntryFormatError => e
-          raise EntryFormatError.new(e.language, args, e.entry_content, e.format_values, e.original_exception)
+          raise EntryFormatError.new(e.language, args, e.entry_content, e.format_values, e.original_exception) # reraise with more details
         end
         
         # Substitutes a string with values by using +format+ or a hash like
