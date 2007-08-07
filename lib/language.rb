@@ -4,15 +4,14 @@ require File.dirname(__FILE__) + '/errors'
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
-    # This module loads and manages access to the used language files.
+    # This module loads and manages access to the used language files.  
     module Language
       
       @@languages = {}
       @@current_language = nil
       @@options = {
-        :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
+        :lang_file_dirs => "#{File.dirname(__FILE__)}/../languages",
         :debug => false,
-        :create_missing_keys => false,
         :features => Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
       }
       
@@ -82,7 +81,7 @@ module ArkanisDevelopment #:nodoc:
         # Loads the specified language files. If currently no language is
         # selected the first one of the specified files will be selected.
         # 
-        # The path to the language files can be specified in the +lang_file_dir+
+        # The path to the language files can be specified in the +lang_file_dirs+
         # option.
         # 
         #   Language.load :de, :en
@@ -95,7 +94,7 @@ module ArkanisDevelopment #:nodoc:
         def load(*languages)
           languages.flatten!
           languages.each do |lang_code|
-            lang_file = LangFile.new self.lang_file_dir, lang_code
+            lang_file = LangFile.new self.lang_file_dirs, lang_code
             @@languages[lang_code.to_sym] = lang_file
             lang_file.load
           end

@@ -50,15 +50,18 @@ def simple_localization(options)
   
   lang = ArkanisDevelopment::SimpleLocalization::Language
   lang_options = lang.options.dup
-  features = lang_options.delete(:features)
+  features = lang_options.delete :features
+  lang_file_dirs = lang_options.delete :lang_file_dirs
   
-  default_options = {:language => nil, :languages => nil}.update lang_options
+  default_options = {:language => nil, :languages => nil, :lang_file_dir => nil, :lang_file_dirs => nil}.update lang_options
   features.each{|feature| default_options[feature.to_sym] = true}
   options.reverse_merge! default_options
   
   # Analyse the specified options
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
   languages << :de if languages.empty?
+  lang_file_dirs = [lang_file_dirs, options.delete(:lang_file_dir), options.delete(:lang_file_dirs)].flatten.compact.uniq
+  lang_file_dirs << "#{RAILS_ROOT}/app/languages" if File.directory? "#{RAILS_ROOT}/app/languages"
   
   if options[:only]
     enabled_features = features & Array(options[:only])
@@ -80,8 +83,13 @@ def simple_localization(options)
       '  To suppress a preloaded feature please look into the plugins readme file (chapter "Preloaded features").'
   end
   
-  # Load the language files and the features
-  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
+  # Load the Language module and load the language files and the features
+  lang.options.keys.each do |option|
+    lang.options[option] = options[option] if options.key? option
+  end
+  lang.lang_file_dirs = lang_file_dirs
+  
+  ArkanisDevelopment::SimpleLocalization::Language.load(*languages)
   
   to_load_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
