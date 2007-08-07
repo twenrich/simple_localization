@@ -94,7 +94,7 @@ module ArkanisDevelopment #:nodoc:
         def load(*languages)
           languages.flatten!
           languages.each do |lang_code|
-            lang_file = LangFile.new self.lang_file_dirs, lang_code
+            lang_file = LangFile.new lang_code, self.lang_file_dirs
             @@languages[lang_code.to_sym] = lang_file
             lang_file.load
           end

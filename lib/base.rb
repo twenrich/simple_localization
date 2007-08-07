@@ -45,9 +45,7 @@
 # directory of your rails application. By default the language files are
 # located in the +languages+ directory of the Simple Localization plugin.
 def simple_localization(options)
-  
-  # available params: language, languages, *options (from the Language module), *features
-  
+  # available options: language, languages, *options (from the Language module), *features
   lang = ArkanisDevelopment::SimpleLocalization::Language
   lang_options = lang.options.dup
   features = lang_options.delete :features
@@ -88,8 +86,7 @@ def simple_localization(options)
     lang.options[option] = options[option] if options.key? option
   end
   lang.lang_file_dirs = lang_file_dirs
-  
-  ArkanisDevelopment::SimpleLocalization::Language.load(*languages)
+  lang.load(*languages)
   
   to_load_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
@@ -98,7 +95,8 @@ def simple_localization(options)
   loaded_features = (enabled_features + preloaded_features).uniq
   
   RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
-    "  language: #{languages.join(', ')}, lang_file_dir: #{lang.lang_file_dir}\n" +
+    "  languages: #{languages.join(', ')}\n" +
+    "  language file directories: #{lang.lang_file_dirs.join(', ')}\n" +
     "  features: #{loaded_features.join(', ')}"
   
   loaded_features

@@ -41,7 +41,7 @@ class MultipleLanguagesTest < Test::Unit::TestCase
     assert_raise ArkanisDevelopment::SimpleLocalization::EntryNotFound do
       @lang.entry! :not_existant_key
     end
-    assert_nil @lang.entry :not_existant_key
+    assert_nil @lang.entry(:not_existant_key)
   end
   
   def test_lang_switching

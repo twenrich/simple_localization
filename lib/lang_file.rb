@@ -5,15 +5,14 @@ module ArkanisDevelopment #:nodoc:
     
     # The LangFile class is the interface for the Simple Localization plugin to
     # work with the language files. This class takes care of loading a language
-    # file, provides a simple way to access its data (using the NestedHash
-    # class) and  creates new keys in it.
+    # file and provides a simple way to access its data using the NestedHash
+    # class.
     # 
     # = What are language files?
     # 
     # The Simple Localization plugin uses language files to store the data
-    # needed for a language.
-    # 
-    # TODO: explain language file parts, loading and saving order and entry creation
+    # needed for a specific language. These files are built using YAML[http://www.yaml.org/]
+    # and are therefore easy to read and write.
     class LangFile
       
       attr_reader :lang_file_dirs, :lang_code, :yaml_parts, :ruby_parts, :data
