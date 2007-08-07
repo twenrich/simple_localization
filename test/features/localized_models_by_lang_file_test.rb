@@ -5,7 +5,7 @@ LANG_FILE ||= 'de'
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
 # feature is enabled to have fully localized error messages.
-simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_models_by_lang_file]
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:localized_models_by_lang_file, :localized_column_human_name]
 
 # Create a tableless model. See Rails Weenie:
 # http://www.railsweenie.com/forums/2/topics/724

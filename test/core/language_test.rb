@@ -24,6 +24,7 @@ class LanguageTest < Test::Unit::TestCase
     assert_equal 'escape %s but not this', @lang.substitute_entry('escape %%s but not %s', 'this')
     assert_equal 'substitute this and 10', @lang.substitute_entry('substitute :a and :b', :a => 'this', :b => 10)
     assert_equal 'escape :a but not this', @lang.substitute_entry('escape \:a but not :b', :b => 'this')
+    assert_equal 'substitute 0 with nothing', @lang.substitute_entry('substitute %d with nothing', nil)
     assert_nil @lang.substitute_entry(nil, 'some', 'values')
   end
   
@@ -67,6 +68,7 @@ class LanguageTest < Test::Unit::TestCase
     assert_equal 'escape %s but not this', @lang.entry(:tests, :substitution, :format_escape, ['this'])
     assert_equal 'substitute this and 10', @lang.entry(:tests, :substitution, :hash, :a => 'this', :b => 10)
     assert_equal 'escape :a but not this', @lang.entry(:tests, :substitution, :hash_escape, :b => 'this')
+    assert_equal @lang_file['active_record_messages']['too_long'], @lang.entry(:active_record_messages, :too_long)
     assert_nil @lang.entry(:not_existing_key, ['some', 'values'])
     assert_nil @lang.entry(:not, :existing, :key, ['some', 'values'])
     

@@ -190,6 +190,8 @@ module ArkanisDevelopment #:nodoc:
             [args.delete_at(-1)]
           elsif args.last.kind_of?(Array)
             args.delete_at(-1)
+          else
+            []
           end
           
           entry = self.find(self.current_language, *args)
