@@ -134,7 +134,18 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # method. This is done by the +app_scoped+ method.
       def app_not_scoped(*keys)
         self.entry(:app, *keys) || begin
-          keys.last.kind_of?(String) ? keys.last : self.entry(:app_default_value)
+          substitution_args = if keys.last.kind_of?(Array)
+            keys.pop
+          elsif keys.last.kind_of?(Hash)
+            [keys.pop]
+          else
+            []
+          end
+          if keys.last.kind_of?(String)
+            self.substitute_entry keys.last, *substitution_args
+          else
+            self.entry(:app_default_value)
+          end
         end
       end
       

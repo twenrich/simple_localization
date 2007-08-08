@@ -123,4 +123,5 @@ tests:
     format_escape: escape %%s but not %s
     hash: substitute :a and :b
     hash_escape: escape \:a but not :b
+  empty:
 

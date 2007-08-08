@@ -26,6 +26,17 @@ class LocalizedApplicationTest < Test::Unit::TestCase
     assert_equal @test_string, @lang.app_scoped(:test, :section)
   end
   
+  def test_lang_access_with_lang_file_default_value
+    assert_equal @lang_file['app_default_value'], @lang.app_not_scoped(:not, :existing, :entry)
+    assert_equal @lang_file['app_default_value'], @lang.app_not_scoped(:tests, :emtpy)
+  end
+  
+  def test_lang_access_with_string_default_value
+    assert_equal 'entry', @lang.app_not_scoped(:not, :existing, 'entry')
+    assert_equal 'default with substitution', @lang.app_not_scoped(:not, :existing, :section, 'default with %s', ['substitution'])
+    assert_equal 'default with substitution', @lang.app_not_scoped(:not, :existing, :section, 'default with :replace', :replace => 'substitution')
+  end
+  
   def test_lang_access_with_nested_scope
     very_nested_test_entry = @lang_file['app']['test']['nested']['another test']
     assert_equal @test_string, @lang.app_scoped(:test, :section)

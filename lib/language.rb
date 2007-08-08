@@ -231,14 +231,6 @@ module ArkanisDevelopment #:nodoc:
           end
         end
         
-        # Creates a new key in each loaded language files. If the key already
-        # exists a new one will not be created.
-        def create_entry(keys, value = nil)
-          @@languages.each do |lang_file|
-            lang_file.create_key keys, value
-          end
-        end
-        
         # Returns a hash with the meta data of the specified language (defaults
         # to the currently used language). Entries not present in the language
         # file will default to +nil+. If the specified language file is not
