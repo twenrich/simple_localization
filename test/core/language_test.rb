@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 # Load the specified language file and no features
-simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [] if __FILE__ == $0
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => []
 
 class LanguageTest < Test::Unit::TestCase
   

@@ -3,7 +3,8 @@ module ArkanisDevelopment #:nodoc:
     
     # A NestedHash is an extended Hash to make handling of nested hash
     # structures easier. It adds a quick way to access and set keys of nested
-    # hashes as well as an recursive merge! method to merge two structures.
+    # hashes as well as recursive merge! and dup methods to merge or duplicate
+    # structures.
     # 
     #   nh = NestedHash.from {:a => 1, :b => {:x => 9}}
     #   nh = NestedHash[:a => 1, :b => {:x => 9}]

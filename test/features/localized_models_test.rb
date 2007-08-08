@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 # Init SimpleLocalization with just the localized_models and
 # localized_error_messages features enabled. The localized_error_messages
