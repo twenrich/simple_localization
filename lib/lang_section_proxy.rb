@@ -78,6 +78,8 @@ module ArkanisDevelopment #:nodoc:
           receiver = @transformation.arity == 1 ? @transformation.call(receiver) : @transformation.call(receiver, @orginal_receiver)
         end
         receiver
+      rescue NoMethodError
+        ''
       end
       
       # Intercept all other messages and send them to the receiver.
