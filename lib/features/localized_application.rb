@@ -190,6 +190,13 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       alias_method :app, :app_scoped
       alias_method :app_with_scope, :with_app_scope
       
+      def app_proxy(*keys)
+        options = {:default => ''}
+        options.update(keys.pop) if keys.last.kind_of?(Hash)
+        options[:sections] = [:app] + keys
+        CachedLangSectionProxy.new options
+      end
+      
     end
     
     # This module defines global helper methods and therefor will be
@@ -206,129 +213,32 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         ArkanisDevelopment::SimpleLocalization::Language.with_app_scope(*sections, &block)
       end
       
-    end
-    
-    # Localization helpers for the use in controller classes only (not in
-    # actions!). This module will extend the ActionController::Base class.
-    module ControllerHelpers
-      
-      # A more specialized version of the <code>GlobalHelpers#l</code> method
-      # which returns the localization information at the specified sections
-      # but prefixes the sections with the name of the current controller.
-      # 
-      # The main purpose of this method is to avoid unnecessary repetition of
-      # parameters to the <code>GlobalHelpers#l</code> method.
-      # 
-      # Assume this language file data:
-      # 
-      #   app:
-      #     about:
-      #       area_title: About this app...
-      #         
-      # 
-      # and that the following code is written directly in the +AboutController+
-      # class:
-      # 
-      #   lc :area_title # => 'About this app...'
-      #   l :about, :area_title # => 'About this app...'
-      # 
-      # Based on it's current context (the +about+ controller) the lc method
-      # automatically added the <code>:about</code> scope.
-      def lc(*sections)
-        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped(*([self.controller_name] + sections))
+      def l_proxy(*sections)
+        ArkanisDevelopment::SimpleLocalization::Language.app_proxy(*sections)
       end
       
     end
     
-    # Localization helpers for the use in controllers only. This module will be
-    # mixed into ActionController::Base and therefore be available to actions
-    # (as an instance method).
-    module ControllerActionHelpers
+    module ContextSensetiveHelpers
       
-      # A more specialized version of the <code>GlobalHelpers#l</code> method
-      # which returns the localization information at the specified sections
-      # but prefixes the sections with the name of the current controller and
-      # action.
-      # 
-      # The main purpose of this method is to avoid unnecessary repetition of
-      # parameters to the <code>GlobalHelpers#l</code> method.
-      # 
-      # Assume this language file data:
-      # 
-      #   app:
-      #     about:
-      #       index:
-      #         title: About...
-      # 
-      # and that we are in the +index+ action of the +about+ controller:
-      # 
-      #   lc :title # => 'About...'
-      #   l :about, :index, :title # => 'About...'
-      # 
-      # Based on it's current context (+about+ controller and +index+ action)
-      # the lc method automatically added the <code>:about, :index</code> scope.
-      def lc(*sections)
-        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped(*([self.controller_name, self.action_name] + sections))
+      def lc(*args)
+        dir, file, method = get_app_file_in_context
+        args.unshift(*file.split('/'))
+        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped *args
       end
       
-    end
-    
-    # Localization helpers for use in templates only. This module will be mixed
-    # into ActionView::Base.
-    module TemplateHelpers
+      private
       
-      # A more specialized version of the <code>GlobalHelpers#l</code> method
-      # which returns the localization information at the specified sections
-      # but prefixes the sections with the name of the current template.
-      # 
-      # The main purpose of this method is to avoid unnecessary repetition of
-      # parameters to the <code>GlobalHelpers#l</code> method.
-      # 
-      # Assume this language file data:
-      # 
-      #   app:
-      #     about:
-      #       index:
-      #         title: About...
-      # 
-      # and that we are in the <code>app/views/about/index.rhtml</code>
-      # template:
-      # 
-      #   lc :title # => 'About...'
-      #   l :about, :index, :title
-      # 
-      # The lc method automatically added the :about, :index prefix based on the
-      # name of the current view.
-      # 
-      # Please not that the leading underscore of partial templates is removed.
-      # In the template <code>app/view/shared/_message.rhtml</code> the +lc+
-      # method will prefix the sections with <code>:app, :shared,
-      # :message</code>.
-      def lc(*sections)
-        current_template = path_and_extension(template_file_name).first
-        dir, file = File.split(current_template)
-        prefix_sections = dir.split '/'
-        prefix_sections << file.gsub(/^_/, '')
-        ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped(*(prefix_sections + sections))
-      end
-      
-      # Returns the file name of the template (relative to the ActionView base
-      # dir) from which this method is called.
-      # 
-      # The call stack is used to get information about the current template.
-      # This is not the perfect way but currently the simplest and fastest.
-      # 
-      # Called in app/views/about/index.rhtml:
-      # 
-      #   <%= template_name %> # => about/index.rhtml
-      # 
-      # Called in the partial template app/views/shared/_message.rhtml
-      # 
-      #   <%= template_name %> # => shared/_messages.rhtml
-      # 
-      def template_file_name
-        template_path = caller.detect{|level| level.slice @base_path}
-        template_path.slice Regexp.new(".*#{Regexp.escape(@base_path)}/(.*)\\:\\d+.*"), 1
+      def get_app_file_in_context
+        latest_app_file = caller.detect {|level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views)\//}
+        return unless latest_app_file
+        
+        match, path, line, rest = latest_app_file.match(/([^:]+):(\d+)(\:.*|)/).to_a
+        method = unless rest.empty?
+          rest.match(/:in [^\w](.*)[^\w]/).to_a.last
+        end
+        match, dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views)\/(.+)#{Regexp.escape(File.extname(path))}$/).to_a
+        [dir, file, method]
       end
       
     end
@@ -339,6 +249,6 @@ end
 ArkanisDevelopment::SimpleLocalization::Language.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::Language
 
 Object.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::GlobalHelpers
-ActionController::Base.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ControllerHelpers
-ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ControllerActionHelpers
-ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::TemplateHelpers
+ActionController::Base.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers

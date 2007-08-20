@@ -21,7 +21,7 @@ module ArkanisDevelopment #:nodoc:
     
     # A list of features loaded directly in the <code>init.rb</code> of the
     # plugin. This is necessary for some features to work with rails observers.
-    PRELOAD_FEATURES = [:localized_models] - Array(SUPPRESS_FEATURES).flatten
+    PRELOAD_FEATURES = [:localized_models, :localized_application, :localized_application_extensions] - Array(SUPPRESS_FEATURES).flatten
     
     # Remove the reload_lang_file feature from the loading list if we're not in
     # the development environment. This feature eats some performance so it

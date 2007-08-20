@@ -6,6 +6,8 @@ simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :on
 
 class LocalizedApplicationTest < Test::Unit::TestCase
   
+  include ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+  
   def setup
     @lang_file = YAML.load_file "#{LANG_FILE_DIR}/#{LANG_FILE}.yml"
     @lang = ArkanisDevelopment::SimpleLocalization::Language
@@ -70,5 +72,51 @@ class LocalizedApplicationTest < Test::Unit::TestCase
       assert_equal @test_string, @lang.app(:section)
     end
   end
-    
+  
+  def test_emulate_caller_with_method
+    emulate_caller_with_method 'test.rb', 4, 'emulated_method' do
+      assert_equal "test.rb:4:in `emulated_method'", caller.first
+    end
+  end
+  
+  def test_get_app_file_in_context
+    emulate_caller_with_method "#{RAILS_ROOT}/app/views/about/index.rhtml", 25, '_run_rhtml_47app47views47about47index46rhtml' do
+      dir, file, method = get_app_file_in_context
+      assert_equal 'views', dir
+      assert_equal 'about/index', file
+      assert_equal '_run_rhtml_47app47views47about47index46rhtml', method
+    end
+  end
+  
+  def test_lc_in_view
+    emulate_caller_with_method "#{RAILS_ROOT}/app/views/about/index.rhtml", 25, '_run_rhtml_47app47views47about47index46rhtml' do
+      assert_equal @lang_file['app']['about']['index']['symbol'], lc(:symbol)
+      assert_equal @lang_file['app']['about']['index']['a string'], lc('a string')
+      assert_equal @lang_file['app']['about']['index']['with substitution %s'], lc('with substitution %s')
+      assert_equal format(@lang_file['app']['about']['index']['with substitution %s'], 'var'), lc('with substitution %s', ['var'])
+    end
+  end
+  
+=begin
+  def test_get_app_file_in_context_of_class
+    eval <<-EOD, nil, "#{RAILS_ROOT}/app/controllers/pages.rb", 25
+      class TestGetAppFileInContextOfClass
+        extend ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+        puts caller.inspect
+        $get_app_file_in_context_of_class_result = get_app_file_in_context
+      end
+    EOD
+    puts $get_app_file_in_context_of_class_result.inspect
+  end
+=end
+  
+  protected
+  
+  # Adds the specified file and line to the callstack and executes the given
+  # block.
+  def emulate_caller_with_method(file, line = 1, method = 'test', &block)
+    block.instance_eval "alias #{method.to_sym}  :call"
+    eval "block.#{method}", self.send(:binding), file, line
+  end
+  
 end

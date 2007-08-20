@@ -116,6 +116,13 @@ app:
     section: Test Zeichenkette
     nested:
       another test: Noch ein Test
+  pages:
+    in_controller: Im Controller
+  about:
+    index:
+      symbol: Symbol
+      a string: Zeichenkette
+      'with substitution %s': Mit Variable %s
 
 tests:
   substitution:
