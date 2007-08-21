@@ -72,14 +72,18 @@ module ArkanisDevelopment #:nodoc:
       
       # Gets the receiver from the language class and combines this data with
       # the original data if wanted (a block was specified to the constructor).
+      # If the lang class isn't loaded yet only the original data will be
+      # returned.
       def receiver
-        receiver = @lang_class.entry(*@sections)
-        if @transformation.respond_to?(:call)
-          receiver = @transformation.arity == 1 ? @transformation.call(receiver) : @transformation.call(receiver, @orginal_receiver)
+        if @lang_class.loaded?
+          receiver = @lang_class.entry(*@sections)
+          if @transformation.respond_to?(:call)
+            receiver = @transformation.arity == 1 ? @transformation.call(receiver) : @transformation.call(receiver, @orginal_receiver)
+          end
+          receiver
+        else
+          @orginal_receiver
         end
-        receiver
-      rescue NoMethodError
-        ''
       end
       
       # Intercept all other messages and send them to the receiver.

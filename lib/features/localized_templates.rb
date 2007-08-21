@@ -30,7 +30,6 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         @@localized_path_cache = {}
     
         def render_file(template_path, use_full_path = true, local_assigns = {})
-          #$stdout.puts "> render_file: template_path: #{template_path.inspect}, use_full_path: #{use_full_path.inspect}, local_assigns: #{local_assigns.inspect}"
           @first_render ||= template_path
           
           localized_path, template_extension = locate_localized_path(template_path, use_full_path)
@@ -38,16 +37,11 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
           # Delegate templates are picked by the template extension and if
           # use_full_path is true Rails does not search for an extension and so
           # delegate templates won't work. To fix this try to convert the path
-          # back to a relative one. This will surely break some other things so
-          # this really needs some more thoughts...
+          # back to a relative one.
           if use_full_path
             localized_path.gsub!(/#{Regexp.escape('.' + template_extension)}$/, '') if template_extension
-            view_paths.each do |view_path|
-              localized_path.gsub!(/^#{Regexp.escape(view_path)}\//, '')
-            end
+            localized_path.gsub!(/^#{Regexp.escape(@base_path)}\//, '')
           end
-          
-          #$stdout.puts "> done: localized_path: #{localized_path.inspect}, use_full_path: #{use_full_path.inspect}, local_assigns: #{local_assigns.inspect}"
           
           # don't use_full_path -- we've already expanded the path
           # FALSE: doing this will break delegate templates!

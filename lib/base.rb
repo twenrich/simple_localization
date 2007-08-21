@@ -99,5 +99,5 @@ def simple_localization(options)
     "  language file directories: #{lang.lang_file_dirs.join(', ')}\n" +
     "  features: #{loaded_features.join(', ')}"
   
-  loaded_features
+  ArkanisDevelopment::SimpleLocalization::Language.loaded_features = loaded_features
 end

@@ -14,8 +14,10 @@ module ArkanisDevelopment #:nodoc:
         :debug => false,
         :features => Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
       }
+      @@loaded_features = nil
       
       mattr_accessor :options
+      mattr_accessor :loaded_features
       
       class << self
         
@@ -62,6 +64,17 @@ module ArkanisDevelopment #:nodoc:
         end
         
         alias_method :use, :current_language=
+        
+        # Checks if the specified language is loaded or when called without an
+        # argument if at least one language is loaded. Handy to check if the
+        # plugin is initialized.
+        def loaded?(language_name = nil)
+          if language_name
+            self.loaded_languages.include? language_name
+          else
+            not self.loaded_languages.blank?
+          end
+        end
         
         # Returns a hash with all loaded LangFile objects.
         def lang_files

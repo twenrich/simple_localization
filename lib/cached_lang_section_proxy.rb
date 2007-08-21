@@ -22,10 +22,14 @@ module ArkanisDevelopment #:nodoc:
       # +@cached_receivers+ hash.
       def method_missing(name, *args, &block)
         lang = @lang_class.current_language
-        cached_receiver = @cached_receivers[lang] || begin
-          @cached_receivers[lang] = self.receiver
+        target_receiver = if lang
+          @cached_receivers[lang] || begin
+            @cached_receivers[lang] = self.receiver
+          end
+        else
+          self.receiver
         end
-        cached_receiver.send name, *args, &block
+        target_receiver.send name, *args, &block
       end
       
     end
