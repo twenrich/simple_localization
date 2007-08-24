@@ -15,7 +15,7 @@ LANG_FILE_DIR = ENV['LANG_FILE_DIR'] || (File.dirname(__FILE__) + '/languages')
 
 # Define a Rails root (just to avoid const undefined errors) and emulate the
 # default Rails logger and send it's output to the file test.log.
-RAILS_ROOT = './rails'
+RAILS_ROOT = './script/../config/..'
 RAILS_DEFAULT_LOGGER = Logger.new(File.dirname(__FILE__) + '/test.log')
 
 # Mimic the Rails version interface. This makes it also possible to test

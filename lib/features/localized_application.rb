@@ -229,15 +229,21 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       
       private
       
-      def get_app_file_in_context
-        latest_app_file = caller.detect {|level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views)\//}
+      # Analyses the call stack to find the rails application file (files in the
+      # +app+ directory of the rails application) the context sensitive helper
+      # is called in.
+      # 
+      # You can specify a fake call stack for the method to use instead of the
+      # real call stack. This is handy for testing.
+      def get_app_file_in_context(stack_to_analyse = caller)
+        latest_app_file = stack_to_analyse.detect {|level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\//}
         return unless latest_app_file
         
         match, path, line, rest = latest_app_file.match(/([^:]+):(\d+)(\:.*|)/).to_a
         method = unless rest.empty?
           rest.match(/:in [^\w](.*)[^\w]/).to_a.last
         end
-        match, dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views)\/(.+)#{Regexp.escape(File.extname(path))}$/).to_a
+        match, dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/).to_a
         [dir, file, method]
       end
       
