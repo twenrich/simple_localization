@@ -67,4 +67,9 @@ class LocalizedDatesTest < Test::Unit::TestCase
     end
   end
   
+  def test_format_overwrites
+    assert_equal @test_date.strftime(@language[:dates, :format_overwrites, :x]), @test_date.strftime('%x')
+    assert_equal @test_time.strftime(@language[:dates, :format_overwrites, :x]), @test_time.strftime('%x')
+  end
+  
 end

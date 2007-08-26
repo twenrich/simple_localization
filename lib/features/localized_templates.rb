@@ -40,7 +40,17 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
           # back to a relative one.
           if use_full_path
             localized_path.gsub!(/#{Regexp.escape('.' + template_extension)}$/, '') if template_extension
-            localized_path.gsub!(/^#{Regexp.escape(@base_path)}\//, '')
+            
+            # Make this rails edge secure. Edgy uses an array called view_paths
+            # to store paths of the view files. Rails 1.2 stors just on path in
+            # the @base_path variable.
+            if self.respond_to?(:view_paths)
+              self.view_paths.each do |view_path|
+                localized_path.gsub!(/^#{Regexp.escape(view_path)}\//, '')
+              end
+            else
+              localized_path.gsub!(/^#{Regexp.escape(@base_path)}\//, '')
+            end
           end
           
           # don't use_full_path -- we've already expanded the path

@@ -31,6 +31,10 @@ dates:
   time_formats:
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
+  format_overwrites:
+    c: '%a %b %e %H:%M:%S %Y'
+    x: '%d.%m.%y'
+    X: '%H:%M:%S'
 
 numbers:
   separator: ','
