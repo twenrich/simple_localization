@@ -35,16 +35,24 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     #   "This page was created by %s".l 'Mr. X' # => "Diese Seite wurde von Mr. X erstellt"
     #   "This text isn't localized".l           # => "This text isn't localized"
     # 
-    def l(*format_args)
+    def l(*args)
       app_args = [self.to_s]
-      app_args << {:values => format_args} unless format_args.empty?
+      if args.first.kind_of?(Hash)
+        app_args << args.first
+      else
+        app_args << args unless args.empty?
+      end
       Language.app_scoped *app_args
     end
     
-    def lc(*format_args)
-      app_args = get_app_file_in_context.split '/'
+    def lc(*args)
+      app_args = get_scope_of_context
       app_args << self.to_s
-      app_args << {:values => format_args} unless format_args.empty?
+      if args.first.kind_of?(Hash)
+        app_args << args.first
+      else
+        app_args << args unless args.empty?
+      end
       Language.app_not_scoped *app_args
     end
     

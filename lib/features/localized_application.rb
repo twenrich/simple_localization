@@ -222,8 +222,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     module ContextSensetiveHelpers
       
       def lc(*args)
-        dir, file, method = get_app_file_in_context
-        args.unshift(*file.split('/'))
+        args.unshift *get_scope_of_context
         ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped *args
       end
       
@@ -235,7 +234,8 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # 
       # You can specify a fake call stack for the method to use instead of the
       # real call stack. This is handy for testing.
-      def get_app_file_in_context(stack_to_analyse = caller)
+      def get_app_file_in_context
+        stack_to_analyse = $lc_test_get_app_file_in_context_stack || caller
         latest_app_file = stack_to_analyse.detect {|level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\//}
         return unless latest_app_file
         
@@ -245,6 +245,18 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         end
         match, dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/).to_a
         [dir, file, method]
+      end
+      
+      def get_scope_of_context(stack_to_analyse = caller)
+        dir, file, method = get_app_file_in_context(stack_to_analyse)
+        scope = file.split('/')
+        case dir
+        when 'controllers'
+          scope += method if method
+        when 'views'
+          scope.collect!{|key| key.gsub(/^_/, '')}
+        end
+        scope
       end
       
     end
