@@ -19,4 +19,4 @@
 # This feature does not use sections from the lanuage file.
 # 
 
-Langs = ArkanisDevelopment::SimpleLocalization::Language
+Localization = ArkanisDevelopment::SimpleLocalization::Language

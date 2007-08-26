@@ -8,6 +8,7 @@ class LanguageTest < Test::Unit::TestCase
   def setup
     @lang_file = YAML.load_file "#{LANG_FILE_DIR}/#{LANG_FILE}.yml"
     @lang = ArkanisDevelopment::SimpleLocalization::Language
+    @lang.use LANG_FILE
   end
   
   def test_option_accessors
