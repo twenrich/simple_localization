@@ -2,6 +2,9 @@ module LanguageMock
   
   @@data = {}
   @@current_language = :en
+  @@loaded = true
+  
+  mattr_accessor :loaded
   
   class << self
     
@@ -34,6 +37,10 @@ module LanguageMock
     
     def current_lang_data=(new_data)
       @@data[@@current_language] = new_data
+    end
+    
+    def loaded?
+      @@loaded
     end
     
   end

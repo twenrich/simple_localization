@@ -61,4 +61,13 @@ class LangSectionProxyTest < Test::Unit::TestCase
     assert_not_equal proxy.receiver.object_id, proxy.receiver.object_id
   end
   
+  def test_receiver_fallback
+    LanguageMock.loaded = false
+    LanguageMock.current_lang_data = 'not loaded yet'
+    
+    proxy = LangSectionProxy.new :lang_class => LanguageMock, :orginal_receiver => 'fallback'
+    assert_equal 'fallback'.to_s, proxy.to_s
+    assert_equal 'fallback', proxy
+  end
+  
 end

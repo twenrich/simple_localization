@@ -20,6 +20,11 @@ module ArkanisDevelopment #:nodoc:
       # +self.receiver+ will be called to get the receiver (and all the
       # combination work is done) and the result is cached in the
       # +@cached_receivers+ hash.
+      # 
+      # If currently no language is loaded (@lang_class.current_language returns
+      # nil) +self.receiver+ is called without being cached. This is because if
+      # no language file is loaded +self.receiver+ will probably return a
+      # fallback value.
       def method_missing(name, *args, &block)
         lang = @lang_class.current_language
         target_receiver = if lang
