@@ -1,8 +1,8 @@
 about:
   language: Español
   author: Johann Chaves
-  comment: Archivo en idioma Español.
-  website: 
+  comment:  Archivo en idioma Espa?ol.
+  website: ---
   email: johann04@gmail.com
   date: 2007-08-26
 
@@ -10,37 +10,37 @@ active_record_messages:
   inclusion: no está incluido en la lista
   exclusion: está reservado(a)
   invalid: es inválido(a)
-  confirmation: no concuerda con la confirmación
+  confirmation: no concuerda con su confirmación
   accepted: debe ser aceptado(a)
   empty: no puede estar vacío(a)
   blank: no puede estar en blanco
-  too_long: es muy largo (el máximo es %d caracteres)
-  too_short: es muy corto (el mínimo es %d caracteres)
-  wrong_length: es te tamaño incorrecto (debería ser %d caracteres)
+  too_long: es muy largo(a) (el máximo es %d caracteres)
+  too_short: es muy corto(a) (el mínimo es %d caracteres)
+  wrong_length: es de tamaño incorrecto (debería ser %d caracteres)
   taken: ya ha sido tomado(a)
   not_a_number: no es un número
 
 dates:
   monthnames: [Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Setiembre, Octubre, Noviembre, Diciembre]
-  daynames: [Domingo, Lunes, Martes, Miércoles, Jueves, Sábado]
+  daynames: [Domingo, Lunes, Martes, Mi?rcoles, Jueves, Sábado]
   abbr_monthnames: [Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Set, Oct, Nov, Dic]
   abbr_daynames: [Dom, Lun, Mar, Mie, Jue, Vie, Sab]
   date_formats:
-    short: ‘%e %b’
-    long: ‘%B %e, %Y’
+    short: '%e %b'
+    long: '%B %e, %Y'
   time_formats:
-    short: ‘%d %b %H:%M’
-    long: ‘%B %d, %Y %H:%M’
+    short: '%d %b %H:%M'
+    long: '%B %d, %Y %H:%M'
 
 numbers:
-  separator: ’.’
-  delimiter: ’,’
+  separator: '.'
+  delimiter: ','
   precision: 3
 
 arrays:
   to_sentence:
-  connector: y
-  skip_last_comma: false
+    connector: y
+    skip_last_comma: false
 
 countries:
   Germany: Alemania
@@ -48,18 +48,18 @@ countries:
 helpers:
   error_messages_for:
     heading:
-      1: ‘1 error evitó que este %2$s fuera guardado’
-      n: ‘%d errores evitaron que este %s fuera guardado’
-    description: ‘Hubo problemas con los siguientes campos:’
+      1: '1 error evitó que este %2$s fuera guardado'
+      n: '%d errores evitaron que este %s fuera guardado'
+    description: 'Hubo problemas con los siguientes campos:'
   number_to_currency:
     precision: 2
-    unit: ’$’
+    unit: '$'
     order: [unit, main, separator, fraction]
   number_to_phone:
     area_code: false
-    delimiter: ’-’
-    extension:
-    country_code:
+    delimiter: '-'
+    extension: 
+    country_code: 
   date_select:
     order: [:year, :month, :day]
   distance_of_time_in_words:
