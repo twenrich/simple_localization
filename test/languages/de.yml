@@ -116,17 +116,24 @@ models:
 # global method "l". See the RDoc for details.
 app_default_value: ToDo
 app:
+  entry:
+    test: hello model
+  about:
+    test: hello controller
+    index:
+      test: hello view
+      symbol: Symbol
+      a string: Zeichenkette
+      'with substitution %s': Mit Variable %s
+  shared:
+    source:
+      test: hello partial
   test:
     section: Test Zeichenkette
     nested:
       another test: Noch ein Test
   pages:
     in_controller: Im Controller
-  about:
-    index:
-      symbol: Symbol
-      a string: Zeichenkette
-      'with substitution %s': Mit Variable %s
 
 tests:
   substitution:

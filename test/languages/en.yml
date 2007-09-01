@@ -111,6 +111,15 @@ models:
 # global method "l". See the RDoc for details.
 app_default_value: ToDo
 app:
+  entry:
+    test: hello model
+  about:
+    test: hello controller
+    index:
+      test: hello view
+  shared:
+    source:
+      test: hello partial
   test:
     section: Test string
     nested:

@@ -191,7 +191,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       alias_method :app_with_scope, :with_app_scope
       
       def app_proxy(*keys)
-        options = {:default => ''}
+        options = {:orginal_receiver => ''}
         options.update(keys.pop) if keys.last.kind_of?(Hash)
         options[:sections] = [:app] + keys
         CachedLangSectionProxy.new options
@@ -234,28 +234,24 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # 
       # You can specify a fake call stack for the method to use instead of the
       # real call stack. This is handy for testing.
-      def get_app_file_in_context
-        stack_to_analyse = $lc_test_get_app_file_in_context_stack || caller
-        latest_app_file = stack_to_analyse.detect {|level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\//}
+      def get_scope_of_context
+        stack_to_analyse = $lc_test_get_scope_of_context_stack || caller
+        latest_app_file = stack_to_analyse.detect { |level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\// }
         return unless latest_app_file
         
-        match, path, line, rest = latest_app_file.match(/([^:]+):(\d+)(\:.*|)/).to_a
-        method = unless rest.empty?
-          rest.match(/:in [^\w](.*)[^\w]/).to_a.last
-        end
-        match, dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/).to_a
-        [dir, file, method]
-      end
-      
-      def get_scope_of_context(stack_to_analyse = caller)
-        dir, file, method = get_app_file_in_context(stack_to_analyse)
+        path = latest_app_file.match(/([^:]+):\d+.*/)[1]
+        dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/)[1, 2]
+        
         scope = file.split('/')
         case dir
         when 'controllers'
-          scope += method if method
+          scope.last.gsub! /_controller$/, ''
         when 'views'
-          scope.collect!{|key| key.gsub(/^_/, '')}
+          scope.last.gsub! /^_/, ''
+        when 'models'
+          scope.last.gsub! /_observer$/, ''
         end
+        
         scope
       end
       
