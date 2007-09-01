@@ -232,12 +232,13 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # +app+ directory of the rails application) the context sensitive helper
       # is called in.
       # 
-      # You can specify a fake call stack for the method to use instead of the
-      # real call stack. This is handy for testing.
+      # You can inject a faked call stack by using the $lc_test_get_scope_of_context_stack
+      # global variable. The method will then use this instead of the real call
+      # stack. This is handy for testing.
       def get_scope_of_context
         stack_to_analyse = $lc_test_get_scope_of_context_stack || caller
         latest_app_file = stack_to_analyse.detect { |level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\// }
-        return unless latest_app_file
+        return [] unless latest_app_file
         
         path = latest_app_file.match(/([^:]+):\d+.*/)[1]
         dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/)[1, 2]
