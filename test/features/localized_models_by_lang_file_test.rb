@@ -26,6 +26,7 @@ class Address < ActiveRecord::Base
   column :state,         :string
   column :phone,         :string
   column :email_address, :string
+  column :no,            :string
   
   validates_presence_of :name, :email_address
   
@@ -95,6 +96,13 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
       assert_nil UndefinedModel.localized_model_name
       assert_equal 'name'.humanize, UndefinedModel.human_attribute_name('name')
     end
+  end
+  
+  # Cover a bug reported by hju@post.olivant.fo (ticket #14). Fields with the
+  # name 'no' were not translated. This boiled down to YAML converting 'no' to
+  # false. If 'no' is escaped in the language file it all works.
+  def test_field_with_name_no
+    assert_equal @attribute_names[:no], Address.human_attribute_name('no')
   end
   
 end

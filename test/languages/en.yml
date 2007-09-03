@@ -105,6 +105,7 @@ models:
 #     state: The State
       phone: The Phone number
       email_address: The email address
+      'no': Nothing
 
 # You can use the app section freely to localize you application with the
 # localized_application feature. The entries defined here are accesable by the
