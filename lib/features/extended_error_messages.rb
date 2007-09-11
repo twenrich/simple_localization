@@ -11,7 +11,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       
       def substitute!(base, attribute)
         self.replace Language.substitute_entry(self, :model => base.class.localized_model_name) if base.class.respond_to?(:localized_model_name)
-        self_before_attribute_substitution = self
+        self_before_attribute_substitution = self.dup
         self.replace Language.substitute_entry(self, :attr => base.class.human_attribute_name(attribute))
         self.prefix_with_attribute = true if self == self_before_attribute_substitution
       end
