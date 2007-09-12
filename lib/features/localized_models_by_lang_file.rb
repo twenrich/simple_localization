@@ -67,7 +67,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         def localized_model_name
           return nil if self == ActiveRecord::Base
-          Language.entry :models, self.class_name.underscore.to_sym, :name
+          Language.entry :models, self.to_s.underscore.to_sym, :name
         rescue EntryNotFound
           nil
         end
@@ -77,7 +77,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         def human_attribute_name(attribute_key_name)
           attribute_key_name = attribute_key_name.to_s
           return human_attribute_name_without_localization(attribute_key_name) if self == ActiveRecord::Base
-          Language.entry!(:models, self.class_name.underscore.to_sym, :attributes, attribute_key_name)
+          Language.entry!(:models, self.to_s.underscore.to_sym, :attributes, attribute_key_name)
         rescue EntryNotFound
           human_attribute_name_without_localization(attribute_key_name)
         end

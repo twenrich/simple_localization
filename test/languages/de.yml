@@ -111,6 +111,16 @@ models:
       phone: Die Telefon-Nummer
       email_address: Die eMail-Adresse
       'no': Nichts
+  special_address:
+    name: Der Sonderkontakt
+    attributes:
+      name: Der Name
+#     city: Die Stadt
+#     state: Der Staat
+      phone: Die Telefon-Nummer
+      email_address: Die eMail-Adresse
+      'no': Nichts
+      purpose: Die Verwendung
 
 # You can use the app section freely to localize you application with the
 # localized_application feature. The entries defined here are accesable by the

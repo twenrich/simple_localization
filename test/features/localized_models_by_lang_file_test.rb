@@ -32,6 +32,12 @@ class Address < ActiveRecord::Base
   
 end
 
+class SpecialAddress < Address
+  
+  column :purpose, :string
+  
+end
+
 # Define a model used to tests undefined models in the lang file.
 class UndefinedModel < ActiveRecord::Base
   
@@ -53,6 +59,8 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
     lang_file_data = YAML.load_file "#{LANG_FILE_DIR}/#{LANG_FILE}.yml"
     @model_name = lang_file_data['models']['address']['name']
     @attribute_names = lang_file_data['models']['address']['attributes'].symbolize_keys
+    @special_model_name = lang_file_data['models']['special_address']['name']
+    @special_attribute_names = lang_file_data['models']['special_address']['attributes'].symbolize_keys
   end
   
   def test_localized_model_name
@@ -103,6 +111,14 @@ class LocalizedModelsByLangFileTest < Test::Unit::TestCase
   # false. If 'no' is escaped in the language file it all works.
   def test_field_with_name_no
     assert_equal @attribute_names[:no], Address.human_attribute_name('no')
+  end
+  
+  # Test to cover localization of models using single table inheritance.
+  # arvid@winstondesign.se reported a bug that STI models didn't used the right
+  # language file section. Version 2.4 fixes this.
+  def test_sti
+    assert_equal @special_model_name, SpecialAddress.localized_model_name
+    assert_equal @special_attribute_names[:purpose], SpecialAddress.human_attribute_name('purpose')
   end
   
 end
