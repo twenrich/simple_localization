@@ -1,7 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
-# Init SimpleLocalization with just the localized_date_and_time feature
-# activated.
 simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:extended_error_messages, :localized_error_messages, :localized_models]
 
 DOG_MODEL_NAME = 'Der Hund'

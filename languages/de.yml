@@ -26,9 +26,11 @@ dates:
   abbr_monthnames: [Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Oct, Nov, Dez]
   abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
   date_formats:
+    attributes: '%d.%m.%Y'
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
+    attributes: '%d.%m.%Y %H:%M'
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
   format_overwrites:
