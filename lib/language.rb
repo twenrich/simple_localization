@@ -78,9 +78,7 @@ module ArkanisDevelopment #:nodoc:
         
         # Returns a hash with all loaded LangFile objects.
         def lang_files
-          # Duplicate the hash to prevent that it's used to modify the internal
-          # @@languages variable.
-          @@languages.dup
+          @@languages
         end
         
         # Returns the language codes of currently loaded languages.

@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 # Init SimpleLocalization with just the localized_date_and_time feature
 # activated.
-simple_localization :lang_file_dir => File.dirname(__FILE__) + '/extended_error_messages_test', :language => :de, :only => [:extended_error_messages, :localized_error_messages, :localized_models]
+simple_localization :lang_file_dir => LANG_FILE_DIR, :language => LANG_FILE, :only => [:extended_error_messages, :localized_error_messages, :localized_models]
 
 DOG_MODEL_NAME = 'Der Hund'
 DOG_ATTRIBUTE_NAMES = {
@@ -25,9 +25,9 @@ class Dog < ActiveRecord::Base
   column :short_name, :string
   column :age,  :integer
   
-  validates_presence_of :name
-  validates_length_of :short_name, :maximum => 5
-  validates_numericality_of :age, :only_integer => true
+  validates_presence_of :name, :message => 'vom Model :model darf nicht leer sein.'
+  validates_length_of :short_name, :maximum => 5, :message => 'Das Attribut :attr ist zu lang (maximal %d Zeichen).'
+  validates_numericality_of :age, :only_integer => true, :message => 'Das Attribut :attr vom Model :model ist keine Zahl.'
   
   localized_names DOG_MODEL_NAME, DOG_ATTRIBUTE_NAMES
   
