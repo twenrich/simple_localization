@@ -32,8 +32,8 @@ dates:
     short: '%e %b %H:%M'
     long: '%e %B %Y à %H:%M'
   format_overwrites:
-    c: '%a %b %e %H:%M:%S %Y'
-    x: '%m/%d/%y'
+    c: '%A %e %B %Y à %H:%M'
+    x: '%d/%m/%y'
     X: '%H:%M:%S'
 
 numbers:
