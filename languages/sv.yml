@@ -32,10 +32,15 @@ dates:
     short: '%d %b %H:%M'
     long: '%B %d,%Y %H:%M'
     db: '%Y-%m-%d %H:%M'
+  format_overwrites:
+    c: '%Y-%m-%d %H:%M'
+    x: '%Y-%m-%d'
+    X: '%H:%M'
   default_formats:
     datetime: '%Y-%m-%d %H:%M'
     date: '%Y-%m-%d'
     time: '%H:%M'
+
 numbers:
   separator: '.'
   delimiter: ','
