@@ -71,8 +71,6 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         def locate_localized_path(template_path, use_full_path)
           current_language = Language.current_language
           
-          #$stdout.puts ">> locate_localized_path(template_path: #{template_path.inspect}, use_full_path: #{use_full_path.inspect}) current_language: #{current_language.inspect}, view_paths: #{view_paths.inspect}"
-          
           cache_key = "#{current_language}:#{template_path}"
           cached = @@localized_path_cache[cache_key]
           return cached if cached
@@ -88,16 +86,22 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
             end
           else
             template_file_name = template_path
-            #raise [template_path, path_and_extension(template_path)].inspect
             template_extension = path_and_extension(template_path).last
           end
           
-          pn = Pathname.new(template_file_name)
-          dir, filename = pn.dirname, pn.basename('.' + template_extension)
-          
-          localized_path = dir + "#{filename}.#{current_language}.#{template_extension}"
-          
-          unless localized_path.exist?
+          # template_extension is nil if the specified template does not use a
+          # template engine (like render :file => ... with a .html, .txt, ect.
+          # extension). In this case just pass the template name as it is.
+          if template_extension
+            pn = Pathname.new(template_file_name)
+            dir, filename = pn.dirname, pn.basename('.' + template_extension)
+            
+            localized_path = dir + "#{filename}.#{current_language}.#{template_extension}"
+            
+            unless localized_path.exist?
+              localized_path = template_file_name
+            end
+          else
             localized_path = template_file_name
           end
           

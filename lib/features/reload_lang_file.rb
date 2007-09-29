@@ -8,14 +8,24 @@
 # 
 # This feature does not use sections from the lanuage file.
 
-class ApplicationController < ActionController::Base
-  
-  before_filter :reload_language
-  
-  private
-  
-  def reload_language
-    ArkanisDevelopment::SimpleLocalization::Language.reload
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  module ReloadLangFile
+    
+    def self.included(target)
+      target.class_eval do
+        
+        before_filter :reload_language
+        
+        private
+        
+        def reload_language
+          ArkanisDevelopment::SimpleLocalization::Language.reload
+        end
+        
+      end
+    end
+    
   end
-  
 end
+
+ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::ReloadLangFile

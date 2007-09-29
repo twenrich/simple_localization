@@ -27,7 +27,7 @@ module ArkanisDevelopment #:nodoc:
     # the development environment. This feature eats some performance so it
     # should only be used when it's useful and disabled otherwise.
     if ENV['RAILS_ENV'] != 'development'
-      Language.features -= [:reload_lang_file]
+      Language.features.delete :reload_lang_file
     end
     
     # Set the debug option to true for the development and test environments.
