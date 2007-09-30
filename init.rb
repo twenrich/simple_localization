@@ -1,6 +1,6 @@
 # Load all source files in the lib directory.
 Dir[File.dirname(__FILE__) + '/lib/*.rb'].each do |lib_file|
-  require lib_file
+  require File.expand_path(lib_file)
 end
 
 # Preload any features which have to be ready immediately so they can be used
@@ -11,6 +11,11 @@ end
 # ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES constant by
 # yourself. You have to do this before the Rails::Initializer.run call in your
 # environment.rb file.
-ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES.each do |feature|
-  require "#{File.dirname(__FILE__)}/lib/features/#{feature}"
+module ArkanisDevelopment::SimpleLocalization #:nodoc:
+  
+  FeatureManager.instance.freez_plugin_init_features!
+  FeatureManager.instance.plugin_init_features.each do |feature|
+    require "#{File.dirname(__FILE__)}/lib/features/#{feature}"
+  end
+  
 end

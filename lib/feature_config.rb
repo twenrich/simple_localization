@@ -4,6 +4,7 @@
 # environment specific setup stuff.
 
 require File.dirname(__FILE__) + '/language'
+require File.dirname(__FILE__) + '/feature_manager'
 
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization
@@ -18,25 +19,35 @@ module ArkanisDevelopment #:nodoc:
     rescue NameError
       SUPPRESS_FEATURES = []
     end
+    FeatureManager.instance.disable Array(SUPPRESS_FEATURES)
     
     # A list of features loaded directly in the <code>init.rb</code> of the
     # plugin. This is necessary for some features to work with rails observers.
-    PRELOAD_FEATURES = [:localized_models, :localized_application, :localized_application_extensions] - Array(SUPPRESS_FEATURES).flatten
+    begin
+      PRELOAD_FEATURES
+    rescue NameError
+      PRELOAD_FEATURES = []
+    end
+    FeatureManager.instance.preload Array(PRELOAD_FEATURES)
+    
+    # 
+    # Default feature and plugin configuration
+    # 
+    
+    # Mark all features that have to be preloaded to work properly with model
+    # observers.
+    FeatureManager.instance.preload :localized_models, :localized_application, :localized_application_extensions
     
     # Remove the reload_lang_file feature from the loading list if we're not in
     # the development environment. This feature eats some performance so it
     # should only be used when it's useful and disabled otherwise.
-    if ENV['RAILS_ENV'] != 'development'
-      Language.features.delete :reload_lang_file
-    end
+    FeatureManager.instance.disable :reload_lang_file if ENV['RAILS_ENV'] != 'development'
     
     # Set the debug option to true for the development and test environments.
     # Debug mode will raise nice entry format errors (see localized_application
     # feature) which exactly show whats wrong with an entry. However in a
     # production environment we should avoid these nice HTTP 500 errors...
-    if ENV['RAILS_ENV'] != 'production'
-      Language.debug = true
-    end
+    Language.debug = true if ENV['RAILS_ENV'] != 'production'
     
   end
 end

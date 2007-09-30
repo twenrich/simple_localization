@@ -12,9 +12,8 @@ module ArkanisDevelopment #:nodoc:
       @@options = {
         :lang_file_dirs => "#{File.dirname(__FILE__)}/../languages",
         :debug => false,
-        :features => Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
       }
-      @@loaded_features = nil
+      @@loaded_features = []
       
       mattr_accessor :options
       mattr_accessor :loaded_features
