@@ -3,6 +3,7 @@ require 'singleton'
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
+    # A singleton to manage which features should be loaded at what time.
     class FeatureManager
       include Singleton
       
@@ -42,15 +43,18 @@ module ArkanisDevelopment #:nodoc:
         @frozen_plugin_init_features || (@all_features & (@plugin_init_features - @disabled_features))
       end
       
-      # Returns the features that can be loaded  
+      # Returns the features that can be loaded  .
       def localization_init_features
         @all_features & (@localization_init_features - @plugin_init_features - @disabled_features)
       end
       
+      # Returns a list of preloaded features the user doesn't want to be loaded.
       def unwanted_features
         plugin_init_features - localization_init_features
       end
       
+      # Freezes the list of features loaded at plugin initialization. After this
+      # call no more features can be marked for preload.
       def freez_plugin_init_features!
         @frozen_plugin_init_features = plugin_init_features
       end
