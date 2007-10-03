@@ -7,9 +7,9 @@
 #
 #   pete = Employee.new(:birthday => Date(1972, 8, 2), :salary => 2200.9, :name => 'Peter')
 #   pete.localized_birthday                # => "08.02.1972"
-#   pete.localized_birthday = '11.03.1980' # => '1980-03-11'
-#   pete.localized_salary                  # => '2.200,9'
-#   pete.localized_salary = '3000,50'      # => 3000.5
+#   pete.localized_birthday = "11.03.1980" # => "1980-03-11"
+#   pete.localized_salary                  # => "2.200,9"
+#   pete.localized_salary = "3000,50"      # => 3000.5
 #
 # This enables you to use the +localized_+ attributes in your form helpers, allowing transparent
 # localized input of dates and numbers.
