@@ -1,5 +1,7 @@
 # = Localized application extensions
 
+require File.expand_path(File.dirname(__FILE__) + '/localized_application')
+
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   module LocalizedApplicationExtensions #:nodoc:
     
