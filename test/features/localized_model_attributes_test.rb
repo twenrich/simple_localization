@@ -86,7 +86,7 @@ class LocalizedModelAttributesTest < Test::Unit::TestCase
 
   def test_datetime_writer_localized
     # caution: this assumes that the +attributes+ format includes hours and minutes!
-    new_created_at = Time.mktime(1920, 4, 2, 8, 16)
+    new_created_at = Time.mktime(1980, 4, 2, 8, 16)
     @trex.created_at_localized = new_created_at.to_formatted_s(:attributes)
     assert_equal new_created_at, @trex.created_at
   end
