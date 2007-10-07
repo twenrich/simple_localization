@@ -27,7 +27,22 @@ class FeatureManagerTest < Test::Unit::TestCase
   end
   
   def test_plugin_init_features
-    assert @manager.plugin_init_features.empty?
+    assert_equal [], @manager.plugin_init_features
+    @manager.preload :feature_a, :feature_b
+    assert_equal [:feature_a, :feature_b], @manager.plugin_init_features
+    @manager.freeze_plugin_init_features!
+    assert_equal [:feature_a, :feature_b], @manager.plugin_init_features
+  end
+  
+  def test_load_scenario
+    @manager.disable :feature_a
+    @manager.preload :feature_a, :feature_b
+    assert_equal [:feature_b], @manager.plugin_init_features
+    @manager.freeze_plugin_init_features!
+    assert_equal [:feature_b], @manager.plugin_init_features
+    @manager.load :feature_c, :feature_d
+    assert_equal [:feature_c, :feature_d], @manager.localization_init_features
+    assert_equal [:feature_b], @manager.unwanted_features
   end
   
 end

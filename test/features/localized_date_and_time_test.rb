@@ -72,4 +72,12 @@ class LocalizedDatesTest < Test::Unit::TestCase
     assert_equal @test_time.strftime(@language[:dates, :format_overwrites, :x]), @test_time.strftime('%x')
   end
   
+  # Cover a bug caused by the wrong default value of the Date#strftime method
+  def test_to_s
+    assert_nothing_raised do
+      @test_date.to_s
+      @test_time.to_s
+    end
+  end
+  
 end

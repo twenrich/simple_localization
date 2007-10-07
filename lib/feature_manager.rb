@@ -10,6 +10,7 @@ module ArkanisDevelopment #:nodoc:
       def initialize
         @all_features = read_available_features
         @plugin_init_features = []
+        @frozen_plugin_init_features = nil
         @localization_init_features = []
         @disabled_features = []
       end
@@ -50,12 +51,12 @@ module ArkanisDevelopment #:nodoc:
       
       # Returns a list of preloaded features the user doesn't want to be loaded.
       def unwanted_features
-        plugin_init_features - localization_init_features
+        plugin_init_features - (@all_features & @localization_init_features)
       end
       
       # Freezes the list of features loaded at plugin initialization. After this
       # call no more features can be marked for preload.
-      def freez_plugin_init_features!
+      def freeze_plugin_init_features!
         @frozen_plugin_init_features = plugin_init_features
       end
       

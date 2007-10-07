@@ -55,6 +55,8 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       end
     end
     
+    # Relace format sequences in a specified strftime format string with
+    # localized formats from the language file.
     def self.overwrite_formats(original_format)
       localized_format = ' ' + original_format
       (Language.entry(:dates, :format_overwrites) || {}).each do |original, replacement|
@@ -92,7 +94,7 @@ class Date
     
     alias :strftime_without_localization :strftime
     
-    def strftime(format)
+    def strftime(format = '%F')
       localized_format = ArkanisDevelopment::SimpleLocalization::LocalizedDateAndTime.overwrite_formats(format)
       strftime_without_localization(localized_format)
     end

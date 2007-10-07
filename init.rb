@@ -13,7 +13,7 @@ end
 # environment.rb file.
 module ArkanisDevelopment::SimpleLocalization #:nodoc:
   
-  FeatureManager.instance.freez_plugin_init_features!
+  FeatureManager.instance.freeze_plugin_init_features!
   FeatureManager.instance.plugin_init_features.each do |feature|
     require "#{File.dirname(__FILE__)}/lib/features/#{feature}"
   end
