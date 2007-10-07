@@ -54,6 +54,11 @@ module ArkanisDevelopment #:nodoc:
         plugin_init_features - (@all_features & @localization_init_features)
       end
       
+      # Returns a list of all features marked for preload or loading.
+      def all_loaded_features
+        plugin_init_features + localization_init_features
+      end
+      
       # Freezes the list of features loaded at plugin initialization. After this
       # call no more features can be marked for preload.
       def freeze_plugin_init_features!
