@@ -26,12 +26,14 @@ dates:
   abbr_monthnames: [jan, feb, maa, apr, mei, jun, jul, aug, sep, okt, nov, dec]
   abbr_daynames: [zo, ma, di, wo, do, vr, za]
   date_formats:
+    attributes: TODO
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
+    attributes: TODO
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
-  format_overwrites:
+  strftime_overwrites:
     c: '%a %b %e %H:%M:%S %Y'
     x: '%m/%d/%y'
     X: '%H:%M:%S'

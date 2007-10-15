@@ -2,7 +2,7 @@ about:
   language: Français
   author: Sylvain OBEGI, corrections par Bruno MICHEL
   comment:  Fichier de traduction en Français pour simple_localization.
-  website: none
+  website: 
   email: katios@nolabel.net
   date: 2007-06-24
 
@@ -26,12 +26,14 @@ dates:
   abbr_monthnames: [Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc]
   abbr_daynames: [Dim, Lun, Mar, Mer, Jeu, Ven, Sam]
   date_formats:
+    attributes: TODO
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
+    attributes: TODO
     short: '%e %b %H:%M'
     long: '%e %B %Y à %H:%M'
-  format_overwrites:
+  strftime_overwrites:
     c: '%A %e %B %Y à %H:%M'
     x: '%d/%m/%y'
     X: '%H:%M:%S'

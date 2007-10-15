@@ -2,7 +2,7 @@ about:
   language: Español
   author: Johann Chaves
   comment:  Archivo en idioma Espa?ol.
-  website: ---
+  website: 
   email: johann04@gmail.com
   date: 2007-08-26
 
@@ -26,11 +26,17 @@ dates:
   abbr_monthnames: [Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Set, Oct, Nov, Dic]
   abbr_daynames: [Dom, Lun, Mar, Mie, Jue, Vie, Sab]
   date_formats:
+    attributes: TODO
     short: '%e %b'
     long: '%B %e, %Y'
   time_formats:
+    attributes: TODO
     short: '%d %b %H:%M'
     long: '%B %d, %Y %H:%M'
+  strftime_overwrites:
+    c: TODO
+    x: TODO
+    X: TODO
 
 numbers:
   separator: '.'

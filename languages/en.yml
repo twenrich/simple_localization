@@ -3,7 +3,7 @@ about:
   author: Stephan Soller
   comment:  English language file. You can use this file as a template to build a new one.
   website: http://www.arkanis-development.de/
-  email: stephan.soller@addcom.de
+  email: stephan.soller@helionweb.de
   date: 2007-01-29
 
 active_record_messages:
@@ -33,7 +33,7 @@ dates:
     attributes: '%m/%d/%y %H:%M'
     short: '%d %b %H:%M'
     long: '%B %d, %Y %H:%M'
-  format_overwrites:
+  strftime_overwrites:
     c: '%a %b %e %H:%M:%S %Y'
     x: '%m/%d/%y'
     X: '%H:%M:%S'

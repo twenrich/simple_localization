@@ -31,7 +31,7 @@ dates:
   time_formats:
     short: '%d %b %H:%M'
     long: '%B %d, %Y %H:%M'
-  format_overwrites:
+  strftime_overwrites:
     c: '%a %b %e %H:%M:%S %Y'
     x: '%m/%d/%y'
     X: '%H:%M:%S'

@@ -33,7 +33,11 @@ dates:
     attributes: '%d/%m/%Y %H:%M'
     short: '%d/%b %H:%M'
     long: '%d/%B/%Y %H:%M'
-
+  strftime_overwrites:
+    c: TODO
+    x: TODO
+    X: TODO
+  
 numbers:
   separator: '.'
   delimiter: ','

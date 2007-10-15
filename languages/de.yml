@@ -3,7 +3,7 @@ about:
   author: Stephan Soller
   comment:  Deutsche Sprachdatei. Kann als Basis für neue Sprachdatein dienen.
   website: http://www.arkanis-development.de/
-  email: stephan.soller@addcom.de
+  email: stephan.soller@helionweb.de
   date: 2007-01-20
 
 active_record_messages:
@@ -33,8 +33,8 @@ dates:
     attributes: '%d.%m.%Y %H:%M'
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
-  format_overwrites:
-    c: '%a %b %e %H:%M:%S %Y'
+  strftime_overwrites:
+    c: '%A %e. %B %Y %H:%M:%S'
     x: '%d.%m.%y'
     X: '%H:%M:%S'
 

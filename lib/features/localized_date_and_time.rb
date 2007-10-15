@@ -59,7 +59,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     # localized formats from the language file.
     def self.overwrite_formats(original_format)
       localized_format = ' ' + original_format
-      (Language.entry(:dates, :format_overwrites) || {}).each do |original, replacement|
+      (Language.entry(:dates, :strftime_overwrites) || {}).each do |original, replacement|
         localized_format.gsub!(/([^%])%#{original}/) {$1 + replacement}
       end
       localized_format[1, localized_format.length]
