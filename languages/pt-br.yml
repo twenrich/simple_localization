@@ -34,10 +34,10 @@ dates:
     short: '%d/%b %H:%M'
     long: '%d/%B/%Y %H:%M'
   strftime_overwrites:
-    c: TODO
-    x: TODO
-    X: TODO
-  
+    c: '%m/%d/%y %H:%M:%S'
+    x: '%m/%d/%y'
+    X: '%H:%M:%S'
+
 numbers:
   separator: '.'
   delimiter: ','

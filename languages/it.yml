@@ -1,0 +1,106 @@
+about:
+  language: Italiano
+  author: Giovanni Intini
+  comment:  Italian language file.
+  website: http://medlar.it
+  email: medlar@medlar.it
+  date: 2007-10-16
+
+active_record_messages:
+  inclusion: non fa parte della lista
+  exclusion: è riservato
+  invalid: è invalido
+  confirmation: non è confermato correttamente
+  accepted: deve essere accettato
+  empty: non può essere vuoto
+  blank: non può essere nullo
+  too_long: è troppo lungo (il massimo è %d caratteri)
+  too_short: è troppo corto (il minimo è %d caratteri)
+  wrong_length: è della lunghezza sbagliata (dovrebbe essere %d caratteri)
+  taken: è già stato preso
+  not_a_number: non è un numero
+
+dates:
+  monthnames: [Gennaio, Febbraio, Marzo, Aprile, Maggio, Giugno, Luglio, Agosto, Settembre, Ottobre, Novembre, Dicembre]
+  daynames: [Domenica, Lunedi, Martedi, Mercoledi, Giovedi, Venerdi, Sabato]
+  abbr_monthnames: [Gen, Feb, Mar, Apr, Mag, Jun, Lug, Ago, Set, Ott, Nov, Dic]
+  abbr_daynames: [Dom, Lun, Mar, Mer, Gio, Ven, Sab]
+  date_formats:
+    attributes: TODO
+    short: '%e %b'
+    long: '%e %B %Y'
+  time_formats:
+    attributes: TODO
+    short: '%d %b %H:%M'
+    long: '%d %B %Y %H:%M'
+  strftime_overwrites:
+    c: TODO
+    x: TODO
+    X: TODO
+
+numbers:
+  separator: ','
+  delimiter: '.'
+  precision: 3
+
+arrays:
+  to_sentence:
+    connector: e
+    skip_last_comma: false
+
+countries:
+  Germany: Germania
+  Italy: Italia
+
+helpers:
+  error_messages_for:
+    heading:
+      1: '1 errore ha impedito il salvataggio del %2$s'
+      n: '%d errori hanno impedito il salvataggio del %s'
+    description: 'Ci sono errori nei seguenti campi:'
+  number_to_currency:
+    precision: 2
+    unit: '€'
+    order: [unit, main, separator, fraction]
+  number_to_phone:
+    area_code: false
+    delimiter: '-'
+    extension: 
+    country_code: '39' 
+  date_select:
+    order: [:day, :month, year]
+  distance_of_time_in_words:
+    less than 5 seconds: meno di 5 secondi
+    less than 10 seconds: meno di 10 secondi
+    less than 20 seconds: meno di 20 secondi
+    less than a minute: meno di un minuto
+    1 minute: 1 minuto
+    half a minute: mezzo minuto
+    n minutes: %i minuti
+    about 1 hour: circa 1 ora
+    about n hours: circa %i ore
+    1 day: 1 giorno
+    n days: %i giorni
+    about 1 month: circa 1 mese
+    n months: %i mesi
+    about 1 year: circa 1 anno
+    over n years: più di %i anni
+
+# Add your the model translations as descriped in the
+# localized_models_by_lang_file feature to the model section.
+# 
+# Example:
+# 
+# models:
+#   my_model:
+#     name: Localized model name
+#     attributes:
+#       name: Localized name
+#       description: Localized description
+models:
+
+# You can use the app section freely to localize you application with the
+# localized_application feature. The entries defined here are accesable by the
+# global method "l". See the RDoc for details.
+app:
+
