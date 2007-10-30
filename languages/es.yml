@@ -22,21 +22,21 @@ active_record_messages:
 
 dates:
   monthnames: [Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Setiembre, Octubre, Noviembre, Diciembre]
-  daynames: [Domingo, Lunes, Martes, Mi?rcoles, Jueves, Sábado]
+  daynames: [Domingo, Lunes, Martes, Miércoles, Jueves, Sábado]
   abbr_monthnames: [Ene, Feb, Mar, Abr, May, Jun, Jul, Ago, Set, Oct, Nov, Dic]
   abbr_daynames: [Dom, Lun, Mar, Mie, Jue, Vie, Sab]
   date_formats:
-    attributes: TODO
+    attributes: '%d-%m-%y'
     short: '%e %b'
     long: '%B %e, %Y'
   time_formats:
-    attributes: TODO
+    attributes: '%d/%m/%y %H:%M'
     short: '%d %b %H:%M'
     long: '%B %d, %Y %H:%M'
   strftime_overwrites:
-    c: TODO
-    x: TODO
-    X: TODO
+    c: '%B %d, %Y %H:%M'
+    x: '%d-%m-%y'
+    X: '%H:%M:%S'
 
 numbers:
   separator: '.'

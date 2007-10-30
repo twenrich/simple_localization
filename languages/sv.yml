@@ -36,7 +36,7 @@ dates:
   format_overwrites:
     c: '%Y-%m-%d %H:%M'
     x: '%Y-%m-%d'
-    X: '%H:%M'
+    X: '%H:%M:%S'
 
 numbers:
   separator: '.'

@@ -93,7 +93,8 @@ def simple_localization(options)
   RAILS_DEFAULT_LOGGER.info "Initialized Simple Localization plugin:\n" +
     "  languages: #{languages.join(', ')}\n" +
     "  language file directories: #{lang.lang_file_dirs.join(', ')}\n" +
-    "  features: #{feature_manager.all_loaded_features.join(', ')}"
+    "  features: #{feature_manager.all_loaded_features.join(', ')}\n" +
+    "  disabled features: #{feature_manager.disabled_features.join(', ')}"
   
   ArkanisDevelopment::SimpleLocalization::Language.loaded_features = feature_manager.localization_init_features
 end

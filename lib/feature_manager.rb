@@ -59,6 +59,11 @@ module ArkanisDevelopment #:nodoc:
         plugin_init_features + localization_init_features
       end
       
+      # Returns the list of disabled features.
+      def disabled_features
+        @disabled_features
+      end
+      
       # Freezes the list of features loaded at plugin initialization. After this
       # call no more features can be marked for preload.
       def freeze_plugin_init_features!

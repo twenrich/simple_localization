@@ -26,11 +26,11 @@ dates:
   abbr_monthnames: [Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc]
   abbr_daynames: [Dim, Lun, Mar, Mer, Jeu, Ven, Sam]
   date_formats:
-    attributes: TODO
+    attributes: '%d/%m/%y'
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
-    attributes: TODO
+    attributes: '%d/%m/%y %H:%M'
     short: '%e %b %H:%M'
     long: '%e %B %Y à %H:%M'
   strftime_overwrites:
