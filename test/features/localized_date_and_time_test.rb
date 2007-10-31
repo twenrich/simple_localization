@@ -42,7 +42,7 @@ class LocalizedDatesTest < Test::Unit::TestCase
   
   def test_date_conversions
     @language[:dates, :date_formats].each do |name, format|
-      assert_equal @test_date.strftime(format).strip, @test_date.to_formatted_s(name.to_sym)
+      assert_equal @test_date.strftime(format), @test_date.to_formatted_s(name.to_sym)
     end
   end
   

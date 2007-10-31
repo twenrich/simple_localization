@@ -1,9 +1,11 @@
 # = Localized application
 # 
-# This feature allows you to use the language file to localize your
-# application. You can add your own translation strings to the +app+ section of
-# the language file and read them with the +l+ global method. You can use this
-# method in your controllers, views, mail templates, simply everywhere.
+# This feature allows you to use the language file to localize your application.
+# You can add your own translation strings to the +app+ section of the language
+# file and read them with the +l+ global method. You can use this method in your
+# controllers, views, mail templates, simply everywhere. To make the access more
+# convenient you can use the +lc+ method in controllers, views, partials,
+# models and observers.
 # 
 #   app:
 #     title: Simple Localization Rails plugin
@@ -39,9 +41,8 @@
 #     l :contact  # => "Contact"
 #   end
 # 
-# Please note that it is NOT possible to nest scopes. Each call to +l_scope+
-# will overwrite the last scope. When used with a block +l_scope+ will restore
-# the previous scope after the block was executed.
+# Please also take a look at the <code>ContextSensetiveHelpers::lc</code>
+# method. It can make life much more easier.
 # 
 # == Used sections of the language file
 # 
@@ -190,6 +191,63 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       alias_method :app, :app_scoped
       alias_method :app_with_scope, :with_app_scope
       
+      # A shortcut for creating a CachedLangSectionProxy object. Such a proxy
+      # is a object which redirects almost all messages to a specific entry of
+      # the currently selected language.
+      # 
+      # Assume German and English language files like this:
+      # 
+      # de.yml
+      # 
+      #   app:
+      #     title: Deutscher Test
+      #     options: [dies, das, jenes]
+      # 
+      # en.yml
+      # 
+      #   app:
+      #     title: English test
+      #     options: [this, that, other stuff]
+      # 
+      # Now we can create a proxy object for these entries and switch between
+      # languages:
+      # 
+      #   @title = Language.app_proxy :title
+      #   @options = Language.app_proxy :options, :orginal_receiver => []
+      #   
+      #   # no language file loaded (this is what the <code>orginal_receiver</code> option is for, defaults to "")
+      #   @title.inspect  # => ""
+      #   @options.inspect  # => []
+      #   
+      #   # now with switching
+      #   Language.use :de
+      #   @title.inspect  # => "Deutscher Test"
+      #   @options.inspect  # => ["dies", "das", "jenes"]
+      #   
+      #   Language.use :en
+      #   @title.inspect  # => "English test"
+      #   @options.inspect  # => ["this", "that", "other stuff"]
+      # 
+      # This all happens without changing the actual <code>@title</code> or
+      # <code>@options</code> variable. So to speek a proxy fakes a simple
+      # variable but it's value is exchanged dependend on the current language.
+      # 
+      # This is actually very useful if a method expects just one variable at
+      # the application startup and thus doesn't support language switching,
+      # e.g. the message parameter of the +validates_presence_of+ method (here
+      # the global +l_proxy+ shortcut for <code>Language.app_proxy</code> is
+      # used):
+      # 
+      #   class Something < ActiveRecord::Base
+      #     
+      #     validates_presence_of :name, :message => l_proxy(:messages, :name_required)
+      #     
+      #   end
+      # 
+      # Now the error message added by +validates_presence_of+ will also be
+      # switched if the language is switched. This is a very efficient way to
+      # inject language switching code into methods not made for language
+      # switching and is used by many other features of this plugin.
       def app_proxy(*keys)
         options = {:orginal_receiver => ''}
         options.update(keys.pop) if keys.last.kind_of?(Hash)
@@ -213,6 +271,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         ArkanisDevelopment::SimpleLocalization::Language.with_app_scope(*sections, &block)
       end
       
+      # A global shortcut for the Language#app_proxy method.
       def l_proxy(*sections)
         ArkanisDevelopment::SimpleLocalization::Language.app_proxy(*sections)
       end
@@ -221,6 +280,38 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
     
     module ContextSensetiveHelpers
       
+      # This helper provides a short way to access nested language entries by
+      # automatically adding a scope to the specified keys. This scope depends
+      # on where you call this helper from. If called in the
+      # +users_controller.rb+ file it will add <code>:users</code> to it.
+      # 
+      # This is done by analysing the call stack of the method and there are a
+      # few more possibilities:
+      # 
+      # in <code>app/controllers/users_controller.rb</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:users, :test)
+      # 
+      # in <code>app/controllers/projects/tickets_controller.rb</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:projects, :tickets, :test)
+      # 
+      # in <code>app/views/users/show.rhtml</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:users, :show, :test)
+      # 
+      # in <code>app/views/users/_summary.rhtml</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:users, :summary, :test)
+      # 
+      # in <code>app/models/user.rb</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:user, :test)
+      # 
+      # in <code>app/models/user_observer.rb</code>
+      # 
+      #   lc(:test)  # => will be the same as l(:user, :test)
+      # 
       def lc(*args)
         args.unshift *get_scope_of_context
         ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped *args

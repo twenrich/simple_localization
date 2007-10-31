@@ -19,6 +19,13 @@ active_record_messages:
   wrong_length: hat die falsche Länge (es sollten %d Zeichen sein).
   taken: ist bereits vergeben.
   not_a_number: ist keine Zahl.
+  greater_than: muss größer als %d sein.
+  greater_than_or_equal_to: muss größer oder gleich %d sein.
+  equal_to: muss gleich %d sein.
+  less_than: muss kleiner als %d sein.
+  less_than_or_equal_to: muss kleiner oder gleich %d sein.
+  odd: muss ungerade sein.
+  even: muss gerade sein.
 
 dates:
   monthnames: [Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
@@ -26,13 +33,15 @@ dates:
   abbr_monthnames: [Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Oct, Nov, Dez]
   abbr_daynames: [Son, Mon, Din, Mit, Don, Fri, Sam]
   date_formats:
-    short: '%e %b'
-    long: '%e %B %Y'
+    attributes: '%d.%m.%Y'
+    short: '%e. %b'
+    long: '%e. %B %Y'
   time_formats:
+    attributes: '%d.%m.%Y %H:%M'
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
   strftime_overwrites:
-    c: '%a %b %e %H:%M:%S %Y'
+    c: '%A %e. %B %Y %H:%M:%S'
     x: '%d.%m.%y'
     X: '%H:%M:%S'
 

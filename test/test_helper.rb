@@ -13,6 +13,9 @@ require File.dirname(__FILE__) + '/../init'
 LANG_FILE = ENV['LANG_FILE'] || 'de'
 LANG_FILE_DIR = ENV['LANG_FILE_DIR'] || (File.dirname(__FILE__) + '/languages')
 
+# Reset the language file directory list to exclude the default language files.
+ArkanisDevelopment::SimpleLocalization::Language.lang_file_dirs = []
+
 # Define a Rails root (just to avoid const undefined errors) and emulate the
 # default Rails logger and send it's output to the file test.log.
 RAILS_ROOT = './script/../config/..'
