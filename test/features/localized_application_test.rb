@@ -87,7 +87,9 @@ class LocalizedApplicationTest < Test::Unit::TestCase
       :about_controller_class => ['about'],
       :about_controller_method => ['about'],
       :about_index_view => ['about', 'index'],
-      :shared_source_template => ['shared', 'source']
+      :shared_source_template => ['shared', 'source'],
+      :about_helper_module => ['about'],
+      :about_helper_method => ['about']
     }
     
     expected_scopes.each do |stack_name, expected_scope|

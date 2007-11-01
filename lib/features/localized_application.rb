@@ -328,16 +328,19 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # stack. This is handy for testing.
       def get_scope_of_context
         stack_to_analyse = $lc_test_get_scope_of_context_stack || caller
-        latest_app_file = stack_to_analyse.detect { |level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\// }
+        app_dirs = '(helpers|controllers|views|models)'
+        latest_app_file = stack_to_analyse.detect { |level| level =~ /#{Regexp.escape(RAILS_ROOT)}\/app\/#{app_dirs}\// }
         return [] unless latest_app_file
         
         path = latest_app_file.match(/([^:]+):\d+.*/)[1]
-        dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/(controllers|views|models)\/(.+)#{Regexp.escape(File.extname(path))}$/)[1, 2]
+        dir, file = path.match(/^#{Regexp.escape(RAILS_ROOT)}\/app\/#{app_dirs}\/(.+)#{Regexp.escape(File.extname(path))}$/)[1, 2]
         
         scope = file.split('/')
         case dir
         when 'controllers'
           scope.last.gsub! /_controller$/, ''
+        when 'helpers'
+          scope.last.gsub! /_helper$/, ''
         when 'views'
           scope.last.gsub! /^_/, ''
         when 'models'
