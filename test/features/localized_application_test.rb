@@ -109,7 +109,9 @@ class LocalizedApplicationTest < Test::Unit::TestCase
       :about_controller_class => 'hello controller',
       :about_controller_method => 'hello controller',
       :about_index_view => 'hello view',
-      :shared_source_template => 'hello partial'
+      :shared_source_template => 'hello partial',
+      :about_helper_module => 'hello controller',
+      :about_helper_method => 'hello controller'
     }
     
     expected_values.each do |stack_name, expected_value|
