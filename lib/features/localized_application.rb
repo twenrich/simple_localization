@@ -317,6 +317,12 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         ArkanisDevelopment::SimpleLocalization::Language.app_not_scoped *args
       end
       
+      # A context sensetive shortcut for the Language#app_proxy method.
+      def lc_proxy(*args)
+        args.unshift *get_scope_of_context
+        ArkanisDevelopment::SimpleLocalization::Language.app_proxy(*args)
+      end
+      
       private
       
       # Analyses the call stack to find the rails application file (files in the
@@ -360,4 +366,6 @@ ArkanisDevelopment::SimpleLocalization::Language.send :extend, ArkanisDevelopmen
 Object.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::GlobalHelpers
 ActionController::Base.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
 ActionController::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+ActiveRecord::Base.send :extend, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
+ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
 ActionView::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedApplication::ContextSensetiveHelpers
