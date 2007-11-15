@@ -72,6 +72,21 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
           nil
         end
         
+        def localized_model_collection
+          return nil if self == ActiveRecord::Base
+          collection = Language.entry(:models, self.to_s.underscore.to_sym, :collection)
+          
+          # if collection is not present (so it's nil)
+          unless collection
+            name = Language.entry(:models, self.to_s.underscore.to_sym, :name)
+            # if name is present (so it's not nil)
+            collection = name.pluralize if name
+          end
+          collection
+        rescue EntryNotFound
+          nil
+        end
+        
         alias_method :human_attribute_name_without_localization, :human_attribute_name
         
         def human_attribute_name(attribute_key_name)

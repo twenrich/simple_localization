@@ -63,7 +63,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # extended so you'll get the localized names from it if available.
       def localized_names(model_name, attribute_names = {})
         class << self
-          attr_accessor :localized_model_name, :localized_attribute_names
+          attr_accessor :localized_model_name, :localized_model_collection, :localized_attribute_names
           
           def human_attribute_name(attribute_key_name)
             self.localized_attribute_names[attribute_key_name.to_sym] ||
@@ -73,6 +73,7 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         end
         
         self.localized_model_name = model_name
+        self.localized_model_collection = attribute_names.delete(:collection) || model_name.pluralize
         self.localized_attribute_names = attribute_names
       end
       
