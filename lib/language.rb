@@ -10,7 +10,7 @@ module ArkanisDevelopment #:nodoc:
       @@languages = {}
       @@current_language = nil
       @@options = {
-        :lang_file_dirs => "#{File.dirname(__FILE__)}/../languages",
+        :lang_file_dirs => ["#{File.dirname(__FILE__)}/../languages"],
         :debug => false,
       }
       @@loaded_features = []
