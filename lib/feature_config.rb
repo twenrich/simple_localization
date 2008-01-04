@@ -43,6 +43,14 @@ module ArkanisDevelopment #:nodoc:
     # should only be used when it's useful and disabled otherwise.
     FeatureManager.instance.disable :reload_lang_file if ENV['RAILS_ENV'] != 'development'
     
+    # The localized_templates feature doesn't work well with Rails 2.0. Therfore
+    # disable it before it blows up your application.
+    FeatureManager.instance.disable :localized_templates if ::Rails::VERSION::MAJOR == 2
+    
+    # Disable the class_based_field_error_proc feature by defaut since it makes
+    # more trouble than profit.
+    FeatureManager.instance.disable :class_based_field_error_proc
+    
     # Set the debug option to true for the development and test environments.
     # Debug mode will raise nice entry format errors (see localized_application
     # feature) which exactly show whats wrong with an entry. However in a
