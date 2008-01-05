@@ -50,7 +50,7 @@ def simple_localization(options)
   feature_manager = ArkanisDevelopment::SimpleLocalization::FeatureManager.instance
   lang_options = lang.options.dup
   lang_file_dirs = lang_options.delete :lang_file_dirs
-  features = feature_manager.all_features
+  features = feature_manager.all_features - feature_manager.disabled_features
   
   default_options = {:language => nil, :languages => nil, :lang_file_dir => nil, :lang_file_dirs => nil}.update lang_options
   features.each{|feature| default_options[feature.to_sym] = true}

@@ -31,6 +31,7 @@ module ArkanisDevelopment #:nodoc:
       # localization.
       def load(*features)
         @localization_init_features.concat features.flatten
+        @disabled_features -= features.flatten
       end
       
       # Returns all available features.
