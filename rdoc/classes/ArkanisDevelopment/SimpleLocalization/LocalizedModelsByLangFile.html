@@ -80,7 +80,7 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000014">included</a>&nbsp;&nbsp;
+      <a href="#M000039">included</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -102,11 +102,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000014" class="method-detail">
-        <a name="M000014"></a>
+      <div id="method-M000039" class="method-detail">
+        <a name="M000039"></a>
 
         <div class="method-heading">
-          <a href="#M000014" class="method-signature">
+          <a href="#M000039" class="method-signature">
           <span class="method-name">included</span><span class="method-args">(base)</span>
           </a>
         </div>
@@ -149,8 +149,8 @@ This drawback of the scaffold method is fixed by the
 localized_column_human_name extension.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000014-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000014-source">
+            onclick="toggleCode('M000039-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000039-source">
 <pre>
     <span class="ruby-comment cmt"># File lib/features/localized_models_by_lang_file.rb, line 65</span>
 65:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">base</span>)
@@ -158,7 +158,7 @@ localized_column_human_name extension.
 67:         
 68:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">localized_model_name</span>
 69:           <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
-70:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span> <span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:name</span>
+70:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span> <span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:name</span>
 71:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">EntryNotFound</span>
 72:           <span class="ruby-keyword kw">nil</span>
 73:         <span class="ruby-keyword kw">end</span>
@@ -166,9 +166,9 @@ localized_column_human_name extension.
 75:         <span class="ruby-identifier">alias_method</span> <span class="ruby-identifier">:human_attribute_name_without_localization</span>, <span class="ruby-identifier">:human_attribute_name</span>
 76:         
 77:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">human_attribute_name</span>(<span class="ruby-identifier">attribute_key_name</span>)
-78:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
-79:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span>(<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class_name</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:attributes</span>, <span class="ruby-identifier">attribute_key_name</span>) <span class="ruby-operator">||</span>
-80:             <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>)
+78:           <span class="ruby-identifier">attribute_key_name</span> = <span class="ruby-identifier">attribute_key_name</span>.<span class="ruby-identifier">to_s</span>
+79:           <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span> <span class="ruby-operator">==</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>
+80:           <span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry!</span>(<span class="ruby-identifier">:models</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">underscore</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">:attributes</span>, <span class="ruby-identifier">attribute_key_name</span>)
 81:         <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">EntryNotFound</span>
 82:           <span class="ruby-identifier">human_attribute_name_without_localization</span>(<span class="ruby-identifier">attribute_key_name</span>)
 83:         <span class="ruby-keyword kw">end</span>

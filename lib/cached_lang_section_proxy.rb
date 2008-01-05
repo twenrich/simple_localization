@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/lang_section_proxy'
+
 module ArkanisDevelopment #:nodoc:
   module SimpleLocalization #:nodoc:
     
@@ -18,12 +20,21 @@ module ArkanisDevelopment #:nodoc:
       # +self.receiver+ will be called to get the receiver (and all the
       # combination work is done) and the result is cached in the
       # +@cached_receivers+ hash.
+      # 
+      # If currently no language is loaded (@lang_class.current_language returns
+      # nil) +self.receiver+ is called without being cached. This is because if
+      # no language file is loaded +self.receiver+ will probably return a
+      # fallback value.
       def method_missing(name, *args, &block)
         lang = @lang_class.current_language
-        cached_receiver = @cached_receivers[lang] || begin
-          @cached_receivers[lang] = self.receiver
+        target_receiver = if lang
+          @cached_receivers[lang] || begin
+            @cached_receivers[lang] = self.receiver
+          end
+        else
+          self.receiver
         end
-        cached_receiver.send name, *args, &block
+        target_receiver.send name, *args, &block
       end
       
     end

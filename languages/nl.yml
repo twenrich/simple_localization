@@ -4,21 +4,21 @@ about:
   comment: Nederlands taal bestand.
   website:
   email: mark.kocera@kennislink.nl
-  date: 2007-04-19
+  date: 2007-10-17
 
 active_record_messages:
-  inclusion: valt niet binnen de lijst
-  exclusion: is gereserveerd
-  invalid: is niet geldig
-  confirmation: komt niet overeen met bevestiging
-  accepted: moet geaccepteerd worden
-  empty: mag niet leeg zijn
-  blank: mag niet blanco zijn
-  too_long: is te lang (maximum is %d karakters)
-  too_short: is te kort (minimum is %d karakters)
-  wrong_length: is de verkeerde lengte (moet zijn %d karakters)
-  taken: is al in gebruik
-  not_a_number: is geen getal
+  inclusion: zit niet binnen de lijst van geldige opties.
+  exclusion: is gereserveerd.
+  invalid: is niet geldig.
+  confirmation: komt niet overeen met bevestiging.
+  accepted: moet geaccepteerd worden.
+  empty: mag niet leeg zijn.
+  blank: mag niet blanco zijn.
+  too_long: is te lang (maximum is %d karakters).
+  too_short: is te kort (minimum is %d karakters).
+  wrong_length: is de verkeerde lengte (moet zijn %d karakters).
+  taken: is al in gebruik.
+  not_a_number: is geen getal.
 
 dates:
   monthnames: [januari, februari, maart, april, mei, juni, juli, augustus, september, oktober, november, december]
@@ -26,11 +26,17 @@ dates:
   abbr_monthnames: [jan, feb, maa, apr, mei, jun, jul, aug, sep, okt, nov, dec]
   abbr_daynames: [zo, ma, di, wo, do, vr, za]
   date_formats:
+    attributes: '%d-%m-%Y'
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
+    attributes: '%d-%m-%Y %H:%M'
     short: '%d %b %H:%M'
     long: '%d %B %Y %H:%M'
+  strftime_overwrites:
+    c: '%A %e %B %Y %H:%M:%S'
+    x: '%m-%d-%y'
+    X: '%H:%M:%S'
 
 numbers:
   separator: ','
@@ -96,3 +102,4 @@ models:
 # localized_application feature. The entries defined here are accesable by the
 # global method "l". See the RDoc for details.
 app:
+

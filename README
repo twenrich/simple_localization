@@ -7,9 +7,8 @@ localizes the Date and Time classes, many helpers, some methods of ActiveSupport
 provides two ways to localize models and their attributes. You can also use the language file to easily localize your own
 application. You'll find an overview just below.
 
-If you have some questions, want to report a bug or just want to talk about the plugin you can write a
-comment[http://projects.arkanis-development.de/simple_localization/index.html#your_comment] at the homepage of this
-plugin.
+If you have some questions, want to report a bug or just want to talk about the plugin feel free to visit us
+at http://simple-localization.arkanis.de/.
 
 
 == Overview and key concepts
@@ -20,13 +19,14 @@ plugin.
 * Can handle multiple languages at runtime.
 * Localizes:
   * ActiveRecord model and attribute names (using source code or the language files)
-  * ActiveRecord error messages
+  * ActiveRecord error messages (can contain placeholders for model and attribute names)
   * ActiveRecord helpers
   * Number helpers
   * Date and Time classes and date helpers
   * Array extensions (<code>Array#to_sentence</code>)
   * Country names (just need to be inserted into the language file)
   * Templates (eg. <code>index.de.rhtml</code>)
+  * Model attributes (formats and parses numbers and dates as strings e.g. used in form fields)
   * Your application (add your custom entries to the language file)
 * A more CSS friendly ActionView +field_error_proc+.
 
@@ -36,9 +36,10 @@ initializing the plugin you can choose the featurs you want to use. This avoids 
 parts of your application by other means.
 
 To easily support new languages all language specific strings are extracted into language files. These language files can be found
-in the +languages+ directory of the plugin (or a custom directory) and are written in the YAML format. They also contain meta
-data about the author of the language file and can be extended with Ruby code (eg. configuring the Rails Inflector). More detailed
-information or instructions for creating a new language file can be found in the corresponding section at the end of this file.
+in the +languages+ directory of the plugin (or <code>app/languages</code> for your own language files) and are written in the YAML
+format. They also contain meta data about the author of the language file and can be extended with Ruby code (eg. configuring the
+Rails Inflector). More detailed information or instructions for creating a new language file can be found in the plugin documenation
+at http://simple-localization.arkanis.de/docs/index.
 
 
 == Installation
@@ -52,303 +53,52 @@ The next and already last thing is to call the +simple_localization+ method at t
   simple_localization :language => :de
 
 With this you're done. The <code>:language</code> parameter lets you define the language you want to use. Just specify
-the name of the language file without the <code>.yml</code> extension as a symbol or string. Currently german (<code>de.yml</code>),
-Dutch (<code>nl.yml</code>), France (<code>fr.yml</code>) and English (<code>en.yml</code>) language files are available. The english
-language file just serves as a reference and template for new language files. To load multiple languages just specify them in an
-array:
+the name of the language file without the <code>.yml</code> extension as a symbol or string. To load multiple languages
+just specify them in an array:
 
   simple_localization :languages => [:de, :en, :nl, :fr]
 
-This one call of the +simple_localization+ method gives you quite more control over the plugin but this is described in the next chapter.
+The <code>:languages</code> and <code>:language</code> options are doing exactly the same. Use whatever sounds best for you. This one
+call of the +simple_localization+ method gives you quite more control over the plugin but this is described in the next chapter.
 
 <b>Things get a bit complicated when using Rails model observers. Features which are accessed when the models are loaded are preloaded
 by the plugin. To disable a preloaded feature set the <code>ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES</code> constant to
 the name (symbol) of the feature. This have to be done before the <code>Rails::Initializer.run</code> call in the <code>environment.rb</code>.</b>
-This is neccessary because an observer (and with it the correponding model) is loaded before the plugin is initialized in
+This is necessary because an observer (and with it the corresponding model) is loaded before the plugin is initialized in
 the <code>environment.rb</code>. Thanks to MK for reporting this problem.
 
 
-== The magic of the +simple_localization+ method
+== More information, help, ect.
 
-With the +simple_localization+ method you can control how the plugin is set up and which features are loaded. It takes a hash of
-options and the main purpose of this method is to initialize the plugin (therefor called in <code>environment.rb</code>) and to specify
-which language files should be used:
-
-  simple_localization :language => :de                    # initializes the plugin with just one language (german)
-  simple_localization :languages => [:en, :de, :nl, :fr]  # initializes the plugin with four languages
-
-The second and more powerful purpose of this method is to control which features should be loaded. Just specify an option with the
-name of the feature source file and set it to +false+ to prevent it from loading:
-
-  simple_localization :language => :de, :class_based_field_error_proc => false
-
-This example will initialize the plugin with a german language file named <code>de.yml</code> but without loading the
-<code>class_based_field_error_proc.rb</code> feature file. To make this more readable you can also use <code>:only</code> and
-<code>:except</code> options like known from Rails before and after filters:
-
-  simple_localization :language => :de, :except => [:class_based_field_error_proc, :localized_date_and_time]
-
-  simple_localization :language => :de, :only => :localized_models
-
-If you use the language files to localize your application (the localized_application feature) it may come in handy to move the directory
-containing the language files to another more public place.
-
-  simple_localization :language => :de, :lang_file_dir => "#{RAILS_ROOT}/app/languages", :only => [:localized_application]
-
-This example expects the language files to be located in the <code>app/languages</code> directory of your application. By default language
-files are located in the +languages+ directory of the Simple Localization plugin.
-
-
-== Preloaded features
-
-To not break rails model observers this plugin preloads the +localized_models+ feature. This is neccessary because the observers
-(and with them the models) are loaded before the plugin is initialized by the +simple_localization+ call in the
-<code>environment.rb</code>. However such a preloaded feature can not be suppressed by specifing an option to the
-+simple_localization+ method.
-
-  simple_localization :language => :de, :except => :localized_models
-
-This won't work because the +localized_models+ feature is already loaded. But there is another way to kick out a preloaded feature:
-add it to the list of suppressed featurs in the <code>ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES</code> constant. You have
-to do this before the plugin is loaded and therefore before the <code>Rails::Initializer.run</code> call in the <code>environment.rb</code>.
-
-  # Bootstrap the Rails environment, frameworks, and default configuration
-  require File.join(File.dirname(__FILE__), 'boot')
-  
-  # This suppresses the localized_models feature from being preloaded
-  ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES = [:localized_models]
-  
-  Rails::Initializer.run do |config|
-  ...
-  end
-  
-  simple_localization :language => :de
-
-
-== Handling of multiple languages at runtime
-
-If multiple languages are loaded by the +simple_localization+ method you can easily swicht between them.
-
-environment.rb
-
-  simple_localization :language => [:de, :en]
-
-somewhere in your app
-
-  ArkanisDevelopment::SimpleLocalization::Language.use :en
-  l(:test) # will return something from the English language file
-  
-  ArkanisDevelopment::SimpleLocalization::Language.use :de
-  l(:test) # and this something from the German language file
-  
-  ArkanisDevelopment::SimpleLocalization::Language.current_language # => :de
-
-Using a before filter it's quite easy to let every request (or user) choose it's own language.
-
-  class ApplicationController < ActionController::Base
-    
-    before_filter :set_language
-    
-    ...
-    
-    private
-    
-    def set_language
-      ArkanisDevelopment::SimpleLocalization::Language.use @user.language
-    end
-    
-  end
-
-
-== Available features
-
-This is a list describing the currently available features. Each one can be turned on or off to best match your needs. Detailed information about a
-feature can be found in the RDoc documentation of the feature source file.
-
-
-=== Localized model and attribute names (lib/features/localized_models.rb)
-
-Provides a way to specify localized model and attribute names for ActiveRecord models. Asume the following model Computer has the attributes
-+name+, +description+, +ip_address+ and +user+.
-
-  class Computer < ActiveRecord::Base
-    belongs_to :user
-    validates_presence_of :name, :ip_address, :user
-    localized_names 'Der Computer',
-      :name => 'Der Name',
-      :description => 'Die Beschreibung',
-      :ip_address => 'Die IP-Adresse',
-      :user => 'Der Besitzer'
-  end
-
-This stores the localized (in this case german) name of the model and it�s attributes in the model class. The first parameter of the +localized_names+
-method is the name of the model followed by a hash defining the localized names for the attributes.
-
-The feature also overwrites ActiveRecords +human_attribute_name+ method to return the localized names if available. The model name can be
-accessed by the class method +localized_model_name+.
-
-  Computer.localized_model_name               # => 'Der Computer'
-  Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'
-
-
-=== Localized model and attribute names using the language file (lib/features/localized_models_by_lang_file.rb)
-
-This feature provides a way to localize ActiveRecord models based on translated model and attribute names in the language file.
-Where the localized_models feature depends on translated names written in the source code of the models this feature reads all
-necessary strings from the loaded language file.
-
-This feature is the right choice if your application should support multiple languages, but only one at runtime. If your application is
-strictly developed for just one language localized_models may is the better choice.
-
-To localize a model with this feature you just have to add the necessary entries to the +models+ section to the languge file. The
-following example localizes the +Computer+ model and it�s attributes +name+, +description+, +ip_address+ and +user+.
-
-  models:
-    computer:
-      name: Der Computer
-      attributes:
-        name: Der Name
-        description: Die Beschreibung
-        ip_address: Die IP-Adresse
-        user: Der Besitzer
-
-This feature will convert the name of the model class (+Compuer+) using <code>String#underscore</code> (results in +computer+) and
-will look in the corresponding subsection of the models section. Each model section in turn contains the name of the model ("Der Computer")
-and a map translating the model attributes. Like the +localized_models+ feature this one defines the +localized_model_name+
-method to access the localized model name and modifies the +human_attribute_name+ to use the localized attributes names.
-
-  Computer.localized_model_name               # => 'Der Computer'
-  Computer.human_attribute_name(:ip_address)  # => 'Die IP-Adresse'
-
-
-=== Localized application (lib/features/localized_application.rb)
-
-This feature allows you to use the language file to localize your application. You can add your own translation strings to the +app+
-section of the language file and read them with the +l+ global method. You can use this method in your controllers, views, mail templates,
-simply everywhere.
-
-  app:
-    title: Simple Localization Rails plugin
-    subtitle: The plugin should make it much easier to localize Ruby on Rails
-    headings:
-      wellcome: Wellcome to the RDoc Documentation of this plugin
-
-  l(:title) # => "Simple Localization Rails plugin"
-  l(:headings, :wellcome) # => "Wellcome to the RDoc Documentation of this plugin"
-
-The +l+ method is just like the <code>ArkanisDevelopment::SimpleLocalization::Language#[]</code> operator but is limited to the app
-section of the language file. There is no need to access language file sections of other features.
-
-
-=== Localized ActiveRecord error messages (lib/features/localized_error_messages.rb)
-
-Overwrites the english ActiveRecord error messages with localized ones from the language file. If the user submits an invalid form Rails�
-+error_messages_for+ helper generates a box detailing why the record is invalid. This feature localizes the error messages used to build the
-box. However to get a completely localized error box you'll have to localize your models (localized_models or localized_models_by_lang_file
-feature) as well as the ActiveRecord helpers (localized_active_record_helpers feature).
-
-
-=== Localized ActiveRecord helpers (lib/features/localized_active_record_helpers.rb)
-
-Localizes the +error_messages_for+ helper. Uses the language file to generate the heading and explaination paragraph of the error box and
-makes it also possible to redefine the generated HTML output using an associated block.
-
-
-=== Localized Date and Time classes (lib/features/localized_date_and_time.rb)
-
-Localizes the +Time+ and +Date+ classes. Updates the month and day name constants of the +Date+ class with proper localized ones from
-the language file. Also makes the <code>Time#strftime</code> method using the month and day names of the +Date+ class (based on the
-work[http://poocs.net/articles/2005/10/04/localization-for-rubys-time-strftime] of Patrick Lenz).
-
-The date and time formats used by the +to_formatted_s+ method are updated, too.
-
-
-=== Localized array extensions (lib/features/localized_array.rb)
-
-Localizes the <code>Array#to_sentence</code> method added by ActiveSupport.
-
-
-=== Localized date helpers (lib/features/localized_date_helpers.rb)
-
-Localizes the +date_select+ and +distance_of_time_in_words+ helpers. These helpers are used by many other helpers to and therefor
-many other helpers gets localized too.
-
-
-=== Localized country names (lib/features/localized_form_options_helpers.rb)
-
-Updates the country names used by the FormOptionsHelper module with localized names from the language file.
-
-
-=== Localized number helpers (lib/features/localized_number_helpers.rb)
-
-Modifies the number helpers of Rails to use a localized seperator, delimiter, percision and currency unit.
-
-
-=== Localized templates (lib/features/localized_templates.rb)
-
-This feature extends Rails template handling and allows the use of localized templates like
-<code>index.de.rhtml</code>. The plugin will then pick the template matching the currently used
-language (<code>Language#current_language</code>).
-
-
-=== Class based ActionView +field_error_proc+ (lib/features/class_based_field_error_proc.rb)
-
-This feature replaces the default ActionView +field_error_proc+ which is responsible for marking form fields with invalid input.
-The original one wraps invalid form fields into and div element of the class +fieldWithErrors+.
-
-  <div class="fieldWithErrors"><input type="text" class="txt" ... /></div>
-
-The new one just adds the class @invalid@ to the corresponding form field element.
-
-   <input type="text" class="txt invalid" ... />
-
-This feature is based on a code snippet[http://wiki.rubyonrails.com/rails/pages/HowtoChangeValidationErrorDisplay] of Duane Johnson found in the
-Rails wiki and isn�t really a localization feature. However while working with the ActiveRecord error messages the new div-element around invalid
-fields was one of the most annoying things of Rails. So this feature can my be considered as a "goody".
-
-
-== Structure of the language files
-
-The language files contain all language specific strings the plugin uses and are written in simple YAML. Take a look at the english language file
-(<code>languages/en.yml</code>) and you'll see how simple they are.
-
-YAML may be nice but sometimes a language may require more complex things (eg. configuring the Rails Inflector). Usually these complex tasks
-can be done by some Ruby magic and therefor you can extend a YAML language file with Ruby code. This is done by creating a Ruby file with the same
-name as the YAML language file but with an +rb+ extension instead of an +yml+ extension. The Ruby file will be loaded right after the YAML file.
-For example <code>languages/en.yml</code> contains the translated language strings and <code>languages/en.rb</code> could contain some
-complex Ruby code to further setup the english language.
-
-The YAML language file also contains some information about the author of the language file. This information can be accessed using the
-<code>ArkanisDevelopment::SimpleLocalization::Language#about</code> method.
-
-By default all language files are located in the +languages+ direcotry of the plugin. You can specify your own directory with the
-<code>:lang_file_dir</code> option of the +simple_localization+ method.
-
-
-== Create a new language file
-
-It�s very easy to define new languages for this plugin. Just copy the english language file (<code>languages/en.yml</code>) and translate the entries
-into your language. If you need to do some Ruby stuff to setup your language (eg. configuring the Rails Inflector) you can do this in the Ruby file with
-the same name as your language file.
-
-For example if you want to create a france language file you could just copy <code>en.yml</code> to <code>fr.yml</code> and translate the necessary
-strings. If you need some Ruby stuff you can create a file named <code>fr.rb</code> and write usual Ruby code which will be loaded right after the
-YAML file.
+Visit the plugin documentation at http://simple-localization.arkanis.de/docs/index. There is a lot of cool stuff waiting for you there (e.g. multipart
+language files, detailed feature descriptions, ect.). You'll also find a forum there so if you have a question don't hesitate to ask it.
 
 
 == Contributors
 
+These guys helped to make this plugin what it is today:
+
 [Mark Kocera]
-	Dutch language file (<code>nl.yml</code>)
-
-[Sylvain OBEGI]
-	French language file (<code>fr.yml</code>)
-
+  Dutch language file (nl.yml), idea to solve the Rails observer problem.
+[Sylvain Obegi]
+  French language file (fr.yml), bug hunting, several other good ideas.
+[The Globalize Rails team]
+  Actually the entire localized templates feature is based on their source. Thanks for releasing the their source under the MIT-license.
+[David Saitta]
+  Solving a bug in the localized models by lang file feature.
+[Roman Gonzalez]
+  The idea to automatically generate missing keys and a rake task to do this.
+[Jonas Gauffin]
+  Localized default formats of the localized data and time feature.
+[Michael Kessler]
+  Contributing a part of the key auto generation code.
+[And…]
+  many other guys helping out hunting bugs and having good ideas to improve the plugin.
 
 
 == License
 
-Copyright (c) 2006 Stephan Soller <stephan.soller@addcom.de> and contributors
+Copyright (c) 2007 Stephan Soller <stephan.soller@helionweb.de> and contributors
 
 The MIT License
 

@@ -1,13 +1,13 @@
 about:
   language: Français
-  author: Sylvain OBEGI
-  comment:  Fichier de traduction en Français pour simple_localization (premier jet, les pays manquent, n'hésitez pas à envoyer des commentaires ou des patchs).
-  website: none
+  author: Sylvain OBEGI, corrections par Bruno MICHEL
+  comment:  Fichier de traduction en Français pour simple_localization.
+  website: 
   email: katios@nolabel.net
-  date: 2007-04-29
+  date: 2007-06-24
 
 active_record_messages:
-  inclusion: n'est pas inclu dans la liste
+  inclusion: n'est pas inclus dans la liste
   exclusion: est réservé
   invalid: est invalide
   confirmation: ne correspond pas à la confirmation
@@ -16,21 +16,27 @@ active_record_messages:
   blank: ne peut être vide
   too_long: est trop long (le maximum est de %d caractères)
   too_short: est trop court (le minimum est de %d caractères)
-  wrong_length: est de la mauvaise taille (devrait être de %d caractères)
+  wrong_length: n'est pas de la bonne taille (devrait être de %d caractères)
   taken: a déjà été utilisé
   not_a_number: n'est pas un nombre
 
 dates:
   monthnames: [Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre]
   daynames: [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
-  abbr_monthnames: [Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Dec]
+  abbr_monthnames: [Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc]
   abbr_daynames: [Dim, Lun, Mar, Mer, Jeu, Ven, Sam]
   date_formats:
+    attributes: '%d/%m/%y'
     short: '%e %b'
     long: '%e %B %Y'
   time_formats:
+    attributes: '%d/%m/%y %H:%M'
     short: '%e %b %H:%M'
     long: '%e %B %Y à %H:%M'
+  strftime_overwrites:
+    c: '%A %e %B %Y à %H:%M'
+    x: '%d/%m/%y'
+    X: '%H:%M:%S'
 
 numbers:
   separator: ','
@@ -40,7 +46,7 @@ numbers:
 arrays:
   to_sentence:
     connector: et
-    skip_last_comma: false
+    skip_last_comma: true
 
 countries:
   Germany: Allemagne
@@ -54,19 +60,19 @@ helpers:
   number_to_currency:
     precision: 2
     unit: '€'
-    order: [unit, main, separator, fraction]
+    order: [main, separator, fraction, unit]
   number_to_phone:
     area_code: false
     delimiter: '-'
     extension: 
     country_code: 
   date_select:
-    order: [:year, :month, :day]
+    order: [:day, :month, :year]
   distance_of_time_in_words:
     less than 5 seconds: moins de 5 secondes
     less than 10 seconds: moins de 10 secondes
     less than 20 seconds: moins de 20 secondes
-    less than a minute: moins d''une minute
+    less than a minute: moins d'une minute
     1 minute: 1 minute
     half a minute: 30 seconds
     n minutes: %i minutes

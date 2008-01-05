@@ -63,14 +63,17 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
       # extended so you'll get the localized names from it if available.
       def localized_names(model_name, attribute_names = {})
         class << self
-          attr_accessor :localized_model_name, :localized_attribute_names
+          attr_accessor :localized_model_name, :localized_model_collection, :localized_attribute_names
           
           def human_attribute_name(attribute_key_name)
-            self.localized_attribute_names[attribute_key_name.to_sym] || super
+            self.localized_attribute_names[attribute_key_name.to_sym] ||
+              self.localized_attribute_names[attribute_key_name.to_s] ||
+              super(attribute_key_name.to_s)
           end
         end
         
         self.localized_model_name = model_name
+        self.localized_model_collection = attribute_names.delete(:collection) || model_name.pluralize
         self.localized_attribute_names = attribute_names
       end
       
@@ -80,7 +83,3 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
 end
 
 ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedModels
-
-# Enable the localized Column#human_name method to make this feature work
-# with scaffold.
-require "#{File.dirname(__FILE__)}/../extensions/localized_column_human_name.rb"

@@ -96,8 +96,8 @@ proxy method call.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000030">method_missing</a>&nbsp;&nbsp;
-      <a href="#M000029">new</a>&nbsp;&nbsp;
+      <a href="#M000057">method_missing</a>&nbsp;&nbsp;
+      <a href="#M000056">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -119,11 +119,11 @@ proxy method call.
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000029" class="method-detail">
-        <a name="M000029"></a>
+      <div id="method-M000056" class="method-detail">
+        <a name="M000056"></a>
 
         <div class="method-heading">
-          <a href="#M000029" class="method-signature">
+          <a href="#M000056" class="method-signature">
           <span class="method-name">new</span><span class="method-args">(*args)</span>
           </a>
         </div>
@@ -135,14 +135,14 @@ with an empty hash (empty cache). +@cached_receivers+ will hold a cached
 version of the receiver for each language file (keys of the hash).
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000029-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000029-source">
+            onclick="toggleCode('M000056-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000056-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/cached_lang_section_proxy.rb, line 11</span>
-11:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-12:         <span class="ruby-keyword kw">super</span>
-13:         <span class="ruby-ivar">@cached_receivers</span> = {}
-14:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/cached_lang_section_proxy.rb, line 13</span>
+13:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+14:         <span class="ruby-keyword kw">super</span>
+15:         <span class="ruby-ivar">@cached_receivers</span> = {}
+16:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -150,11 +150,11 @@ version of the receiver for each language file (keys of the hash).
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000030" class="method-detail">
-        <a name="M000030"></a>
+      <div id="method-M000057" class="method-detail">
+        <a name="M000057"></a>
 
         <div class="method-heading">
-          <a href="#M000030" class="method-signature">
+          <a href="#M000057" class="method-signature">
           <span class="method-name">method_missing</span><span class="method-args">(name, *args, &amp;block)</span>
           </a>
         </div>
@@ -166,18 +166,28 @@ language. If found the cached on will be used. Otherwise +self.receiver+
 will be called to get the receiver (and all the combination work is done)
 and the result is cached in the +@cached_receivers+ hash.
 </p>
+<p>
+If currently no language is loaded (@lang_class.current_language returns
+nil) +self.receiver+ is called without being cached. This is because if no
+language file is loaded +self.receiver+ will probably return a fallback
+value.
+</p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000030-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000030-source">
+            onclick="toggleCode('M000057-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000057-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/cached_lang_section_proxy.rb, line 21</span>
-21:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-22:         <span class="ruby-identifier">lang</span> = <span class="ruby-ivar">@lang_class</span>.<span class="ruby-identifier">current_language</span>
-23:         <span class="ruby-identifier">cached_receiver</span> = <span class="ruby-ivar">@cached_receivers</span>[<span class="ruby-identifier">lang</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">begin</span>
-24:           <span class="ruby-ivar">@cached_receivers</span>[<span class="ruby-identifier">lang</span>] = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">receiver</span>
-25:         <span class="ruby-keyword kw">end</span>
-26:         <span class="ruby-identifier">cached_receiver</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
-27:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/cached_lang_section_proxy.rb, line 28</span>
+28:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+29:         <span class="ruby-identifier">lang</span> = <span class="ruby-ivar">@lang_class</span>.<span class="ruby-identifier">current_language</span>
+30:         <span class="ruby-identifier">target_receiver</span> = <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">lang</span>
+31:           <span class="ruby-ivar">@cached_receivers</span>[<span class="ruby-identifier">lang</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword kw">begin</span>
+32:             <span class="ruby-ivar">@cached_receivers</span>[<span class="ruby-identifier">lang</span>] = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">receiver</span>
+33:           <span class="ruby-keyword kw">end</span>
+34:         <span class="ruby-keyword kw">else</span>
+35:           <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">receiver</span>
+36:         <span class="ruby-keyword kw">end</span>
+37:         <span class="ruby-identifier">target_receiver</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
+38:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

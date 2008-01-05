@@ -55,8 +55,8 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../../files/lib/extensions/localized_column_human_name_rb.html">
-                lib/extensions/localized_column_human_name.rb
+                <a href="../../files/lib/features/localized_column_human_name_rb.html">
+                lib/features/localized_column_human_name.rb
                 </a>
         <br />
             </td>
@@ -133,7 +133,7 @@
         <div class="method-description">
           <p>
 Updates the <a href="Base.html#M000003">ActiveRecord::Base#columns</a>
-method (orginal renamed to <tt>columns_without_localization</tt>) to set
+method (original renamed to <tt>columns_without_localization</tt>) to set
 the <tt>model_class</tt> property on every column belonging to this model
 class. This is necessary for the overwritten Column#human_name method to
 work.
@@ -142,17 +142,17 @@ work.
             onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
           <div class="method-source-code" id="M000003-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/extensions/localized_column_human_name.rb, line 57</span>
-57:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">columns</span>
-58:         <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@columns</span>
-59:           <span class="ruby-identifier">columns_without_localization</span>
-60:           <span class="ruby-ivar">@columns</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">column</span><span class="ruby-operator">|</span>
-61:             <span class="ruby-identifier">column</span>.<span class="ruby-identifier">model_class</span> = <span class="ruby-keyword kw">self</span>
-62:           <span class="ruby-keyword kw">end</span>
-63:         <span class="ruby-keyword kw">else</span>
-64:           <span class="ruby-identifier">columns_without_localization</span>
-65:         <span class="ruby-keyword kw">end</span>
-66:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/features/localized_column_human_name.rb, line 59</span>
+59:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">columns</span>
+60:         <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@columns</span>
+61:           <span class="ruby-identifier">columns_without_localization</span>
+62:           <span class="ruby-ivar">@columns</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">column</span><span class="ruby-operator">|</span>
+63:             <span class="ruby-identifier">column</span>.<span class="ruby-identifier">model_class</span> = <span class="ruby-keyword kw">self</span>
+64:           <span class="ruby-keyword kw">end</span>
+65:         <span class="ruby-keyword kw">else</span>
+66:           <span class="ruby-identifier">columns_without_localization</span>
+67:         <span class="ruby-keyword kw">end</span>
+68:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

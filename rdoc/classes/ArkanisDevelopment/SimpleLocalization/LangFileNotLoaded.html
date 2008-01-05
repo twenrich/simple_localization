@@ -55,8 +55,8 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../../../files/lib/language_rb.html">
-                lib/language.rb
+                <a href="../../../files/lib/errors_rb.html">
+                lib/errors.rb
                 </a>
         <br />
             </td>
@@ -65,7 +65,9 @@
         <tr class="top-aligned-row">
             <td><strong>Parent:</strong></td>
             <td>
-                StandardError
+                <a href="SimpleLocalizationError.html">
+                SimpleLocalizationError
+               </a>
             </td>
         </tr>
         </table>
@@ -102,7 +104,7 @@ of the loaded ones.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000028">new</a>&nbsp;&nbsp;
+      <a href="#M000055">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -142,29 +144,29 @@ of the loaded ones.
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000028" class="method-detail">
-        <a name="M000028"></a>
+      <div id="method-M000055" class="method-detail">
+        <a name="M000055"></a>
 
         <div class="method-heading">
-          <a href="#M000028" class="method-signature">
+          <a href="#M000055" class="method-signature">
           <span class="method-name">new</span><span class="method-args">(failed_lang, loaded_langs)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000028-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000028-source">
+            onclick="toggleCode('M000055-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000055-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/language.rb, line 19</span>
-19:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">failed_lang</span>, <span class="ruby-identifier">loaded_langs</span>)
-20:         <span class="ruby-ivar">@failed_lang</span>, <span class="ruby-ivar">@loaded_lang</span> = <span class="ruby-identifier">failed_lang</span>, <span class="ruby-identifier">loaded_langs</span>
-21:         <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;The language file \&quot;#{failed_lang}\&quot; is not loaded (currently &quot;</span> <span class="ruby-operator">+</span>
-22:           <span class="ruby-node">&quot;loaded: #{loaded_langs.join(', ')}). Please call the &quot;</span> <span class="ruby-operator">+</span>
-23:           <span class="ruby-value str">'simple_localization method at the end of your environment.rb '</span> <span class="ruby-operator">+</span>
-24:           <span class="ruby-value str">'file to initialize Simple Localization or modify this call to '</span> <span class="ruby-operator">+</span>
-25:           <span class="ruby-value str">'include the selected language.'</span>
-26:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/errors.rb, line 21</span>
+21:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">failed_lang</span>, <span class="ruby-identifier">loaded_langs</span>)
+22:         <span class="ruby-ivar">@failed_lang</span>, <span class="ruby-ivar">@loaded_lang</span> = <span class="ruby-identifier">failed_lang</span>, <span class="ruby-identifier">loaded_langs</span>
+23:         <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;The language file \&quot;#{failed_lang}\&quot; is not loaded (currently &quot;</span> <span class="ruby-operator">+</span>
+24:           <span class="ruby-node">&quot;loaded: #{loaded_langs.join(', ')}). Please call the &quot;</span> <span class="ruby-operator">+</span>
+25:           <span class="ruby-value str">'simple_localization method at the end of your environment.rb '</span> <span class="ruby-operator">+</span>
+26:           <span class="ruby-value str">'file to initialize Simple Localization or modify this call to '</span> <span class="ruby-operator">+</span>
+27:           <span class="ruby-value str">'include the selected language.'</span>
+28:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

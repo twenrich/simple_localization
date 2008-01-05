@@ -56,7 +56,7 @@
     </tr>
     <tr class="top-aligned-row">
       <td><strong>Last Update:</strong></td>
-      <td>Tue May 29 18:07:41 +0200 2007</td>
+      <td>Wed Oct 31 00:50:25 +0100 2007</td>
     </tr>
     </table>
   </div>
@@ -75,7 +75,8 @@ This feature allows you to use the language file to localize your
 application. You can add your own translation strings to the <tt>app</tt>
 section of the language file and read them with the <tt>l</tt> global
 method. You can use this method in your controllers, views, mail templates,
-simply everywhere.
+simply everywhere. To make the access more convenient you can use the
+<tt>lc</tt> method in controllers, views, partials, models and observers.
 </p>
 <pre>
   app:
@@ -118,10 +119,8 @@ Same as
   end
 </pre>
 <p>
-Please note that it is NOT possible to nest scopes. Each call to
-<tt>l_scope</tt> will overwrite the last scope. When used with a block
-<tt>l_scope</tt> will restore the previous scope after the block was
-executed.
+Please also take a look at the <tt>ContextSensetiveHelpers::lc</tt> method.
+It can make life much more easier.
 </p>
 <h2>Used sections of the language file</h2>
 <p>

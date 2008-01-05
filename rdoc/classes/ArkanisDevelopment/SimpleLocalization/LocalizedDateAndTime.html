@@ -80,7 +80,8 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000021">convert_to_name_indexed_hash</a>&nbsp;&nbsp;
+      <a href="#M000050">convert_to_name_indexed_hash</a>&nbsp;&nbsp;
+      <a href="#M000051">overwrite_formats</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -102,11 +103,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000021" class="method-detail">
-        <a name="M000021"></a>
+      <div id="method-M000050" class="method-detail">
+        <a name="M000050"></a>
 
         <div class="method-heading">
-          <a href="#M000021" class="method-signature">
+          <a href="#M000050" class="method-signature">
           <span class="method-name">convert_to_name_indexed_hash</span><span class="method-args">(array, start_index = 0)</span>
           </a>
         </div>
@@ -122,8 +123,8 @@ values. Takes and optional start index which defaults to 0.
   # =&gt; {&quot;Son&quot; =&gt; 1, &quot;Mon&quot; =&gt; 2, &quot;Din&quot; =&gt; 3, &quot;Mit&quot; =&gt; 4, &quot;Don&quot; =&gt; 5, &quot;Fri&quot; =&gt; 6, &quot;Sam&quot; =&gt; 7}
 </pre>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000021-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000021-source">
+            onclick="toggleCode('M000050-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000050-source">
 <pre>
     <span class="ruby-comment cmt"># File lib/features/localized_date_and_time.rb, line 51</span>
 51:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">convert_to_name_indexed_hash</span>(<span class="ruby-identifier">array</span>, <span class="ruby-identifier">start_index</span> = <span class="ruby-value">0</span>)
@@ -132,6 +133,37 @@ values. Takes and optional start index which defaults to 0.
 54:         <span class="ruby-identifier">memo</span>
 55:       <span class="ruby-keyword kw">end</span>
 56:     <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000051" class="method-detail">
+        <a name="M000051"></a>
+
+        <div class="method-heading">
+          <a href="#M000051" class="method-signature">
+          <span class="method-name">overwrite_formats</span><span class="method-args">(original_format)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Relace format sequences in a specified strftime format string with
+localized formats from the language file.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000051-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000051-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/features/localized_date_and_time.rb, line 60</span>
+60:     <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">overwrite_formats</span>(<span class="ruby-identifier">original_format</span>)
+61:       <span class="ruby-identifier">localized_format</span> = <span class="ruby-value str">' '</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">original_format</span>
+62:       (<span class="ruby-constant">Language</span>.<span class="ruby-identifier">entry</span>(<span class="ruby-identifier">:dates</span>, <span class="ruby-identifier">:strftime_overwrites</span>) <span class="ruby-operator">||</span> {}).<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span>, <span class="ruby-identifier">replacement</span><span class="ruby-operator">|</span>
+63:         <span class="ruby-identifier">localized_format</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-node">/([^%])%#{original}/</span>) {<span class="ruby-identifier">$1</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">replacement</span>}
+64:       <span class="ruby-keyword kw">end</span>
+65:       <span class="ruby-identifier">localized_format</span>[<span class="ruby-value">1</span>, <span class="ruby-identifier">localized_format</span>.<span class="ruby-identifier">length</span>]
+66:     <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

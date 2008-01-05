@@ -32,9 +32,30 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         def render_file(template_path, use_full_path = true, local_assigns = {})
           @first_render ||= template_path
           
-          localized_path = locate_localized_path(template_path, use_full_path)
+          localized_path, template_extension = locate_localized_path(template_path, use_full_path)
+          
+          # Delegate templates are picked by the template extension and if
+          # use_full_path is true Rails does not search for an extension and so
+          # delegate templates won't work. To fix this try to convert the path
+          # back to a relative one.
+          if use_full_path
+            localized_path.gsub!(/#{Regexp.escape('.' + template_extension)}$/, '') if template_extension
+            
+            # Make this rails edge secure. Edgy uses an array called view_paths
+            # to store paths of the view files. Rails 1.2 stors just on path in
+            # the @base_path variable.
+            if self.respond_to?(:view_paths)
+              self.view_paths.each do |view_path|
+                localized_path.gsub!(/^#{Regexp.escape(view_path)}\//, '')
+              end
+            else
+              localized_path.gsub!(/^#{Regexp.escape(@base_path)}\//, '')
+            end
+          end
+          
           # don't use_full_path -- we've already expanded the path
-          render_file_without_localization(localized_path, false, local_assigns)
+          # FALSE: doing this will break delegate templates!
+          render_file_without_localization(localized_path, use_full_path, local_assigns)
         end
         
         private
@@ -65,20 +86,26 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
             end
           else
             template_file_name = template_path
-            #raise [template_path, path_and_extension(template_path)].inspect
             template_extension = path_and_extension(template_path).last
           end
           
-          pn = Pathname.new(template_file_name)
-          dir, filename = pn.dirname, pn.basename('.' + template_extension)
-          
-          localized_path = dir + "#{filename}.#{current_language}.#{template_extension}"
-          
-          unless localized_path.exist?
+          # template_extension is nil if the specified template does not use a
+          # template engine (like render :file => ... with a .html, .txt, ect.
+          # extension). In this case just pass the template name as it is.
+          if template_extension
+            pn = Pathname.new(template_file_name)
+            dir, filename = pn.dirname, pn.basename('.' + template_extension)
+            
+            localized_path = dir + "#{filename}.#{current_language}.#{template_extension}"
+            
+            unless localized_path.exist?
+              localized_path = template_file_name
+            end
+          else
             localized_path = template_file_name
           end
           
-          @@localized_path_cache[cache_key] = localized_path.to_s
+          [@@localized_path_cache[cache_key] = localized_path.to_s, template_extension]
         end
         
       end

@@ -3,27 +3,6 @@
 # be used in the environment.rb file to configure and initialize the
 # localization.
 
-module ArkanisDevelopment #:nodoc:
-  module SimpleLocalization
-    
-    # An array of features which should not be preloaded. If this constant is
-    # already defined it will not be overwritten. This provides a way to
-    # exclude features from preloading. You'll just have to define this
-    # constant by yourself before the Rails::Initializer.run call in your
-    # environment.rb file.
-    begin
-      SUPPRESS_FEATURES
-    rescue NameError
-      SUPPRESS_FEATURES = []
-    end
-    
-    # A list of features loaded directly in the <code>init.rb</code> of the
-    # plugin. This is necessary for some features to work with rails observers.
-    PRELOAD_FEATURES = [:localized_models] - Array(SUPPRESS_FEATURES).flatten
-    
-  end
-end
-
 # The main method of the SimpleLocalization plugin used to initialize and
 # configure the plugin. Usually it is called in the environment.rb file.
 # 
@@ -66,56 +45,56 @@ end
 # directory of your rails application. By default the language files are
 # located in the +languages+ directory of the Simple Localization plugin.
 def simple_localization(options)
-  available_features = Dir[File.dirname(__FILE__) + '/features/*.rb'].collect{|path| File.basename(path, '.rb').to_sym}
+  # available options: language, languages, *options (from the Language module), *features
+  lang = ArkanisDevelopment::SimpleLocalization::Language
+  feature_manager = ArkanisDevelopment::SimpleLocalization::FeatureManager.instance
+  lang_options = lang.options.dup
+  lang_file_dirs = lang_options.delete :lang_file_dirs
+  features = feature_manager.all_features - feature_manager.disabled_features
   
-  default_options = {
-    :language => :de,
-    :languages => nil,
-    :lang_file_dir => "#{File.dirname(__FILE__)}/../languages",
-    :debug => nil
-  }
-  default_options = available_features.inject(default_options){|memo, feature| memo[feature.to_sym] = true; memo}
-  options = default_options.update(options)
+  default_options = {:language => nil, :languages => nil, :lang_file_dir => nil, :lang_file_dirs => nil}.update lang_options
+  features.each{|feature| default_options[feature.to_sym] = true}
+  options.reverse_merge! default_options
+  
+  # Analyse the language and lang_file_dir options and add default values if
+  # necessary or possible
   languages = [options.delete(:languages), options.delete(:language)].flatten.compact.uniq
-  
-  unless options[:debug].nil?
-    ArkanisDevelopment::SimpleLocalization::Language.debug = options[:debug]
-  else
-    ArkanisDevelopment::SimpleLocalization::Language.debug = (ENV['RAILS_ENV'] != 'production')
-  end
-  
-  ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir = options.delete(:lang_file_dir)
-  ArkanisDevelopment::SimpleLocalization::Language.load(languages)
+  languages << :de if languages.empty?
+  lang_file_dirs = [lang_file_dirs, options.delete(:lang_file_dir), options.delete(:lang_file_dirs)].flatten.compact.uniq
+  lang_file_dirs << "#{RAILS_ROOT}/app/languages" if File.directory? "#{RAILS_ROOT}/app/languages"
   
   if options[:only]
-    enabled_features = available_features & Array(options[:only])
+    feature_manager.load options[:only]
   elsif options[:except]
-    enabled_features = available_features - Array(options[:except])
+    feature_manager.load features
+    feature_manager.disable options[:except]
   else
-    enabled_features = available_features & options.collect{|feature, enabled| feature if enabled}.compact
+    feature_manager.load(options.collect { |feature, enabled| feature if enabled }.compact)
   end
   
-  preloaded_features = ArkanisDevelopment::SimpleLocalization::PRELOAD_FEATURES
-  suppressed_features = Array(ArkanisDevelopment::SimpleLocalization::SUPPRESS_FEATURES)
-  unwanted_features = preloaded_features - enabled_features
-  to_load_features = enabled_features - preloaded_features - suppressed_features
-  
-  unless unwanted_features.empty?
+  unless feature_manager.unwanted_features.empty?
     RAILS_DEFAULT_LOGGER.warn "Simple Localization plugin configuration:\n" +
-      "  You don't want the feature #{unwanted_features.join(', ')} to be loaded.\n" +
+      "  You don't want the features #{feature_manager.unwanted_features.join(', ')} to be loaded.\n" +
       "  However to work with rails observers these features are loaded at the end of the plugins init.rb.\n" +
       '  To suppress a preloaded feature please look into the plugins readme file (chapter "Preloaded features").'
   end
   
-  to_load_features.each do |feature|
+  # Load the Language module and load the language files and the features
+  lang.options.keys.each do |option|
+    lang.options[option] = options[option] if options.key? option
+  end
+  lang.lang_file_dirs = lang_file_dirs
+  lang.load(*languages)
+  
+  feature_manager.localization_init_features.each do |feature|
     require File.dirname(__FILE__) + "/features/#{feature}"
   end
   
-  loaded_features = (enabled_features + preloaded_features).uniq
+  RAILS_DEFAULT_LOGGER.info "Initialized Simple Localization plugin:\n" +
+    "  languages: #{languages.join(', ')}\n" +
+    "  language file directories: #{lang.lang_file_dirs.join(', ')}\n" +
+    "  features: #{feature_manager.all_loaded_features.join(', ')}\n" +
+    "  disabled features: #{feature_manager.disabled_features.join(', ')}"
   
-  RAILS_DEFAULT_LOGGER.debug "Initialized Simple Localization plugin:\n" +
-    "  language: #{languages.join(', ')}, lang_file_dir: #{ArkanisDevelopment::SimpleLocalization::Language.lang_file_dir}\n" +
-    "  features: #{loaded_features.join(', ')}"
-  
-  loaded_features
+  ArkanisDevelopment::SimpleLocalization::Language.loaded_features = feature_manager.localization_init_features
 end

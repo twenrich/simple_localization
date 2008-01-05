@@ -55,8 +55,8 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../../../files/lib/language_rb.html">
-                lib/language.rb
+                <a href="../../../files/lib/errors_rb.html">
+                lib/errors.rb
                 </a>
         <br />
             </td>
@@ -65,7 +65,9 @@
         <tr class="top-aligned-row">
             <td><strong>Parent:</strong></td>
             <td>
-                StandardError
+                <a href="SimpleLocalizationError.html">
+                SimpleLocalizationError
+               </a>
             </td>
         </tr>
         </table>
@@ -102,7 +104,7 @@ not be found.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000031">new</a>&nbsp;&nbsp;
+      <a href="#M000077">new</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -142,26 +144,26 @@ not be found.
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000031" class="method-detail">
-        <a name="M000031"></a>
+      <div id="method-M000077" class="method-detail">
+        <a name="M000077"></a>
 
         <div class="method-heading">
-          <a href="#M000031" class="method-signature">
-          <span class="method-name">new</span><span class="method-args">(requested_entry, language)</span>
+          <a href="#M000077" class="method-signature">
+          <span class="method-name">new</span><span class="method-args">(requested_entry = [], language = nil)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000031-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000031-source">
+            onclick="toggleCode('M000077-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000077-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/language.rb, line 45</span>
-45:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">requested_entry</span>, <span class="ruby-identifier">language</span>)
-46:         <span class="ruby-ivar">@requested_entry</span>, <span class="ruby-ivar">@language</span> = <span class="ruby-constant">Array</span>(<span class="ruby-identifier">requested_entry</span>), <span class="ruby-identifier">language</span>
-47:         <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;The requested entry '#{@requested_entry.join('\' -&gt; \'')}' could &quot;</span> <span class="ruby-operator">+</span>
-48:           <span class="ruby-node">&quot;not be found in the language '#{@language}'.&quot;</span>
-49:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/errors.rb, line 47</span>
+47:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">requested_entry</span> = [], <span class="ruby-identifier">language</span> = <span class="ruby-keyword kw">nil</span>)
+48:         <span class="ruby-ivar">@requested_entry</span>, <span class="ruby-ivar">@language</span> = <span class="ruby-constant">Array</span>(<span class="ruby-identifier">requested_entry</span>), <span class="ruby-identifier">language</span>
+49:         <span class="ruby-keyword kw">super</span> <span class="ruby-node">&quot;The requested entry '#{@requested_entry.join('\' -&gt; \'')}' could &quot;</span> <span class="ruby-operator">+</span>
+50:           <span class="ruby-node">&quot;not be found in the language '#{@language}'.&quot;</span>
+51:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

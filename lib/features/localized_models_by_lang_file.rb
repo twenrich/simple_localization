@@ -67,7 +67,22 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         
         def localized_model_name
           return nil if self == ActiveRecord::Base
-          Language.entry :models, self.class_name.underscore.to_sym, :name
+          Language.entry :models, self.to_s.underscore.to_sym, :name
+        rescue EntryNotFound
+          nil
+        end
+        
+        def localized_model_collection
+          return nil if self == ActiveRecord::Base
+          collection = Language.entry(:models, self.to_s.underscore.to_sym, :collection)
+          
+          # if collection is not present (so it's nil)
+          unless collection
+            name = Language.entry(:models, self.to_s.underscore.to_sym, :name)
+            # if name is present (so it's not nil)
+            collection = name.pluralize if name
+          end
+          collection
         rescue EntryNotFound
           nil
         end
@@ -75,9 +90,9 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
         alias_method :human_attribute_name_without_localization, :human_attribute_name
         
         def human_attribute_name(attribute_key_name)
+          attribute_key_name = attribute_key_name.to_s
           return human_attribute_name_without_localization(attribute_key_name) if self == ActiveRecord::Base
-          Language.entry(:models, self.class_name.underscore.to_sym, :attributes, attribute_key_name) ||
-            human_attribute_name_without_localization(attribute_key_name)
+          Language.entry!(:models, self.to_s.underscore.to_sym, :attributes, attribute_key_name)
         rescue EntryNotFound
           human_attribute_name_without_localization(attribute_key_name)
         end
@@ -89,7 +104,3 @@ module ArkanisDevelopment::SimpleLocalization #:nodoc:
 end
 
 ActiveRecord::Base.send :include, ArkanisDevelopment::SimpleLocalization::LocalizedModelsByLangFile
-
-# Enable the localized Column#human_name method to make this feature work
-# with scaffold.
-require "#{File.dirname(__FILE__)}/../extensions/localized_column_human_name.rb"

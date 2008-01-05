@@ -102,9 +102,9 @@ return the language data of the currently selected language.
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000034">method_missing</a>&nbsp;&nbsp;
-      <a href="#M000032">new</a>&nbsp;&nbsp;
-      <a href="#M000033">receiver</a>&nbsp;&nbsp;
+      <a href="#M000065">method_missing</a>&nbsp;&nbsp;
+      <a href="#M000063">new</a>&nbsp;&nbsp;
+      <a href="#M000064">receiver</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -126,11 +126,11 @@ return the language data of the currently selected language.
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000032" class="method-detail">
-        <a name="M000032"></a>
+      <div id="method-M000063" class="method-detail">
+        <a name="M000063"></a>
 
         <div class="method-heading">
-          <a href="#M000032" class="method-signature">
+          <a href="#M000063" class="method-signature">
           <span class="method-name">new</span><span class="method-args">(options, &amp;transformation)</span>
           </a>
         </div>
@@ -191,20 +191,20 @@ the second parameter and should return the combined result.
   end
 </pre>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000032-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000032-source">
+            onclick="toggleCode('M000063-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000063-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 60</span>
-60:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">transformation</span>)
-61:         <span class="ruby-identifier">default_options</span> = {<span class="ruby-identifier">:sections</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">:orginal_receiver</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">:lang_class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>}
-62:         <span class="ruby-identifier">options</span>.<span class="ruby-identifier">reverse_merge!</span> <span class="ruby-identifier">default_options</span>
-63:         <span class="ruby-identifier">options</span>.<span class="ruby-identifier">assert_valid_keys</span> <span class="ruby-identifier">default_options</span>.<span class="ruby-identifier">keys</span>
-64:         
-65:         <span class="ruby-ivar">@sections</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:sections</span>]
-66:         <span class="ruby-ivar">@orginal_receiver</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:orginal_receiver</span>]
-67:         <span class="ruby-ivar">@lang_class</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:lang_class</span>]
-68:         <span class="ruby-ivar">@transformation</span> = <span class="ruby-identifier">transformation</span>
-69:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 62</span>
+62:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">transformation</span>)
+63:         <span class="ruby-identifier">default_options</span> = {<span class="ruby-identifier">:sections</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">:orginal_receiver</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">:lang_class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">ArkanisDevelopment</span><span class="ruby-operator">::</span><span class="ruby-constant">SimpleLocalization</span><span class="ruby-operator">::</span><span class="ruby-constant">Language</span>}
+64:         <span class="ruby-identifier">options</span>.<span class="ruby-identifier">reverse_merge!</span> <span class="ruby-identifier">default_options</span>
+65:         <span class="ruby-identifier">options</span>.<span class="ruby-identifier">assert_valid_keys</span> <span class="ruby-identifier">default_options</span>.<span class="ruby-identifier">keys</span>
+66:         
+67:         <span class="ruby-ivar">@sections</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:sections</span>]
+68:         <span class="ruby-ivar">@orginal_receiver</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:orginal_receiver</span>]
+69:         <span class="ruby-ivar">@lang_class</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:lang_class</span>]
+70:         <span class="ruby-ivar">@transformation</span> = <span class="ruby-identifier">transformation</span>
+71:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
@@ -212,11 +212,11 @@ the second parameter and should return the combined result.
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000034" class="method-detail">
-        <a name="M000034"></a>
+      <div id="method-M000065" class="method-detail">
+        <a name="M000065"></a>
 
         <div class="method-heading">
-          <a href="#M000034" class="method-signature">
+          <a href="#M000065" class="method-signature">
           <span class="method-name">method_missing</span><span class="method-args">(name, *args, &amp;block)</span>
           </a>
         </div>
@@ -224,48 +224,53 @@ the second parameter and should return the combined result.
         <div class="method-description">
           <p>
 Intercept all other messages and send them to the <a
-href="LangSectionProxy.html#M000033">receiver</a>.
+href="LangSectionProxy.html#M000064">receiver</a>.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000034-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000034-source">
+            onclick="toggleCode('M000065-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000065-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 82</span>
-82:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-83:         <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">receiver</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
-84:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 90</span>
+90:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+91:         <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">receiver</span>.<span class="ruby-identifier">send</span> <span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
+92:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
       </div>
 
-      <div id="method-M000033" class="method-detail">
-        <a name="M000033"></a>
+      <div id="method-M000064" class="method-detail">
+        <a name="M000064"></a>
 
         <div class="method-heading">
-          <a href="#M000033" class="method-signature">
+          <a href="#M000064" class="method-signature">
           <span class="method-name">receiver</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-Gets the <a href="LangSectionProxy.html#M000033">receiver</a> from the
+Gets the <a href="LangSectionProxy.html#M000064">receiver</a> from the
 language class and combines this data with the original data if wanted (a
-block was specified to the constructor).
+block was specified to the constructor). If the lang class isn&#8216;t
+loaded yet only the original data will be returned as a fallback value.
 </p>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000033-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000033-source">
+            onclick="toggleCode('M000064-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000064-source">
 <pre>
-    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 73</span>
-73:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">receiver</span>
-74:         <span class="ruby-identifier">receiver</span> = <span class="ruby-ivar">@lang_class</span>[<span class="ruby-operator">*</span><span class="ruby-ivar">@sections</span>]
-75:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:call</span>)
-76:           <span class="ruby-identifier">receiver</span> = <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">arity</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">?</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">receiver</span>) <span class="ruby-operator">:</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">receiver</span>, <span class="ruby-ivar">@orginal_receiver</span>)
-77:         <span class="ruby-keyword kw">end</span>
-78:         <span class="ruby-identifier">receiver</span>
-79:       <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File lib/lang_section_proxy.rb, line 77</span>
+77:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">receiver</span>
+78:         <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@lang_class</span>.<span class="ruby-identifier">loaded?</span>
+79:           <span class="ruby-identifier">receiver</span> = <span class="ruby-ivar">@lang_class</span>.<span class="ruby-identifier">entry</span>(<span class="ruby-operator">*</span><span class="ruby-ivar">@sections</span>)
+80:           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:call</span>)
+81:             <span class="ruby-identifier">receiver</span> = <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">arity</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">?</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">receiver</span>) <span class="ruby-operator">:</span> <span class="ruby-ivar">@transformation</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">receiver</span>, <span class="ruby-ivar">@orginal_receiver</span>)
+82:           <span class="ruby-keyword kw">end</span>
+83:           <span class="ruby-identifier">receiver</span>
+84:         <span class="ruby-keyword kw">else</span>
+85:           <span class="ruby-ivar">@orginal_receiver</span>
+86:         <span class="ruby-keyword kw">end</span>
+87:       <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>
